@@ -71,8 +71,19 @@ export const checkUserEmail = async (req: any, res: any, next: any) => {
         //TBD LOG USER CREATED MESSAGE
     }
     next();
-
 };
+
+export const checkAdminEmail = async (req: any, res: any, next: any) => {
+    var dao = new UserDao();
+
+    //checking if the user has the role of admin (2)
+    var user = await dao.readUser(req.user.email)
+    if(user.role!=2){
+        res.send("Your are no admin o'mine!")
+        //TBD LOG USER CREATED MESSAGE
+    }
+    next();
+}
 
 
 

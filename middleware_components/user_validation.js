@@ -37,7 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.checkUserEmail = exports.checkJwtPayload = exports.verifyAndAuthenticate = exports.checkJWToken = exports.checkHeader = void 0;
+exports.checkAdminEmail = exports.checkUserEmail = exports.checkJwtPayload = exports.verifyAndAuthenticate = exports.checkJWToken = exports.checkHeader = void 0;
 require('dotenv').config();
 var jwt = require("jsonwebtoken");
 var UserDAO_1 = require("../Model/UserDAO");
@@ -108,10 +108,11 @@ var checkUserEmail = function (req, res, next) { return __awaiter(void 0, void 0
             case 1:
                 user = _a.sent();
                 if (!!user) return [3 /*break*/, 3];
-                return [4 /*yield*/, dao.createUser(req.user.email)];
+                return [4 /*yield*/, dao.createUser(req.user.email)
+                    //TBD LOG USER CREATED MESSAGE
+                ];
             case 2:
                 _a.sent();
-                console.log("User created");
                 _a.label = 3;
             case 3:
                 next();
@@ -120,3 +121,22 @@ var checkUserEmail = function (req, res, next) { return __awaiter(void 0, void 0
     });
 }); };
 exports.checkUserEmail = checkUserEmail;
+var checkAdminEmail = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var dao, user;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                dao = new UserDAO_1.UserDao();
+                return [4 /*yield*/, dao.readUser(req.user.email)];
+            case 1:
+                user = _a.sent();
+                if (user.role != 2) {
+                    res.send("Your are no admin o'mine!");
+                    //TBD LOG USER CREATED MESSAGE
+                }
+                next();
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.checkAdminEmail = checkAdminEmail;

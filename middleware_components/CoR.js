@@ -1,11 +1,18 @@
 "use strict";
 exports.__esModule = true;
-exports.checkJWT = void 0;
+exports.adminJWT = exports.userJWT = void 0;
 var JWTValidation = require("./user_validation");
-exports.checkJWT = [
+exports.userJWT = [
     JWTValidation.checkHeader,
     JWTValidation.checkJWToken,
     JWTValidation.verifyAndAuthenticate,
     JWTValidation.checkJwtPayload,
     JWTValidation.checkUserEmail
+];
+exports.adminJWT = [
+    JWTValidation.checkHeader,
+    JWTValidation.checkJWToken,
+    JWTValidation.verifyAndAuthenticate,
+    JWTValidation.checkJwtPayload,
+    JWTValidation.checkAdminEmail
 ];
