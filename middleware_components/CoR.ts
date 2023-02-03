@@ -1,4 +1,5 @@
 import * as JWTValidation from './user_validation';
+import * as GameValidation from './requestValidation';
 import { messageLogger } from './MessLog';
 
 export const userJWT = [
@@ -7,7 +8,8 @@ export const userJWT = [
     JWTValidation.verifyAndAuthenticate,
     JWTValidation.checkJwtPayload,
     JWTValidation.checkUserEmail,
-    messageLogger
+    GameValidation.checkUserTokenBalance,
+    //messageLogger
 ]
 
 export const adminJWT = [
@@ -16,7 +18,12 @@ export const adminJWT = [
     JWTValidation.verifyAndAuthenticate,
     JWTValidation.checkJwtPayload,
     JWTValidation.checkAdminEmail,
-    messageLogger
+    //messageLogger
 ]
 
+
+export const newTokenBalanceVal = [
+    GameValidation.checkReqBody,
+    GameValidation.checkReqTokenBalance
+]
 

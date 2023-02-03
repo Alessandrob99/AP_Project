@@ -6,7 +6,11 @@ export enum MessEnum {
     InvalidJWDError,
     JwtClaimsError,
     UserCreated,
-    UnauthorizedError
+    UnauthorizedError,
+    UserNotFound,
+    NoBodyError,
+    BadlyFormattedBody,
+    TokenBalanceUpdated
 }
 
 
@@ -46,7 +50,7 @@ class InvalidJWDError implements MessageInt {
         return "Invalid Token";
     }
     public getCode():number{
-        return 401;
+        return 403;
     }
 }
 
@@ -72,14 +76,57 @@ class UserCreated implements MessageInt {
 }
 
 //Message telling the user that the given JWT has not the admin role
+//Or that the user credits are over
 class UnauthorizedError implements MessageInt {
     public getMess(): string {
         return "Unauthorized!";
     }
     public getCode(): number {
-        return 403;
+        return 401;
     }
 }
+
+
+//Message to tell the admin/user that the specified user was not found in the db
+class UserNotFound implements MessageInt {
+    public getMess(): string {
+        return "User not found";
+    }
+    public getCode(): number {
+        return 400;
+    }
+}
+
+//The request doesn't have a body
+class NoBodyError implements MessageInt {
+    public getMess(): string {
+        return "Missing request body";
+    }
+    public getCode(): number {
+        return 400;
+    }
+}
+
+//The request body is badly formatted
+class BadlyFormattedBody implements MessageInt {
+    public getMess(): string {
+        return "Request body contains errors";
+    }
+    public getCode(): number {
+        return 400;
+    }
+}
+
+//Token balance updated succesfully
+class TokenBalanceUpdated implements MessageInt {
+    public getMess(): string {
+        return "Token balance updated succesfully";
+    }
+    public getCode(): number {
+        return 200;
+    }
+}
+
 
 //Concrete factory class - getMessage() allows to return different message objects depending on the given parameters
 export class MessFactory{
@@ -104,6 +151,18 @@ export class MessFactory{
                 break;
             case MessEnum.UserCreated:
                 message = new UserCreated();
+                break;
+            case MessEnum.UserNotFound:
+                message = new UserNotFound();
+                break;
+            case MessEnum.NoBodyError:
+                message = new NoBodyError();
+                break;
+            case MessEnum.BadlyFormattedBody:
+                message = new BadlyFormattedBody();
+                break;
+            case MessEnum.TokenBalanceUpdated:
+                message = new TokenBalanceUpdated();
                 break;
             default :
                 message = new GenericError();

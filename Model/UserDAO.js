@@ -49,11 +49,14 @@ var UserDao = /** @class */ (function () {
         this.user = seq.define('User', {
             email: {
                 type: sequelize_1.DataTypes.STRING(50),
-                primaryKey: true,
-                autoIncrement: true
+                primaryKey: true
             },
             role: {
                 type: sequelize_1.DataTypes.INTEGER,
+                allowNull: false
+            },
+            token_balance: {
+                type: sequelize_1.DataTypes.FLOAT,
                 allowNull: false
             }
         }, {
@@ -62,13 +65,14 @@ var UserDao = /** @class */ (function () {
         });
     }
     //CRUD Methods----------
+    //Creation methods
     UserDao.prototype.createUser = function (email) {
         return __awaiter(this, void 0, void 0, function () {
             var newUser;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        newUser = this.user.build({ email: email, role: 1 });
+                        newUser = this.user.build({ email: email, role: 1, token_balance: 50 });
                         return [4 /*yield*/, newUser.save()];
                     case 1:
                         _a.sent();
@@ -77,6 +81,7 @@ var UserDao = /** @class */ (function () {
             });
         });
     };
+    //Reading methods
     UserDao.prototype.readUser = function (email) {
         return __awaiter(this, void 0, void 0, function () {
             var foudUser;
@@ -90,9 +95,32 @@ var UserDao = /** @class */ (function () {
             });
         });
     };
-    UserDao.prototype.updateUser = function (email) {
-        throw new Error("Method not implemented.");
+    //Updating methods
+    UserDao.prototype.updateUserTokens = function (email, token_balance) {
+        return __awaiter(this, void 0, void 0, function () {
+            var userToUpdate;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.user.findByPk(email)];
+                    case 1:
+                        userToUpdate = _a.sent();
+                        if (!!userToUpdate) return [3 /*break*/, 2];
+                        throw ReferenceError;
+                    case 2: return [4 /*yield*/, userToUpdate.update({
+                            token_balance: token_balance
+                        })];
+                    case 3:
+                        _a.sent();
+                        return [4 /*yield*/, userToUpdate.save()];
+                    case 4:
+                        _a.sent();
+                        _a.label = 5;
+                    case 5: return [2 /*return*/];
+                }
+            });
+        });
     };
+    //Deleting methods
     UserDao.prototype.deleteUser = function (email) {
         throw new Error("Method not implemented.");
     };

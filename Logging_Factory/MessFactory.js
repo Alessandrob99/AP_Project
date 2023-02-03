@@ -9,6 +9,10 @@ var MessEnum;
     MessEnum[MessEnum["JwtClaimsError"] = 4] = "JwtClaimsError";
     MessEnum[MessEnum["UserCreated"] = 5] = "UserCreated";
     MessEnum[MessEnum["UnauthorizedError"] = 6] = "UnauthorizedError";
+    MessEnum[MessEnum["UserNotFound"] = 7] = "UserNotFound";
+    MessEnum[MessEnum["NoBodyError"] = 8] = "NoBodyError";
+    MessEnum[MessEnum["BadlyFormattedBody"] = 9] = "BadlyFormattedBody";
+    MessEnum[MessEnum["TokenBalanceUpdated"] = 10] = "TokenBalanceUpdated";
 })(MessEnum = exports.MessEnum || (exports.MessEnum = {}));
 //Message telling the user that the request has no authentication header
 var GenericError = /** @class */ (function () {
@@ -54,7 +58,7 @@ var InvalidJWDError = /** @class */ (function () {
         return "Invalid Token";
     };
     InvalidJWDError.prototype.getCode = function () {
-        return 401;
+        return 403;
     };
     return InvalidJWDError;
 }());
@@ -83,6 +87,7 @@ var UserCreated = /** @class */ (function () {
     return UserCreated;
 }());
 //Message telling the user that the given JWT has not the admin role
+//Or that the user credits are over
 var UnauthorizedError = /** @class */ (function () {
     function UnauthorizedError() {
     }
@@ -90,9 +95,57 @@ var UnauthorizedError = /** @class */ (function () {
         return "Unauthorized!";
     };
     UnauthorizedError.prototype.getCode = function () {
-        return 403;
+        return 401;
     };
     return UnauthorizedError;
+}());
+//Message to tell the admin/user that the specified user was not found in the db
+var UserNotFound = /** @class */ (function () {
+    function UserNotFound() {
+    }
+    UserNotFound.prototype.getMess = function () {
+        return "User not found";
+    };
+    UserNotFound.prototype.getCode = function () {
+        return 400;
+    };
+    return UserNotFound;
+}());
+//The request doesn't have a body
+var NoBodyError = /** @class */ (function () {
+    function NoBodyError() {
+    }
+    NoBodyError.prototype.getMess = function () {
+        return "Missing request body";
+    };
+    NoBodyError.prototype.getCode = function () {
+        return 400;
+    };
+    return NoBodyError;
+}());
+//The request body is badly formatted
+var BadlyFormattedBody = /** @class */ (function () {
+    function BadlyFormattedBody() {
+    }
+    BadlyFormattedBody.prototype.getMess = function () {
+        return "Request body contains errors";
+    };
+    BadlyFormattedBody.prototype.getCode = function () {
+        return 400;
+    };
+    return BadlyFormattedBody;
+}());
+//Token balance updated succesfully
+var TokenBalanceUpdated = /** @class */ (function () {
+    function TokenBalanceUpdated() {
+    }
+    TokenBalanceUpdated.prototype.getMess = function () {
+        return "Token balance updated succesfully";
+    };
+    TokenBalanceUpdated.prototype.getCode = function () {
+        return 200;
+    };
+    return TokenBalanceUpdated;
 }());
 //Concrete factory class - getMessage() allows to return different message objects depending on the given parameters
 var MessFactory = /** @class */ (function () {
@@ -118,6 +171,18 @@ var MessFactory = /** @class */ (function () {
                 break;
             case MessEnum.UserCreated:
                 message = new UserCreated();
+                break;
+            case MessEnum.UserNotFound:
+                message = new UserNotFound();
+                break;
+            case MessEnum.NoBodyError:
+                message = new NoBodyError();
+                break;
+            case MessEnum.BadlyFormattedBody:
+                message = new BadlyFormattedBody();
+                break;
+            case MessEnum.TokenBalanceUpdated:
+                message = new TokenBalanceUpdated();
                 break;
             default:
                 message = new GenericError();

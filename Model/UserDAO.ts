@@ -19,10 +19,13 @@ export class UserDao{
                 email: {
                 type: DataTypes.STRING(50),
                 primaryKey: true,
-                autoIncrement: true
                 },
                 role: {
                     type: DataTypes.INTEGER,
+                    allowNull: false
+                },
+                token_balance: {
+                    type: DataTypes.FLOAT,
                     allowNull: false
                 }
             },
@@ -36,18 +39,35 @@ export class UserDao{
 
 
     //CRUD Methods----------
+
+    //Creation methods
     public async createUser(email: String) {
-        var newUser = this.user.build({email: email, role: 1});
+        var newUser = this.user.build({email: email, role: 1, token_balance: 50});
         await newUser.save();
         //TBD factory logging
     }
+
+    //Reading methods
     public async readUser(email: String){
         var foudUser = await this.user.findByPk(email);
         return foudUser;
     }
-    public updateUser(email: String) {
-        throw new Error("Method not implemented.");
+
+    //Updating methods
+    public async updateUserTokens(email: String, token_balance : Number) {
+        var userToUpdate = await this.user.findByPk(email);
+        if(!userToUpdate){
+            throw ReferenceError;
+        }else{
+            await userToUpdate.update({
+                token_balance: token_balance
+            });
+            await userToUpdate.save();
+        }
+        
     }
+
+    //Deleting methods
     public deleteUser(email: String) {
         throw new Error("Method not implemented.");
     } 

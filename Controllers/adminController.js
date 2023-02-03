@@ -36,24 +36,27 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-var CoR = require("./middleware_components/CoR");
-var MessLog_1 = require("./middleware_components/MessLog");
-var adminController = require("./Controllers/adminController");
-var express = require('express');
-require('dotenv').config();
-var bodyParser = require('body-parser');
-var app = express();
-app.use(bodyParser.json());
-app.get('/', CoR.userJWT, function (req, res) {
-    res.send("Bella so rriato");
-});
-app.get('/admin', CoR.adminJWT, function (req, res) {
-    res.send("Bella so rriato pero admin");
-});
-//route that only the admin can use in order to update a specific user token balance
-app.post('/token', [CoR.adminJWT, CoR.newTokenBalanceVal], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
-    adminController.newTokenBalance(req, res, next);
-    return [2 /*return*/];
-}); }); });
-app.use(MessLog_1.messageLogger);
-app.listen(process.env.PORT);
+exports.newTokenBalance = void 0;
+var MessFactory_1 = require("../Logging_Factory/MessFactory");
+var UserDAO_1 = require("../Model/UserDAO");
+var userDaoInst = new UserDAO_1.UserDao();
+var newTokenBalance = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var ReferenceError_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, userDaoInst.updateUserTokens(req.body.email, req.body.token)];
+            case 1:
+                _a.sent();
+                next(MessFactory_1.MessEnum.TokenBalanceUpdated);
+                return [3 /*break*/, 3];
+            case 2:
+                ReferenceError_1 = _a.sent();
+                next(MessFactory_1.MessEnum.UserNotFound);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+exports.newTokenBalance = newTokenBalance;

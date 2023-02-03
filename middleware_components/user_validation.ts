@@ -75,9 +75,9 @@ export const checkUserEmail = async (req: any, res: any, next: any) => {
     
 };
 
+
 export const checkAdminEmail = (req: any, res: any, next: any) => {
     //checking if the user has the role of admin (2)
-    console.log(req.user.role);
     if(req.user.role!==2){
         next(MessEnum.UnauthorizedError);
     }else{

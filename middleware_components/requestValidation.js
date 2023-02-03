@@ -1,5 +1,4 @@
 "use strict";
-//Importing all the libraries necessary to carry out validation tasks
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -37,66 +36,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.checkAdminEmail = exports.checkUserEmail = exports.checkJwtPayload = exports.verifyAndAuthenticate = exports.checkJWToken = exports.checkHeader = void 0;
-require('dotenv').config();
-var jwt = require("jsonwebtoken");
+exports.checkReqTokenBalance = exports.checkReqBody = exports.checkUserTokenBalance = void 0;
 var UserDAO_1 = require("../Model/UserDAO");
 var MessFactory_1 = require("../Logging_Factory/MessFactory");
-var checkHeader = function (req, res, next) {
-    var authHeader = req.headers.authorization;
-    if (authHeader) {
-        next();
-    }
-    else {
-        next(MessFactory_1.MessEnum.NoHeaderError);
-    }
-};
-exports.checkHeader = checkHeader;
-var checkJWToken = function (req, res, next) {
-    try {
-        var bearerHeader = req.headers.authorization;
-        if (typeof bearerHeader !== 'undefined') {
-            var bearerToken = bearerHeader.split(' ')[1];
-            req.token = bearerToken;
-            next();
-        }
-    }
-    catch (err) {
-        next(MessFactory_1.MessEnum.NoHJWTError);
-    }
-};
-exports.checkJWToken = checkJWToken;
-/*
-Method aimed at verifying that the token is correct
-This operation is carried out using the secret key (in the .env file) used to encode the token
-*/
-var verifyAndAuthenticate = function (req, res, next) {
-    try {
-        var decoded = jwt.verify(req.token, process.env.SECR_KEY);
-        if (decoded !== null) {
-            req.user = decoded;
-            next();
-        }
-    }
-    catch (error) {
-        next(MessFactory_1.MessEnum.InvalidJWDError);
-    }
-};
-exports.verifyAndAuthenticate = verifyAndAuthenticate;
-//Checks is all the information included in the request has the correct form
-//and if the user exists in the database, if not a new user is registered
-var checkJwtPayload = function (req, res, next) {
-    var validator = require("email-validator");
-    if ((req.user.role === 1 || req.user.role === 2)
-        && (typeof req.user.email === "string") && (validator.validate(req.user.email))) {
-        next();
-    }
-    else {
-        next(MessFactory_1.MessEnum.JwtClaimsError);
-    }
-};
-exports.checkJwtPayload = checkJwtPayload;
-var checkUserEmail = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+//Checks whether the user has enought credits to operate or not
+var checkUserTokenBalance = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var dao, user;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -105,27 +49,45 @@ var checkUserEmail = function (req, res, next) { return __awaiter(void 0, void 0
                 return [4 /*yield*/, dao.readUser(req.user.email)];
             case 1:
                 user = _a.sent();
-                if (!!user) return [3 /*break*/, 3];
-                return [4 /*yield*/, dao.createUser(req.user.email)];
-            case 2:
-                _a.sent();
-                next(MessFactory_1.MessEnum.UserCreated);
-                return [3 /*break*/, 4];
-            case 3:
-                next();
-                _a.label = 4;
-            case 4: return [2 /*return*/];
+                if (user.token_balance <= 0.0) {
+                    next(MessFactory_1.MessEnum.UnauthorizedError);
+                }
+                else {
+                    next();
+                }
+                return [2 /*return*/];
         }
     });
 }); };
-exports.checkUserEmail = checkUserEmail;
-var checkAdminEmail = function (req, res, next) {
-    //checking if the user has the role of admin (2)
-    if (req.user.role !== 2) {
-        next(MessFactory_1.MessEnum.UnauthorizedError);
-    }
-    else {
-        next();
-    }
-};
-exports.checkAdminEmail = checkAdminEmail;
+exports.checkUserTokenBalance = checkUserTokenBalance;
+var checkReqBody = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var postBody;
+    return __generator(this, function (_a) {
+        postBody = req.body;
+        if (Object.keys(req.body).length === 0) {
+            next(MessFactory_1.MessEnum.NoBodyError);
+        }
+        else {
+            next();
+        }
+        return [2 /*return*/];
+    });
+}); };
+exports.checkReqBody = checkReqBody;
+//Checks if the "new token balance" request as a properly formatted body
+var checkReqTokenBalance = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var validator;
+    return __generator(this, function (_a) {
+        validator = require("email-validator");
+        if ((typeof req.body.email === "string")
+            && (validator.validate(req.body.email)
+                && (typeof req.body.token === 'number'))) {
+            next();
+        }
+        else {
+            next(MessFactory_1.MessEnum.BadlyFormattedBody);
+        }
+        return [2 /*return*/];
+    });
+}); };
+exports.checkReqTokenBalance = checkReqTokenBalance;
