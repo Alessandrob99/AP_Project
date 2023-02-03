@@ -1,26 +1,29 @@
 "use strict";
 exports.__esModule = true;
-exports.newTokenBalanceVal = exports.adminJWT = exports.userJWT = void 0;
+exports.newGameVal = exports.newTokenBalanceVal = exports.adminCheck = exports.userAccountAndBalanceCheck = exports.JWTCheck = void 0;
 var JWTValidation = require("./user_validation");
-var GameValidation = require("./requestValidation");
-exports.userJWT = [
+var RequestValidation = require("./requestValidation");
+exports.JWTCheck = [
     JWTValidation.checkHeader,
     JWTValidation.checkJWToken,
     JWTValidation.verifyAndAuthenticate,
-    JWTValidation.checkJwtPayload,
+    JWTValidation.checkJwtPayload
+];
+exports.userAccountAndBalanceCheck = [
     JWTValidation.checkUserEmail,
-    GameValidation.checkUserTokenBalance,
+    RequestValidation.checkUserTokenBalance,
     //messageLogger
 ];
-exports.adminJWT = [
-    JWTValidation.checkHeader,
-    JWTValidation.checkJWToken,
-    JWTValidation.verifyAndAuthenticate,
-    JWTValidation.checkJwtPayload,
+exports.adminCheck = [
     JWTValidation.checkAdminEmail,
     //messageLogger
 ];
 exports.newTokenBalanceVal = [
-    GameValidation.checkReqBody,
-    GameValidation.checkReqTokenBalance
+    RequestValidation.checkReqBody,
+    RequestValidation.checkReqTokenBalance
+];
+exports.newGameVal = [
+    RequestValidation.checkReqBody,
+    RequestValidation.checkReqBodyNewGame,
+    RequestValidation.checkNewGameBalance
 ];

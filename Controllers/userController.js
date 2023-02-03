@@ -36,31 +36,21 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-var CoR = require("./middleware_components/CoR");
-var MessLog_1 = require("./middleware_components/MessLog");
-var adminController = require("./Controllers/adminController");
-var userController = require("./Controllers/userController");
-var express = require('express');
-require('dotenv').config();
-var bodyParser = require('body-parser');
-var app = express();
-app.use(bodyParser.json());
-app.use(CoR.JWTCheck);
-app.post('/createGame', [CoR.userAccountAndBalanceCheck, CoR.newGameVal], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+exports.newGame = void 0;
+var MessFactory_1 = require("../Logging_Factory/MessFactory");
+var GameDAO_1 = require("../Model/GameDAO");
+var UserDAO_1 = require("../Model/UserDAO");
+var userDaoInst = new UserDAO_1.UserDao();
+var gameDaoInst = new GameDAO_1.GameDao();
+var newGame = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        userController.newGame(req, res, next);
-        return [2 /*return*/];
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, userDaoInst.withdrawTokens(req.user.email, 0.35)];
+            case 1:
+                _a.sent();
+                next(MessFactory_1.MessEnum.TokenBalanceUpdated);
+                return [2 /*return*/];
+        }
     });
-}); });
-app.get('/admin', CoR.adminCheck, function (req, res) {
-    res.send("Sono admin");
-});
-//route that only the admin can use in order to update a specific user token balance
-app.post('/token', [CoR.adminCheck, CoR.newTokenBalanceVal], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        adminController.newTokenBalance(req, res, next);
-        return [2 /*return*/];
-    });
-}); });
-app.use(MessLog_1.messageLogger);
-app.listen(process.env.PORT);
+}); };
+exports.newGame = newGame;

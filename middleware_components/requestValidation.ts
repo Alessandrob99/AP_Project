@@ -17,6 +17,21 @@ export const checkUserTokenBalance = async (req: any, res: any, next: any) => {
     
 };
 
+export const checkNewGameBalance = async (req: any, res: any, next: any) => {
+    
+    var dao = new UserDao();
+
+    var user = await dao.readUser(req.user.email)
+    if(user.token_balance<0.35){
+        next(MessEnum.NotEnoughTokens);
+    }else{
+        next();
+    }
+    
+};
+
+
+
 
 export const checkReqBody = async (req: any, res: any, next: any) => {
     
@@ -28,6 +43,19 @@ export const checkReqBody = async (req: any, res: any, next: any) => {
     }
     
 };
+
+
+export const checkReqBodyNewGame = async (req: any, res: any, next: any) => {
+    var validator = require("email-validator");
+    if((typeof req.body.opponent === "string") 
+    && (validator.validate(req.body.opponent) 
+    && (typeof req.body.dimension === 'number'))){
+            next();
+    }else{
+        next(MessEnum.BadlyFormattedBody);
+    }
+}
+
 
 //Checks if the "new token balance" request as a properly formatted body
 export const checkReqTokenBalance = async (req: any, res: any, next: any) => {

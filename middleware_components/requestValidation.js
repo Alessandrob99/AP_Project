@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.checkReqTokenBalance = exports.checkReqBody = exports.checkUserTokenBalance = void 0;
+exports.checkReqTokenBalance = exports.checkReqBodyNewGame = exports.checkReqBody = exports.checkNewGameBalance = exports.checkUserTokenBalance = void 0;
 var UserDAO_1 = require("../Model/UserDAO");
 var MessFactory_1 = require("../Logging_Factory/MessFactory");
 //Checks whether the user has enought credits to operate or not
@@ -60,6 +60,27 @@ var checkUserTokenBalance = function (req, res, next) { return __awaiter(void 0,
     });
 }); };
 exports.checkUserTokenBalance = checkUserTokenBalance;
+var checkNewGameBalance = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var dao, user;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                dao = new UserDAO_1.UserDao();
+                return [4 /*yield*/, dao.readUser(req.user.email)];
+            case 1:
+                user = _a.sent();
+                if (user.token_balance < 0.35) {
+                    next(MessFactory_1.MessEnum.NotEnoughTokens);
+                }
+                else {
+                    console.log("aarivato alla fine");
+                    next();
+                }
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.checkNewGameBalance = checkNewGameBalance;
 var checkReqBody = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var postBody;
     return __generator(this, function (_a) {
@@ -74,6 +95,22 @@ var checkReqBody = function (req, res, next) { return __awaiter(void 0, void 0, 
     });
 }); };
 exports.checkReqBody = checkReqBody;
+var checkReqBodyNewGame = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var validator;
+    return __generator(this, function (_a) {
+        validator = require("email-validator");
+        if ((typeof req.body.opponent === "string")
+            && (validator.validate(req.body.opponent)
+                && (typeof req.body.dimension === 'number'))) {
+            next();
+        }
+        else {
+            next(MessFactory_1.MessEnum.BadlyFormattedBody);
+        }
+        return [2 /*return*/];
+    });
+}); };
+exports.checkReqBodyNewGame = checkReqBodyNewGame;
 //Checks if the "new token balance" request as a properly formatted body
 var checkReqTokenBalance = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var validator;

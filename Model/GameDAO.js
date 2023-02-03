@@ -36,44 +36,65 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.UserDao = void 0;
+exports.GameDao = void 0;
 var singletonDBConnection_1 = require("../DB_Connection/singletonDBConnection");
 var sequelize_1 = require("sequelize");
-var UserDao = /** @class */ (function () {
-    /*
-    The constructor gets the DB connection instance and uses it to
-    define the User model through the Sequelize object
-    */
-    function UserDao() {
+var GameDao = /** @class */ (function () {
+    function GameDao() {
         var seq = singletonDBConnection_1.DB_Singleton.getInstance().getConnection();
-        this.user = seq.define('User', {
-            email: {
-                type: sequelize_1.DataTypes.STRING(50),
-                primaryKey: true
+        this.game = seq.define('Game', {
+            id: {
+                type: sequelize_1.DataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true
             },
-            role: {
+            creator: {
+                type: sequelize_1.DataTypes.STRING(50),
+                allowNull: false
+            },
+            opponent: {
+                type: sequelize_1.DataTypes.STRING(50),
+                allowNull: false
+            },
+            state: {
                 type: sequelize_1.DataTypes.INTEGER,
                 allowNull: false
             },
-            token_balance: {
-                type: sequelize_1.DataTypes.FLOAT,
+            dimension: {
+                type: sequelize_1.DataTypes.INTEGER,
+                allowNull: false
+            },
+            winner: {
+                type: sequelize_1.DataTypes.STRING(50),
+                allowNull: true,
+                defaultValue: null
+            },
+            turn: {
+                type: sequelize_1.DataTypes.STRING(50),
                 allowNull: false
             }
         }, {
-            tableName: 'users',
+            tableName: 'games',
             timestamps: false
         });
     }
     //CRUD Methods----------
     //Creation methods
-    UserDao.prototype.createUser = function (email) {
+    GameDao.prototype.createGame = function (creator, opponent, dimension) {
         return __awaiter(this, void 0, void 0, function () {
-            var newUser;
+            var newGame;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        newUser = this.user.build({ email: email, role: 1, token_balance: 50 });
-                        return [4 /*yield*/, newUser.save()];
+                        newGame = this.game.build({
+                            creator: creator,
+                            opponent: opponent,
+                            state: 1,
+                            dimension: dimension,
+                            winner: null,
+                            turn: creator
+                        });
+                        return [4 /*yield*/, newGame.save()];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -81,70 +102,6 @@ var UserDao = /** @class */ (function () {
             });
         });
     };
-    //Reading methods
-    UserDao.prototype.readUser = function (email) {
-        return __awaiter(this, void 0, void 0, function () {
-            var foudUser;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.user.findByPk(email)];
-                    case 1:
-                        foudUser = _a.sent();
-                        return [2 /*return*/, foudUser];
-                }
-            });
-        });
-    };
-    //Updating methods
-    UserDao.prototype.withdrawTokens = function (email, amount) {
-        return __awaiter(this, void 0, void 0, function () {
-            var userToUpdate;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.user.findByPk(email)];
-                    case 1:
-                        userToUpdate = _a.sent();
-                        return [4 /*yield*/, userToUpdate.update({
-                                token_balance: userToUpdate.token_balance - amount
-                            })];
-                    case 2:
-                        _a.sent();
-                        return [4 /*yield*/, userToUpdate.save()];
-                    case 3:
-                        _a.sent();
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
-    UserDao.prototype.updateUserTokens = function (email, token_balance) {
-        return __awaiter(this, void 0, void 0, function () {
-            var userToUpdate;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.user.findByPk(email)];
-                    case 1:
-                        userToUpdate = _a.sent();
-                        if (!!userToUpdate) return [3 /*break*/, 2];
-                        throw ReferenceError;
-                    case 2: return [4 /*yield*/, userToUpdate.update({
-                            token_balance: token_balance
-                        })];
-                    case 3:
-                        _a.sent();
-                        return [4 /*yield*/, userToUpdate.save()];
-                    case 4:
-                        _a.sent();
-                        _a.label = 5;
-                    case 5: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    //Deleting methods
-    UserDao.prototype.deleteUser = function (email) {
-        throw new Error("Method not implemented.");
-    };
-    return UserDao;
+    return GameDao;
 }());
-exports.UserDao = UserDao;
+exports.GameDao = GameDao;

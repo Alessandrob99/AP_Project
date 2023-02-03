@@ -44,7 +44,6 @@ export class UserDao{
     public async createUser(email: String) {
         var newUser = this.user.build({email: email, role: 1, token_balance: 50});
         await newUser.save();
-        //TBD factory logging
     }
 
     //Reading methods
@@ -54,6 +53,14 @@ export class UserDao{
     }
 
     //Updating methods
+    public async withdrawTokens(email: String, amount : number){
+        var userToUpdate = await this.user.findByPk(email);
+        await userToUpdate.update({
+            token_balance: userToUpdate.token_balance-amount
+        });
+        await userToUpdate.save();
+    }
+
     public async updateUserTokens(email: String, token_balance : Number) {
         var userToUpdate = await this.user.findByPk(email);
         if(!userToUpdate){

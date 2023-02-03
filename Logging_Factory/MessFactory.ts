@@ -10,7 +10,8 @@ export enum MessEnum {
     UserNotFound,
     NoBodyError,
     BadlyFormattedBody,
-    TokenBalanceUpdated
+    TokenBalanceUpdated,
+    NotEnoughTokens
 }
 
 
@@ -47,7 +48,7 @@ class NoHJWTError implements MessageInt {
 //Message telling the user that the given token is not valid for authentication
 class InvalidJWDError implements MessageInt {
     public getMess():string {
-        return "Invalid Token";
+        return "Unauthorized - Invalid Token";
     }
     public getCode():number{
         return 403;
@@ -58,7 +59,7 @@ class InvalidJWDError implements MessageInt {
 //Message telling the user that the claims contained in the JWT were improperly formatted
 class JwtClaimsError implements MessageInt {
     public getMess():string {
-        return "Bad token - some JWT token claims have been badly formatted";
+        return "Bad request - some JWT token claims have been badly formatted";
     }
     public getCode():number{
         return 400;
@@ -68,7 +69,7 @@ class JwtClaimsError implements MessageInt {
 //Message telling the user that his/her profile was succesfully created
 class UserCreated implements MessageInt {
     public getMess():string {
-        return "New User profile created";
+        return "Operation completed - New User profile created";
     }
     public getCode():number{
         return 200;
@@ -79,7 +80,7 @@ class UserCreated implements MessageInt {
 //Or that the user credits are over
 class UnauthorizedError implements MessageInt {
     public getMess(): string {
-        return "Unauthorized!";
+        return "Unauthorized";
     }
     public getCode(): number {
         return 401;
@@ -90,7 +91,7 @@ class UnauthorizedError implements MessageInt {
 //Message to tell the admin/user that the specified user was not found in the db
 class UserNotFound implements MessageInt {
     public getMess(): string {
-        return "User not found";
+        return "Bad request - User not found";
     }
     public getCode(): number {
         return 400;
@@ -100,7 +101,7 @@ class UserNotFound implements MessageInt {
 //The request doesn't have a body
 class NoBodyError implements MessageInt {
     public getMess(): string {
-        return "Missing request body";
+        return "Bad request - Missing request body";
     }
     public getCode(): number {
         return 400;
@@ -110,7 +111,7 @@ class NoBodyError implements MessageInt {
 //The request body is badly formatted
 class BadlyFormattedBody implements MessageInt {
     public getMess(): string {
-        return "Request body contains errors";
+        return "Bad request - Request body contains errors";
     }
     public getCode(): number {
         return 400;
@@ -120,10 +121,20 @@ class BadlyFormattedBody implements MessageInt {
 //Token balance updated succesfully
 class TokenBalanceUpdated implements MessageInt {
     public getMess(): string {
-        return "Token balance updated succesfully";
+        return "Operation completed - Token balance updated succesfully";
     }
     public getCode(): number {
         return 200;
+    }
+}
+
+//Message to tell the user that his tokens are not sufficient for the operarion
+class NotEnoughTokens implements MessageInt{
+    public getMess(): string {
+        return "Forbidden - Not enough tokens to proceed";
+    }
+    public getCode(): number {
+        return 403;
     }
 }
 
@@ -164,6 +175,9 @@ export class MessFactory{
             case MessEnum.TokenBalanceUpdated:
                 message = new TokenBalanceUpdated();
                 break;
+            case MessEnum.NotEnoughTokens:
+                message = new NotEnoughTokens();
+                break;    
             default :
                 message = new GenericError();
                 break;

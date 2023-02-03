@@ -1,29 +1,33 @@
 import * as JWTValidation from './user_validation';
-import * as GameValidation from './requestValidation';
+import * as RequestValidation from './requestValidation';
 import { messageLogger } from './MessLog';
 
-export const userJWT = [
+export const JWTCheck = [
     JWTValidation.checkHeader,
     JWTValidation.checkJWToken,
     JWTValidation.verifyAndAuthenticate,
-    JWTValidation.checkJwtPayload,
+    JWTValidation.checkJwtPayload
+]
+
+export const userAccountAndBalanceCheck = [
     JWTValidation.checkUserEmail,
-    GameValidation.checkUserTokenBalance,
+    RequestValidation.checkUserTokenBalance,
     //messageLogger
 ]
 
-export const adminJWT = [
-    JWTValidation.checkHeader,
-    JWTValidation.checkJWToken,
-    JWTValidation.verifyAndAuthenticate,
-    JWTValidation.checkJwtPayload,
+export const adminCheck = [
     JWTValidation.checkAdminEmail,
     //messageLogger
 ]
 
 
 export const newTokenBalanceVal = [
-    GameValidation.checkReqBody,
-    GameValidation.checkReqTokenBalance
+    RequestValidation.checkReqBody,
+    RequestValidation.checkReqTokenBalance
 ]
 
+export const newGameVal = [
+    RequestValidation.checkReqBody,
+    RequestValidation.checkReqBodyNewGame,
+    RequestValidation.checkNewGameBalance
+]

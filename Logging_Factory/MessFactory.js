@@ -13,6 +13,7 @@ var MessEnum;
     MessEnum[MessEnum["NoBodyError"] = 8] = "NoBodyError";
     MessEnum[MessEnum["BadlyFormattedBody"] = 9] = "BadlyFormattedBody";
     MessEnum[MessEnum["TokenBalanceUpdated"] = 10] = "TokenBalanceUpdated";
+    MessEnum[MessEnum["NotEnoughTokens"] = 11] = "NotEnoughTokens";
 })(MessEnum = exports.MessEnum || (exports.MessEnum = {}));
 //Message telling the user that the request has no authentication header
 var GenericError = /** @class */ (function () {
@@ -55,7 +56,7 @@ var InvalidJWDError = /** @class */ (function () {
     function InvalidJWDError() {
     }
     InvalidJWDError.prototype.getMess = function () {
-        return "Invalid Token";
+        return "Unauthorized - Invalid Token";
     };
     InvalidJWDError.prototype.getCode = function () {
         return 403;
@@ -67,7 +68,7 @@ var JwtClaimsError = /** @class */ (function () {
     function JwtClaimsError() {
     }
     JwtClaimsError.prototype.getMess = function () {
-        return "Bad token - some JWT token claims have been badly formatted";
+        return "Bad request - some JWT token claims have been badly formatted";
     };
     JwtClaimsError.prototype.getCode = function () {
         return 400;
@@ -79,7 +80,7 @@ var UserCreated = /** @class */ (function () {
     function UserCreated() {
     }
     UserCreated.prototype.getMess = function () {
-        return "New User profile created";
+        return "Operation completed - New User profile created";
     };
     UserCreated.prototype.getCode = function () {
         return 200;
@@ -92,7 +93,7 @@ var UnauthorizedError = /** @class */ (function () {
     function UnauthorizedError() {
     }
     UnauthorizedError.prototype.getMess = function () {
-        return "Unauthorized!";
+        return "Unauthorized";
     };
     UnauthorizedError.prototype.getCode = function () {
         return 401;
@@ -104,7 +105,7 @@ var UserNotFound = /** @class */ (function () {
     function UserNotFound() {
     }
     UserNotFound.prototype.getMess = function () {
-        return "User not found";
+        return "Bad request - User not found";
     };
     UserNotFound.prototype.getCode = function () {
         return 400;
@@ -116,7 +117,7 @@ var NoBodyError = /** @class */ (function () {
     function NoBodyError() {
     }
     NoBodyError.prototype.getMess = function () {
-        return "Missing request body";
+        return "Bad request - Missing request body";
     };
     NoBodyError.prototype.getCode = function () {
         return 400;
@@ -128,7 +129,7 @@ var BadlyFormattedBody = /** @class */ (function () {
     function BadlyFormattedBody() {
     }
     BadlyFormattedBody.prototype.getMess = function () {
-        return "Request body contains errors";
+        return "Bad request - Request body contains errors";
     };
     BadlyFormattedBody.prototype.getCode = function () {
         return 400;
@@ -140,12 +141,24 @@ var TokenBalanceUpdated = /** @class */ (function () {
     function TokenBalanceUpdated() {
     }
     TokenBalanceUpdated.prototype.getMess = function () {
-        return "Token balance updated succesfully";
+        return "Operation completed - Token balance updated succesfully";
     };
     TokenBalanceUpdated.prototype.getCode = function () {
         return 200;
     };
     return TokenBalanceUpdated;
+}());
+//Message to tell the user that his tokens are not sufficient for the operarion
+var NotEnoughTokens = /** @class */ (function () {
+    function NotEnoughTokens() {
+    }
+    NotEnoughTokens.prototype.getMess = function () {
+        return "Forbidden - Not enough tokens to proceed";
+    };
+    NotEnoughTokens.prototype.getCode = function () {
+        return 403;
+    };
+    return NotEnoughTokens;
 }());
 //Concrete factory class - getMessage() allows to return different message objects depending on the given parameters
 var MessFactory = /** @class */ (function () {
@@ -183,6 +196,9 @@ var MessFactory = /** @class */ (function () {
                 break;
             case MessEnum.TokenBalanceUpdated:
                 message = new TokenBalanceUpdated();
+                break;
+            case MessEnum.NotEnoughTokens:
+                message = new NotEnoughTokens();
                 break;
             default:
                 message = new GenericError();
