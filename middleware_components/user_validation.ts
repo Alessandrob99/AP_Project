@@ -5,15 +5,14 @@ require('dotenv').config();
 import * as jwt from 'jsonwebtoken';
 import { UserDao } from "../Model/UserDAO";
 
-
+import { MessEnum } from '../Logging_Factory/MessFactory';
 
 export const checkHeader = (req: any, res: any, next: any) => {    
     const authHeader = req.headers.authorization;
     if(authHeader){
         next();
     } else {
-        //Da usare errori geenrati con factory§
-        res.send("Errore, header non presente");
+        next(MessEnum.NoHeaderError);
     }   
 };
 
@@ -26,8 +25,7 @@ export const checkJWToken = (req: any, res: any, next: any) => {
             next();
         }
     } catch (err) {
-        //Da usare errori geenrati con factory§
-        res.send("Errore, token non presente");    
+        next(MessEnum.NoHJWTError);   
     } 
 };
 
@@ -43,10 +41,10 @@ export const verifyAndAuthenticate = (req: any, res: any, next: any) => {
             next();
         }
     }catch(error){
-        //Da usare errori geenrati con factory§
-        res.send("Errore, token non valido");   
+        next(MessEnum.InvalidJWDError);
     }
 };
+
 
 //Checks is all the information included in the request has the correct form
 //and if the user exists in the database, if not a new user is registered
@@ -57,9 +55,11 @@ export const checkJwtPayload = (req: any, res: any, next: any) => {
         && (typeof req.user.email === "string") && (validator.validate(req.user.email))){
             next();
     }else{
-        res.send("Corpo della richiesta mal formato")
+        next(MessEnum.JwtClaimsError);
     }
 };
+
+
 
 export const checkUserEmail = async (req: any, res: any, next: any) => {
     
@@ -68,21 +68,21 @@ export const checkUserEmail = async (req: any, res: any, next: any) => {
     var user = await dao.readUser(req.user.email)
     if(!user){
         await dao.createUser(req.user.email)
-        //TBD LOG USER CREATED MESSAGE
+        next(MessEnum.UserCreated);
+    }else{
+        next();
     }
-    next();
+    
 };
 
-export const checkAdminEmail = async (req: any, res: any, next: any) => {
-    var dao = new UserDao();
-
+export const checkAdminEmail = (req: any, res: any, next: any) => {
     //checking if the user has the role of admin (2)
-    var user = await dao.readUser(req.user.email)
-    if(user.role!=2){
-        res.send("Your are no admin o'mine!")
-        //TBD LOG USER CREATED MESSAGE
+    console.log(req.user.role);
+    if(req.user.role!==2){
+        next(MessEnum.UnauthorizedError);
+    }else{
+        next();
     }
-    next();
 }
 
 

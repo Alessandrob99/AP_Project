@@ -41,14 +41,14 @@ exports.checkAdminEmail = exports.checkUserEmail = exports.checkJwtPayload = exp
 require('dotenv').config();
 var jwt = require("jsonwebtoken");
 var UserDAO_1 = require("../Model/UserDAO");
+var MessFactory_1 = require("../Logging_Factory/MessFactory");
 var checkHeader = function (req, res, next) {
     var authHeader = req.headers.authorization;
     if (authHeader) {
         next();
     }
     else {
-        //Da usare errori geenrati con factory§
-        res.send("Errore, header non presente");
+        next(MessFactory_1.MessEnum.NoHeaderError);
     }
 };
 exports.checkHeader = checkHeader;
@@ -62,8 +62,7 @@ var checkJWToken = function (req, res, next) {
         }
     }
     catch (err) {
-        //Da usare errori geenrati con factory§
-        res.send("Errore, token non presente");
+        next(MessFactory_1.MessEnum.NoHJWTError);
     }
 };
 exports.checkJWToken = checkJWToken;
@@ -80,8 +79,7 @@ var verifyAndAuthenticate = function (req, res, next) {
         }
     }
     catch (error) {
-        //Da usare errori geenrati con factory§
-        res.send("Errore, token non valido");
+        next(MessFactory_1.MessEnum.InvalidJWDError);
     }
 };
 exports.verifyAndAuthenticate = verifyAndAuthenticate;
@@ -94,7 +92,7 @@ var checkJwtPayload = function (req, res, next) {
         next();
     }
     else {
-        res.send("Corpo della richiesta mal formato");
+        next(MessFactory_1.MessEnum.JwtClaimsError);
     }
 };
 exports.checkJwtPayload = checkJwtPayload;
@@ -108,35 +106,27 @@ var checkUserEmail = function (req, res, next) { return __awaiter(void 0, void 0
             case 1:
                 user = _a.sent();
                 if (!!user) return [3 /*break*/, 3];
-                return [4 /*yield*/, dao.createUser(req.user.email)
-                    //TBD LOG USER CREATED MESSAGE
-                ];
+                return [4 /*yield*/, dao.createUser(req.user.email)];
             case 2:
                 _a.sent();
-                _a.label = 3;
+                next(MessFactory_1.MessEnum.UserCreated);
+                return [3 /*break*/, 4];
             case 3:
                 next();
-                return [2 /*return*/];
+                _a.label = 4;
+            case 4: return [2 /*return*/];
         }
     });
 }); };
 exports.checkUserEmail = checkUserEmail;
-var checkAdminEmail = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var dao, user;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                dao = new UserDAO_1.UserDao();
-                return [4 /*yield*/, dao.readUser(req.user.email)];
-            case 1:
-                user = _a.sent();
-                if (user.role != 2) {
-                    res.send("Your are no admin o'mine!");
-                    //TBD LOG USER CREATED MESSAGE
-                }
-                next();
-                return [2 /*return*/];
-        }
-    });
-}); };
+var checkAdminEmail = function (req, res, next) {
+    //checking if the user has the role of admin (2)
+    console.log(req.user.role);
+    if (req.user.role !== 2) {
+        next(MessFactory_1.MessEnum.UnauthorizedError);
+    }
+    else {
+        next();
+    }
+};
 exports.checkAdminEmail = checkAdminEmail;
