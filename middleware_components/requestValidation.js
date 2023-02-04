@@ -36,9 +36,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.checkReqTokenBalance = exports.checkReqBodyNewGame = exports.checkReqBody = exports.checkNewGameBalance = exports.checkUserTokenBalance = void 0;
+exports.checkAlreadyInGame = exports.checkReqTokenBalance = exports.checkReqBodyNewGame = exports.checkReqBody = exports.checkNewGameBalance = exports.checkUserTokenBalance = void 0;
 var UserDAO_1 = require("../Model/UserDAO");
 var MessFactory_1 = require("../Logging_Factory/MessFactory");
+var GameDAO_1 = require("../Model/GameDAO");
 //Checks whether the user has enought credits to operate or not
 var checkUserTokenBalance = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var dao, user;
@@ -73,7 +74,6 @@ var checkNewGameBalance = function (req, res, next) { return __awaiter(void 0, v
                     next(MessFactory_1.MessEnum.NotEnoughTokens);
                 }
                 else {
-                    console.log("aarivato alla fine");
                     next();
                 }
                 return [2 /*return*/];
@@ -128,3 +128,33 @@ var checkReqTokenBalance = function (req, res, next) { return __awaiter(void 0, 
     });
 }); };
 exports.checkReqTokenBalance = checkReqTokenBalance;
+//Checks if the user is already in game
+var checkAlreadyInGame = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var gameDao, foundGame;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                gameDao = new GameDAO_1.GameDao();
+                return [4 /*yield*/, gameDao.checkUserGame(req.user.email)];
+            case 1:
+                foundGame = _a.sent();
+                console.log(foundGame);
+                if (!foundGame) return [3 /*break*/, 2];
+                console.log("creator in uso");
+                next(MessFactory_1.MessEnum.CreatorAlreadyInGame);
+                return [3 /*break*/, 4];
+            case 2: return [4 /*yield*/, gameDao.checkUserGame(req.body.opponent)];
+            case 3:
+                foundGame = _a.sent();
+                if (foundGame) {
+                    next(MessFactory_1.MessEnum.OpponentAlreadyInGame);
+                }
+                else {
+                    next();
+                }
+                _a.label = 4;
+            case 4: return [2 /*return*/];
+        }
+    });
+}); };
+exports.checkAlreadyInGame = checkAlreadyInGame;

@@ -48,7 +48,10 @@ var newGame = function (req, res, next) { return __awaiter(void 0, void 0, void 
             case 0: return [4 /*yield*/, userDaoInst.withdrawTokens(req.user.email, 0.35)];
             case 1:
                 _a.sent();
-                next(MessFactory_1.MessEnum.TokenBalanceUpdated);
+                return [4 /*yield*/, gameDaoInst.createGame(req.user.email, req.body.opponent, req.body.dimension)];
+            case 2:
+                _a.sent();
+                next(MessFactory_1.MessEnum.NewGameCreated);
                 return [2 /*return*/];
         }
     });

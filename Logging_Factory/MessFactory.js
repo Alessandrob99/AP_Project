@@ -14,6 +14,9 @@ var MessEnum;
     MessEnum[MessEnum["BadlyFormattedBody"] = 9] = "BadlyFormattedBody";
     MessEnum[MessEnum["TokenBalanceUpdated"] = 10] = "TokenBalanceUpdated";
     MessEnum[MessEnum["NotEnoughTokens"] = 11] = "NotEnoughTokens";
+    MessEnum[MessEnum["OpponentAlreadyInGame"] = 12] = "OpponentAlreadyInGame";
+    MessEnum[MessEnum["CreatorAlreadyInGame"] = 13] = "CreatorAlreadyInGame";
+    MessEnum[MessEnum["NewGameCreated"] = 14] = "NewGameCreated";
 })(MessEnum = exports.MessEnum || (exports.MessEnum = {}));
 //Message telling the user that the request has no authentication header
 var GenericError = /** @class */ (function () {
@@ -160,6 +163,42 @@ var NotEnoughTokens = /** @class */ (function () {
     };
     return NotEnoughTokens;
 }());
+//Message to tell the user that a new game was created succesfully and 0.35 tokens have been withdrawn
+var NewGameCreated = /** @class */ (function () {
+    function NewGameCreated() {
+    }
+    NewGameCreated.prototype.getMess = function () {
+        return "Operation completed - 0.35 Tokens used - Game created";
+    };
+    NewGameCreated.prototype.getCode = function () {
+        return 200;
+    };
+    return NewGameCreated;
+}());
+//Check is the opponent is already playing in a different game
+var OpponentAlreadyInGame = /** @class */ (function () {
+    function OpponentAlreadyInGame() {
+    }
+    OpponentAlreadyInGame.prototype.getMess = function () {
+        return "Forbidden - Opponent is already in game";
+    };
+    OpponentAlreadyInGame.prototype.getCode = function () {
+        return 403;
+    };
+    return OpponentAlreadyInGame;
+}());
+//Check is the game creator is already playing in a different game
+var CreatorAlreadyInGame = /** @class */ (function () {
+    function CreatorAlreadyInGame() {
+    }
+    CreatorAlreadyInGame.prototype.getMess = function () {
+        return "Forbidden - You are already in game";
+    };
+    CreatorAlreadyInGame.prototype.getCode = function () {
+        return 403;
+    };
+    return CreatorAlreadyInGame;
+}());
 //Concrete factory class - getMessage() allows to return different message objects depending on the given parameters
 var MessFactory = /** @class */ (function () {
     function MessFactory() {
@@ -199,6 +238,15 @@ var MessFactory = /** @class */ (function () {
                 break;
             case MessEnum.NotEnoughTokens:
                 message = new NotEnoughTokens();
+                break;
+            case MessEnum.NewGameCreated:
+                message = new NewGameCreated();
+                break;
+            case MessEnum.CreatorAlreadyInGame:
+                message = new CreatorAlreadyInGame();
+                break;
+            case MessEnum.OpponentAlreadyInGame:
+                message = new OpponentAlreadyInGame();
                 break;
             default:
                 message = new GenericError();

@@ -70,4 +70,15 @@ export class GameDao{
         await newGame.save();
     }
 
+    //Reading methods
+    public async checkUserGame(email : String){
+        const { Op } = require("sequelize");
+        var game = await this.game.findOne({where: {
+            [Op.or]: [
+                {creator: email},
+                {opponent: email}
+            ]
+        }});
+        return game;
+    }
 }

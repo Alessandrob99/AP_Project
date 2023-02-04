@@ -61,6 +61,7 @@ export const checkJwtPayload = (req: any, res: any, next: any) => {
 
 
 
+
 export const checkUserEmail = async (req: any, res: any, next: any) => {
     
     var dao = new UserDao();

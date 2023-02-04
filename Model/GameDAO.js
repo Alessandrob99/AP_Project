@@ -102,6 +102,28 @@ var GameDao = /** @class */ (function () {
             });
         });
     };
+    //Reading methods
+    GameDao.prototype.checkUserGame = function (email) {
+        return __awaiter(this, void 0, void 0, function () {
+            var Op, game;
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        Op = require("sequelize").Op;
+                        return [4 /*yield*/, this.game.findOne({ where: (_a = {},
+                                    _a[Op.or] = [
+                                        { creator: email },
+                                        { opponent: email }
+                                    ],
+                                    _a) })];
+                    case 1:
+                        game = _b.sent();
+                        return [2 /*return*/, game];
+                }
+            });
+        });
+    };
     return GameDao;
 }());
 exports.GameDao = GameDao;

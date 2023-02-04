@@ -9,10 +9,7 @@ const gameDaoInst = new GameDao();
 
 export const newGame = async (req,res,next) => {
     
-    await userDaoInst.withdrawTokens(req.user.email, 0.35);
-    next(MessEnum.TokenBalanceUpdated);
-    /*
+    await userDaoInst.withdrawTokens(req.user.email, 0.35); 
     await gameDaoInst.createGame(req.user.email, req.body.opponent, req.body.dimension);
-    next(MessEnum.TokenBalanceUpdated);
-    */
+    next(MessEnum.NewGameCreated);
 }

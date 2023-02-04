@@ -2,6 +2,7 @@ import * as CoR from './middleware_components/CoR';
 import { messageLogger } from './middleware_components/MessLog';
 import * as adminController from './Controllers/adminController';
 import * as userController from './Controllers/userController';
+import { MessFactory , MessEnum } from "./Logging_Factory/MessFactory";
 
 
 var express = require('express');
@@ -12,7 +13,20 @@ var bodyParser = require('body-parser');
 
 
 var app = express();  
-app.use(bodyParser.json());
+app.use(bodyParser.json({
+    verify : (req, res, buf, encoding) => {
+        try {
+            JSON.parse(buf);
+        } catch(e) {
+            var concreteFactory : MessFactory = new MessFactory();
+            var messageOb = concreteFactory.getMessage(MessEnum.BadlyFormattedBody);
+            var message = messageOb.getMess();
+            var status = messageOb.getCode();
+            console.log(message)
+            res.status(status).json({Status : status, Description: message});
+        }
+      }
+}));
 app.use(CoR.JWTCheck);
 
 app.post('/createGame', [CoR.userAccountAndBalanceCheck,CoR.newGameVal],
@@ -21,9 +35,11 @@ app.post('/createGame', [CoR.userAccountAndBalanceCheck,CoR.newGameVal],
     }
 );
 
+/*
 app.get('/admin', CoR.adminCheck , (req,res)=>{
     res.send("Sono admin")
 })
+*/
 
 //route that only the admin can use in order to update a specific user token balance
 app.post('/token', [CoR.adminCheck,CoR.newTokenBalanceVal], 

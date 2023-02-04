@@ -11,7 +11,10 @@ export enum MessEnum {
     NoBodyError,
     BadlyFormattedBody,
     TokenBalanceUpdated,
-    NotEnoughTokens
+    NotEnoughTokens,
+    OpponentAlreadyInGame,
+    CreatorAlreadyInGame,
+    NewGameCreated
 }
 
 
@@ -138,7 +141,35 @@ class NotEnoughTokens implements MessageInt{
     }
 }
 
+//Message to tell the user that a new game was created succesfully and 0.35 tokens have been withdrawn
+class NewGameCreated implements MessageInt{
+    public getMess(): string {
+        return "Operation completed - 0.35 Tokens used - Game created";
+    }
+    public getCode(): number {
+        return 200;
+    }
+}
 
+//Check is the opponent is already playing in a different game
+class OpponentAlreadyInGame implements MessageInt {
+    public getMess(): string {
+        return "Forbidden - Opponent is already in game";
+    }
+    public getCode(): number {
+        return 403;
+    }
+}
+
+//Check is the game creator is already playing in a different game
+class CreatorAlreadyInGame implements MessageInt {
+    public getMess(): string {
+        return "Forbidden - You are already in game";
+    }
+    public getCode(): number {
+        return 403;
+    }
+}
 //Concrete factory class - getMessage() allows to return different message objects depending on the given parameters
 export class MessFactory{
     constructor(){}
@@ -178,6 +209,15 @@ export class MessFactory{
             case MessEnum.NotEnoughTokens:
                 message = new NotEnoughTokens();
                 break;    
+            case MessEnum.NewGameCreated:
+                message = new NewGameCreated();
+                break;
+            case MessEnum.CreatorAlreadyInGame:
+                message = new CreatorAlreadyInGame();
+                break;
+            case MessEnum.OpponentAlreadyInGame:
+                message = new OpponentAlreadyInGame();
+                break;
             default :
                 message = new GenericError();
                 break;

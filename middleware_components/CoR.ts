@@ -12,12 +12,10 @@ export const JWTCheck = [
 export const userAccountAndBalanceCheck = [
     JWTValidation.checkUserEmail,
     RequestValidation.checkUserTokenBalance,
-    //messageLogger
 ]
 
 export const adminCheck = [
     JWTValidation.checkAdminEmail,
-    //messageLogger
 ]
 
 
@@ -29,5 +27,6 @@ export const newTokenBalanceVal = [
 export const newGameVal = [
     RequestValidation.checkReqBody,
     RequestValidation.checkReqBodyNewGame,
+    RequestValidation.checkAlreadyInGame, // if one of the two challengers are in game the new game cannot be created
     RequestValidation.checkNewGameBalance
 ]

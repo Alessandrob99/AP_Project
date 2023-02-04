@@ -40,11 +40,26 @@ var CoR = require("./middleware_components/CoR");
 var MessLog_1 = require("./middleware_components/MessLog");
 var adminController = require("./Controllers/adminController");
 var userController = require("./Controllers/userController");
+var MessFactory_1 = require("./Logging_Factory/MessFactory");
 var express = require('express');
 require('dotenv').config();
 var bodyParser = require('body-parser');
 var app = express();
-app.use(bodyParser.json());
+app.use(bodyParser.json({
+    verify: function (req, res, buf, encoding) {
+        try {
+            JSON.parse(buf);
+        }
+        catch (e) {
+            var concreteFactory = new MessFactory_1.MessFactory();
+            var messageOb = concreteFactory.getMessage(MessFactory_1.MessEnum.BadlyFormattedBody);
+            var message = messageOb.getMess();
+            var status = messageOb.getCode();
+            console.log(message);
+            res.status(status).json({ Status: status, Description: message });
+        }
+    }
+}));
 app.use(CoR.JWTCheck);
 app.post('/createGame', [CoR.userAccountAndBalanceCheck, CoR.newGameVal], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
@@ -52,9 +67,11 @@ app.post('/createGame', [CoR.userAccountAndBalanceCheck, CoR.newGameVal], functi
         return [2 /*return*/];
     });
 }); });
-app.get('/admin', CoR.adminCheck, function (req, res) {
-    res.send("Sono admin");
-});
+/*
+app.get('/admin', CoR.adminCheck , (req,res)=>{
+    res.send("Sono admin")
+})
+*/
 //route that only the admin can use in order to update a specific user token balance
 app.post('/token', [CoR.adminCheck, CoR.newTokenBalanceVal], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {

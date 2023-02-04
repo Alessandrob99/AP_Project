@@ -12,11 +12,9 @@ exports.JWTCheck = [
 exports.userAccountAndBalanceCheck = [
     JWTValidation.checkUserEmail,
     RequestValidation.checkUserTokenBalance,
-    //messageLogger
 ];
 exports.adminCheck = [
     JWTValidation.checkAdminEmail,
-    //messageLogger
 ];
 exports.newTokenBalanceVal = [
     RequestValidation.checkReqBody,
@@ -25,5 +23,6 @@ exports.newTokenBalanceVal = [
 exports.newGameVal = [
     RequestValidation.checkReqBody,
     RequestValidation.checkReqBodyNewGame,
+    RequestValidation.checkAlreadyInGame,
     RequestValidation.checkNewGameBalance
 ];
