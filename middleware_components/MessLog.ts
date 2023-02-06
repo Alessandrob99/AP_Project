@@ -7,5 +7,4 @@ export const messageLogger =  (mess: MessEnum, req: any, res: any, next: any) =>
     var status = messageOb.getCode();
     console.log(message)
     res.status(status).json({Status : status, Description: message});
-
 };

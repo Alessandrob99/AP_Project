@@ -1,6 +1,6 @@
 import { DB_Singleton } from "../DB_Connection/singletonDBConnection";
 
-import { DataTypes, Sequelize } from 'sequelize';
+import { DataTypes, STRING, Sequelize } from 'sequelize';
 
 export class GameDao{
 
@@ -24,8 +24,8 @@ export class GameDao{
                     type: DataTypes.STRING(50),
                     allowNull: false
                 },
-                state: {  // 1= ongoing , 2 = terminated , 3 = aborted
-                    type: DataTypes.INTEGER,
+                state: {  // started , terminated , aborted
+                    type: DataTypes.STRING(20),
                     allowNull: false
                 },
                 positions: {
@@ -40,6 +40,10 @@ export class GameDao{
                 turn: {
                     type: DataTypes.STRING(50),
                     allowNull: false
+                },
+                moves: {
+                    type : DataTypes.STRING(10000),
+                    allowNull:false
                 }
                 
                 
@@ -116,10 +120,11 @@ export class GameDao{
             {
                 creator: creator, 
                 opponent: opponent, 
-                state: 1,
+                state: "started",
                 positions: positions,
                 winner: null,
-                turn: creator
+                turn: creator,
+                moves: "{'white_moves':[],'black_moves':[]}"
             }
         );
         await newGame.save();
@@ -127,14 +132,47 @@ export class GameDao{
 
 
     //Reading methods
-    public async checkUserGame(email : String){
+    
+
+    public async readGame(id : number){
         const { Op } = require("sequelize");
         var game = await this.game.findOne({where: {
-            [Op.or]: [
-                {creator: email},
-                {opponent: email}
-            ]
+            id: id
         }});
+        return game;
+    }
+
+    public async checkUserGame(email : String){
+        const { Op } = require("sequelize");
+        var game = await this.game.findOne({where: 
+            {
+                [Op.and]: [
+                    {[Op.or]: [
+                        {creator: email},
+                        {opponent: email}
+                    ]},
+                    {state: "started"}
+                ]
+            }
+        });
+        return game;
+    }
+
+    //Updating methods
+    //Update game
+    public async updateGame(email : String){
+        const { Op } = require("sequelize");
+        var game = await this.game.findOne({where: 
+            {
+                [Op.and]: [
+                    {[Op.or]: [
+                        {creator: email},
+                        {opponent: email}
+                    ]},
+                    {state: "started"}
+                ]
+            }
+        });
         return game;
     }
 }

@@ -98,11 +98,11 @@ var checkJwtPayload = function (req, res, next) {
 exports.checkJwtPayload = checkJwtPayload;
 /*
 This method was aimed at checking whether a user existed in the the db or not
-If not a new record was created
-Reason for cancellation: In the app routes when we dont use the 'use' express method but we go for
-the more classic [f1,f2] synthax specified in the route, the next() method cuts the chain after the first function,
-since this f1 is a chain as well (so [f1,f2] is a chain of chains and it gets cut after the first one ...)
-This caused the f2 to not be executed if the user profile had to be created
+If not a new record was created. This controll is done for every user route
+So whenever someone is authenticated through a token a this user has never been seen before,
+a new user profile il automatically created in the DB.
+Edit: I had to remove the Message sent when a user was created because fsr it caused the
+CoR to be cut right after that
 */
 var checkUserEmail = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var dao, user;

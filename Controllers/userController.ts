@@ -15,7 +15,34 @@ export const newGame = async (req,res,next) => {
 }
 
 export const move = async (req,res,next) => {
+    //TBD Check move validity
     console.log("mossa fatta");
     next();
 }
 
+export const getGameInfo = async (req,res,next) => {
+    var foundGame = await gameDaoInst.readGame(req.query.id);
+    if(foundGame){
+        res.status(200).send({
+            "creator" :foundGame.creator,
+            "opponent" :foundGame.opponent,
+            "turn": foundGame.turn,
+            "winner": foundGame.winner,
+            "positions": foundGame.positions
+        });
+        next();
+    }else{
+        next(MessEnum.GameNotFound);
+    }
+}
+
+export const getGameMoves = async(req,res,next) => {
+    var foundGame = await gameDaoInst.readGame(req.query.id);
+    if((foundGame.creator !== req.user.email)&&(foundGame.opponent!== req.user.email)){
+        next(MessEnum.UnauthorizedAccessToGameInfo);
+    }else{
+        let all_moves = JSON.parse(foundGame.moves);
+        (foundGame.creator === req.user.email)? res.status(200).send(all_moves.white_moves) : res.status(200).send(all_moves.black_moves);
+        
+    }
+}

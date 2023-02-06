@@ -41,6 +41,7 @@ var MessLog_1 = require("./middleware_components/MessLog");
 var adminController = require("./Controllers/adminController");
 var userController = require("./Controllers/userController");
 var MessFactory_1 = require("./Logging_Factory/MessFactory");
+var user_validation_1 = require("./middleware_components/user_validation");
 var express = require('express');
 require('dotenv').config();
 var bodyParser = require('body-parser');
@@ -67,9 +68,22 @@ app.post('/game', [CoR.userAccountAndBalanceCheck, CoR.newGameVal], function (re
         return [2 /*return*/];
     });
 }); });
-app.post('/move', [CoR.userAccountAndBalanceCheck, CoR.moveCheck], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+//Here there is no Token balance check since the credit can go below 0 while playing a game
+app.post('/move', [user_validation_1.checkUserEmail, CoR.moveCheck], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         userController.move(req, res, next);
+        return [2 /*return*/];
+    });
+}); });
+app.get('/gameInfo', [CoR.userAccountAndBalanceCheck], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        userController.getGameInfo(req, res, next);
+        return [2 /*return*/];
+    });
+}); });
+app.get('/gameMoves', [CoR.userAccountAndBalanceCheck], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        userController.getGameMoves(req, res, next);
         return [2 /*return*/];
     });
 }); });

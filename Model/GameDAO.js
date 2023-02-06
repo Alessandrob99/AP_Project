@@ -57,7 +57,7 @@ var GameDao = /** @class */ (function () {
                 allowNull: false
             },
             state: {
-                type: sequelize_1.DataTypes.INTEGER,
+                type: sequelize_1.DataTypes.STRING(20),
                 allowNull: false
             },
             positions: {
@@ -71,6 +71,10 @@ var GameDao = /** @class */ (function () {
             },
             turn: {
                 type: sequelize_1.DataTypes.STRING(50),
+                allowNull: false
+            },
+            moves: {
+                type: sequelize_1.DataTypes.STRING(10000),
                 allowNull: false
             }
         }, {
@@ -128,10 +132,11 @@ var GameDao = /** @class */ (function () {
                         newGame = this.game.build({
                             creator: creator,
                             opponent: opponent,
-                            state: 1,
+                            state: "started",
                             positions: positions,
                             winner: null,
-                            turn: creator
+                            turn: creator,
+                            moves: "{'white_moves':[],'black_moves':[]}"
                         });
                         return [4 /*yield*/, newGame.save()];
                     case 1:
@@ -142,22 +147,70 @@ var GameDao = /** @class */ (function () {
         });
     };
     //Reading methods
+    GameDao.prototype.readGame = function (id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var Op, game;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Op = require("sequelize").Op;
+                        return [4 /*yield*/, this.game.findOne({ where: {
+                                    id: id
+                                } })];
+                    case 1:
+                        game = _a.sent();
+                        return [2 /*return*/, game];
+                }
+            });
+        });
+    };
     GameDao.prototype.checkUserGame = function (email) {
         return __awaiter(this, void 0, void 0, function () {
             var Op, game;
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
                         Op = require("sequelize").Op;
                         return [4 /*yield*/, this.game.findOne({ where: (_a = {},
-                                    _a[Op.or] = [
-                                        { creator: email },
-                                        { opponent: email }
+                                    _a[Op.and] = [
+                                        (_b = {}, _b[Op.or] = [
+                                            { creator: email },
+                                            { opponent: email }
+                                        ], _b),
+                                        { state: "started" }
                                     ],
-                                    _a) })];
+                                    _a)
+                            })];
                     case 1:
-                        game = _b.sent();
+                        game = _c.sent();
+                        return [2 /*return*/, game];
+                }
+            });
+        });
+    };
+    //Updating methods
+    //Update game
+    GameDao.prototype.updateGame = function (email) {
+        return __awaiter(this, void 0, void 0, function () {
+            var Op, game;
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        Op = require("sequelize").Op;
+                        return [4 /*yield*/, this.game.findOne({ where: (_a = {},
+                                    _a[Op.and] = [
+                                        (_b = {}, _b[Op.or] = [
+                                            { creator: email },
+                                            { opponent: email }
+                                        ], _b),
+                                        { state: "started" }
+                                    ],
+                                    _a)
+                            })];
+                    case 1:
+                        game = _c.sent();
                         return [2 /*return*/, game];
                 }
             });

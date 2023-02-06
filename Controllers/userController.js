@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.move = exports.newGame = void 0;
+exports.getGameMoves = exports.getGameInfo = exports.move = exports.newGame = void 0;
 var MessFactory_1 = require("../Logging_Factory/MessFactory");
 var GameDAO_1 = require("../Model/GameDAO");
 var UserDAO_1 = require("../Model/UserDAO");
@@ -59,9 +59,54 @@ var newGame = function (req, res, next) { return __awaiter(void 0, void 0, void 
 exports.newGame = newGame;
 var move = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
+        //TBD Check move validity
         console.log("mossa fatta");
         next();
         return [2 /*return*/];
     });
 }); };
 exports.move = move;
+var getGameInfo = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var foundGame;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, gameDaoInst.readGame(req.query.id)];
+            case 1:
+                foundGame = _a.sent();
+                if (foundGame) {
+                    res.status(200).send({
+                        "creator": foundGame.creator,
+                        "opponent": foundGame.opponent,
+                        "turn": foundGame.turn,
+                        "winner": foundGame.winner,
+                        "positions": foundGame.positions
+                    });
+                    next();
+                }
+                else {
+                    next(MessFactory_1.MessEnum.GameNotFound);
+                }
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.getGameInfo = getGameInfo;
+var getGameMoves = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var foundGame, all_moves;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, gameDaoInst.readGame(req.query.id)];
+            case 1:
+                foundGame = _a.sent();
+                if ((foundGame.creator !== req.user.email) && (foundGame.opponent !== req.user.email)) {
+                    next(MessFactory_1.MessEnum.UnauthorizedAccessToGameInfo);
+                }
+                else {
+                    all_moves = JSON.parse(foundGame.moves);
+                    (foundGame.creator === req.user.email) ? res.status(200).send(all_moves.white_moves) : res.status(200).send(all_moves.black_moves);
+                }
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.getGameMoves = getGameMoves;

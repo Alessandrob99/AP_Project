@@ -5,7 +5,7 @@ export enum MessEnum {
     NoHJWTError,
     InvalidJWDError,
     JwtClaimsError,
-    UserCreated,
+    //UserCreated,
     UnauthorizedError,
     UserNotFound,
     NoBodyError,
@@ -18,6 +18,8 @@ export enum MessEnum {
     NewGameCreated,
     NotValidDimension,
     NotYourTurn,
+    GameNotFound,
+    UnauthorizedAccessToGameInfo
 }
 
 
@@ -72,6 +74,8 @@ class JwtClaimsError implements MessageInt {
     }
 }
 
+
+/*
 //Message telling the user that his/her profile was succesfully created
 class UserCreated implements MessageInt {
     public getMess():string {
@@ -81,6 +85,7 @@ class UserCreated implements MessageInt {
         return 200;
     }
 }
+*/
 
 //Message telling the user that the given JWT has not the admin role
 //Or that the user credits are over
@@ -150,7 +155,7 @@ class NewGameCreated implements MessageInt{
         return "Operation completed - 0.35 Tokens used - Game created";
     }
     public getCode(): number {
-        return 200;
+        return 201;
     }
 }
 
@@ -207,6 +212,25 @@ class NotYourTurn implements MessageInt {
     }
 }
 
+//Message tells the user that the game was not found in the db
+class GameNotFound implements MessageInt {
+    public getMess(): string {
+        return "Not found - Game id does not exist";
+    }
+    public getCode(): number {
+        return 404;
+    }
+}
+
+//User is not authorized to access game info
+class UnauthorizedAccessToGameInfo implements MessageInt {
+    public getMess(): string {
+        return "Forbidden - You are not authorized to access game info";
+    }
+    public getCode(): number {
+        return 403;
+    }
+}
 
 //Concrete factory class - getMessage() allows to return different message objects depending on the given parameters
 export class MessFactory{
@@ -229,9 +253,9 @@ export class MessFactory{
             case MessEnum.JwtClaimsError:
                 message = new JwtClaimsError();
                 break;
-            case MessEnum.UserCreated:
+            /*case MessEnum.UserCreated:
                 message = new UserCreated();
-                break;
+                break;*/
             case MessEnum.UserNotFound:
                 message = new UserNotFound();
                 break;
@@ -264,6 +288,12 @@ export class MessFactory{
                 break;
             case MessEnum.NotYourTurn:
                 message = new NotYourTurn();
+                break;
+            case MessEnum.GameNotFound:
+                message = new GameNotFound();
+                break;
+            case MessEnum.UnauthorizedAccessToGameInfo:
+                message = new UnauthorizedAccessToGameInfo();
                 break;
             default :
                 message = new GenericError();

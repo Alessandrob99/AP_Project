@@ -7,19 +7,21 @@ var MessEnum;
     MessEnum[MessEnum["NoHJWTError"] = 2] = "NoHJWTError";
     MessEnum[MessEnum["InvalidJWDError"] = 3] = "InvalidJWDError";
     MessEnum[MessEnum["JwtClaimsError"] = 4] = "JwtClaimsError";
-    MessEnum[MessEnum["UserCreated"] = 5] = "UserCreated";
-    MessEnum[MessEnum["UnauthorizedError"] = 6] = "UnauthorizedError";
-    MessEnum[MessEnum["UserNotFound"] = 7] = "UserNotFound";
-    MessEnum[MessEnum["NoBodyError"] = 8] = "NoBodyError";
-    MessEnum[MessEnum["BadlyFormattedBody"] = 9] = "BadlyFormattedBody";
-    MessEnum[MessEnum["TokenBalanceUpdated"] = 10] = "TokenBalanceUpdated";
-    MessEnum[MessEnum["NotEnoughTokens"] = 11] = "NotEnoughTokens";
-    MessEnum[MessEnum["OpponentAlreadyInGame"] = 12] = "OpponentAlreadyInGame";
-    MessEnum[MessEnum["CreatorAlreadyInGame"] = 13] = "CreatorAlreadyInGame";
-    MessEnum[MessEnum["NotInGame"] = 14] = "NotInGame";
-    MessEnum[MessEnum["NewGameCreated"] = 15] = "NewGameCreated";
-    MessEnum[MessEnum["NotValidDimension"] = 16] = "NotValidDimension";
-    MessEnum[MessEnum["NotYourTurn"] = 17] = "NotYourTurn";
+    //UserCreated,
+    MessEnum[MessEnum["UnauthorizedError"] = 5] = "UnauthorizedError";
+    MessEnum[MessEnum["UserNotFound"] = 6] = "UserNotFound";
+    MessEnum[MessEnum["NoBodyError"] = 7] = "NoBodyError";
+    MessEnum[MessEnum["BadlyFormattedBody"] = 8] = "BadlyFormattedBody";
+    MessEnum[MessEnum["TokenBalanceUpdated"] = 9] = "TokenBalanceUpdated";
+    MessEnum[MessEnum["NotEnoughTokens"] = 10] = "NotEnoughTokens";
+    MessEnum[MessEnum["OpponentAlreadyInGame"] = 11] = "OpponentAlreadyInGame";
+    MessEnum[MessEnum["CreatorAlreadyInGame"] = 12] = "CreatorAlreadyInGame";
+    MessEnum[MessEnum["NotInGame"] = 13] = "NotInGame";
+    MessEnum[MessEnum["NewGameCreated"] = 14] = "NewGameCreated";
+    MessEnum[MessEnum["NotValidDimension"] = 15] = "NotValidDimension";
+    MessEnum[MessEnum["NotYourTurn"] = 16] = "NotYourTurn";
+    MessEnum[MessEnum["GameNotFound"] = 17] = "GameNotFound";
+    MessEnum[MessEnum["UnauthorizedAccessToGameInfo"] = 18] = "UnauthorizedAccessToGameInfo";
 })(MessEnum = exports.MessEnum || (exports.MessEnum = {}));
 //Message telling the user that the request has no authentication header
 var GenericError = /** @class */ (function () {
@@ -81,18 +83,17 @@ var JwtClaimsError = /** @class */ (function () {
     };
     return JwtClaimsError;
 }());
+/*
 //Message telling the user that his/her profile was succesfully created
-var UserCreated = /** @class */ (function () {
-    function UserCreated() {
-    }
-    UserCreated.prototype.getMess = function () {
+class UserCreated implements MessageInt {
+    public getMess():string {
         return "Operation completed - New User profile created";
-    };
-    UserCreated.prototype.getCode = function () {
+    }
+    public getCode():number{
         return 200;
-    };
-    return UserCreated;
-}());
+    }
+}
+*/
 //Message telling the user that the given JWT has not the admin role
 //Or that the user credits are over
 var UnauthorizedError = /** @class */ (function () {
@@ -174,7 +175,7 @@ var NewGameCreated = /** @class */ (function () {
         return "Operation completed - 0.35 Tokens used - Game created";
     };
     NewGameCreated.prototype.getCode = function () {
-        return 200;
+        return 201;
     };
     return NewGameCreated;
 }());
@@ -238,6 +239,30 @@ var NotYourTurn = /** @class */ (function () {
     };
     return NotYourTurn;
 }());
+//Message tells the user that the game was not found in the db
+var GameNotFound = /** @class */ (function () {
+    function GameNotFound() {
+    }
+    GameNotFound.prototype.getMess = function () {
+        return "Not found - Game id does not exist";
+    };
+    GameNotFound.prototype.getCode = function () {
+        return 404;
+    };
+    return GameNotFound;
+}());
+//User is not authorized to access game info
+var UnauthorizedAccessToGameInfo = /** @class */ (function () {
+    function UnauthorizedAccessToGameInfo() {
+    }
+    UnauthorizedAccessToGameInfo.prototype.getMess = function () {
+        return "Forbidden - You are not authorized to access game info";
+    };
+    UnauthorizedAccessToGameInfo.prototype.getCode = function () {
+        return 403;
+    };
+    return UnauthorizedAccessToGameInfo;
+}());
 //Concrete factory class - getMessage() allows to return different message objects depending on the given parameters
 var MessFactory = /** @class */ (function () {
     function MessFactory() {
@@ -260,9 +285,9 @@ var MessFactory = /** @class */ (function () {
             case MessEnum.JwtClaimsError:
                 message = new JwtClaimsError();
                 break;
-            case MessEnum.UserCreated:
+            /*case MessEnum.UserCreated:
                 message = new UserCreated();
-                break;
+                break;*/
             case MessEnum.UserNotFound:
                 message = new UserNotFound();
                 break;
@@ -295,6 +320,12 @@ var MessFactory = /** @class */ (function () {
                 break;
             case MessEnum.NotYourTurn:
                 message = new NotYourTurn();
+                break;
+            case MessEnum.GameNotFound:
+                message = new GameNotFound();
+                break;
+            case MessEnum.UnauthorizedAccessToGameInfo:
+                message = new UnauthorizedAccessToGameInfo();
                 break;
             default:
                 message = new GenericError();
