@@ -67,7 +67,7 @@ app.post('/game', [CoR.userAccountAndBalanceCheck, CoR.newGameVal], function (re
         return [2 /*return*/];
     });
 }); });
-app.post('/move', CoR.moveCheck, function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+app.post('/move', [CoR.userAccountAndBalanceCheck, CoR.moveCheck], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         userController.move(req, res, next);
         return [2 /*return*/];

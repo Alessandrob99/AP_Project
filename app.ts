@@ -29,14 +29,14 @@ app.use(bodyParser.json({
 }));
 app.use(CoR.JWTCheck);
 
-app.post('/game', [CoR.userAccountAndBalanceCheck,CoR.newGameVal],
+app.post('/game', [CoR.userAccountAndBalanceCheck, CoR.newGameVal],
     async (req,res,next) => {
         userController.newGame(req,res,next);
     }
 );
 
 
-app.post('/move',CoR.moveCheck ,
+app.post('/move',[CoR.userAccountAndBalanceCheck, CoR.moveCheck] ,
     async (req,res,next) => {
         userController.move(req,res,next);
     }

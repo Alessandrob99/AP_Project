@@ -27,8 +27,7 @@ export const checkNewGameBalance = async (req: any, res: any, next: any) => {
         next(MessEnum.NotEnoughTokens);
     }else{
         next();
-    }
-    
+    }  
 };
 
 
