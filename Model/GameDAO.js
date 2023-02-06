@@ -60,8 +60,8 @@ var GameDao = /** @class */ (function () {
                 type: sequelize_1.DataTypes.INTEGER,
                 allowNull: false
             },
-            dimension: {
-                type: sequelize_1.DataTypes.INTEGER,
+            positions: {
+                type: sequelize_1.DataTypes.STRING(1000),
                 allowNull: false
             },
             winner: {
@@ -82,15 +82,54 @@ var GameDao = /** @class */ (function () {
     //Creation methods
     GameDao.prototype.createGame = function (creator, opponent, dimension) {
         return __awaiter(this, void 0, void 0, function () {
-            var newGame;
+            var whites, y, i, blacks, i, i, board, objJson, positions, newGame;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        whites = [];
+                        y = 0;
+                        for (i = 1; i <= dimension; i++) {
+                            (i % 2) !== 0 ? y = 1 : y = 2;
+                            whites.push({
+                                name: "w" + i,
+                                role: "pawn",
+                                x: i,
+                                y: y
+                            });
+                        }
+                        blacks = [];
+                        if ((dimension % 2) !== 0) {
+                            for (i = 1; i <= dimension; i++) {
+                                (i % 2) !== 0 ? y = dimension : y = dimension - 1;
+                                blacks.push({
+                                    name: "b" + i,
+                                    role: "pawn",
+                                    x: i,
+                                    y: y
+                                });
+                            }
+                        }
+                        else {
+                            for (i = 1; i <= dimension; i++) {
+                                (i % 2) !== 0 ? y = dimension - 1 : y = dimension;
+                                blacks.push({
+                                    name: "b" + i,
+                                    role: "pawn",
+                                    x: i,
+                                    y: y
+                                });
+                            }
+                        }
+                        board = new Map();
+                        board.set("whites", whites);
+                        board.set("blacks", blacks);
+                        objJson = Object.fromEntries(board);
+                        positions = JSON.stringify(objJson);
                         newGame = this.game.build({
                             creator: creator,
                             opponent: opponent,
                             state: 1,
-                            dimension: dimension,
+                            positions: positions,
                             winner: null,
                             turn: creator
                         });

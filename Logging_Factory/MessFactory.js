@@ -16,7 +16,10 @@ var MessEnum;
     MessEnum[MessEnum["NotEnoughTokens"] = 11] = "NotEnoughTokens";
     MessEnum[MessEnum["OpponentAlreadyInGame"] = 12] = "OpponentAlreadyInGame";
     MessEnum[MessEnum["CreatorAlreadyInGame"] = 13] = "CreatorAlreadyInGame";
-    MessEnum[MessEnum["NewGameCreated"] = 14] = "NewGameCreated";
+    MessEnum[MessEnum["NotInGame"] = 14] = "NotInGame";
+    MessEnum[MessEnum["NewGameCreated"] = 15] = "NewGameCreated";
+    MessEnum[MessEnum["NotValidDimension"] = 16] = "NotValidDimension";
+    MessEnum[MessEnum["NotYourTurn"] = 17] = "NotYourTurn";
 })(MessEnum = exports.MessEnum || (exports.MessEnum = {}));
 //Message telling the user that the request has no authentication header
 var GenericError = /** @class */ (function () {
@@ -175,7 +178,7 @@ var NewGameCreated = /** @class */ (function () {
     };
     return NewGameCreated;
 }());
-//Check is the opponent is already playing in a different game
+//Opponent is already playing in a different game
 var OpponentAlreadyInGame = /** @class */ (function () {
     function OpponentAlreadyInGame() {
     }
@@ -187,7 +190,7 @@ var OpponentAlreadyInGame = /** @class */ (function () {
     };
     return OpponentAlreadyInGame;
 }());
-//Check is the game creator is already playing in a different game
+//Game creator is already playing in a different game
 var CreatorAlreadyInGame = /** @class */ (function () {
     function CreatorAlreadyInGame() {
     }
@@ -198,6 +201,42 @@ var CreatorAlreadyInGame = /** @class */ (function () {
         return 403;
     };
     return CreatorAlreadyInGame;
+}());
+//Given grid dimension is not valid
+var NotValidDimension = /** @class */ (function () {
+    function NotValidDimension() {
+    }
+    NotValidDimension.prototype.getMess = function () {
+        return "Bad request - Grid dimension must be greater than 4X4";
+    };
+    NotValidDimension.prototype.getCode = function () {
+        return 400;
+    };
+    return NotValidDimension;
+}());
+//Message tells the user that he is not playing in any game
+var NotInGame = /** @class */ (function () {
+    function NotInGame() {
+    }
+    NotInGame.prototype.getMess = function () {
+        return "Bad request - You must start a game before making moves";
+    };
+    NotInGame.prototype.getCode = function () {
+        return 400;
+    };
+    return NotInGame;
+}());
+//Message tells the user that it's not his turn
+var NotYourTurn = /** @class */ (function () {
+    function NotYourTurn() {
+    }
+    NotYourTurn.prototype.getMess = function () {
+        return "Bad request - It is not your turn";
+    };
+    NotYourTurn.prototype.getCode = function () {
+        return 400;
+    };
+    return NotYourTurn;
 }());
 //Concrete factory class - getMessage() allows to return different message objects depending on the given parameters
 var MessFactory = /** @class */ (function () {
@@ -247,6 +286,15 @@ var MessFactory = /** @class */ (function () {
                 break;
             case MessEnum.OpponentAlreadyInGame:
                 message = new OpponentAlreadyInGame();
+                break;
+            case MessEnum.NotValidDimension:
+                message = new NotValidDimension();
+                break;
+            case MessEnum.NotInGame:
+                message = new NotInGame();
+                break;
+            case MessEnum.NotYourTurn:
+                message = new NotYourTurn();
                 break;
             default:
                 message = new GenericError();

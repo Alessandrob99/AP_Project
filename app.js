@@ -61,17 +61,18 @@ app.use(bodyParser.json({
     }
 }));
 app.use(CoR.JWTCheck);
-app.post('/createGame', [CoR.userAccountAndBalanceCheck, CoR.newGameVal], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+app.post('/game', [CoR.userAccountAndBalanceCheck, CoR.newGameVal], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         userController.newGame(req, res, next);
         return [2 /*return*/];
     });
 }); });
-/*
-app.get('/admin', CoR.adminCheck , (req,res)=>{
-    res.send("Sono admin")
-})
-*/
+app.post('/move', CoR.moveCheck, function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        userController.move(req, res, next);
+        return [2 /*return*/];
+    });
+}); });
 //route that only the admin can use in order to update a specific user token balance
 app.post('/token', [CoR.adminCheck, CoR.newTokenBalanceVal], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {

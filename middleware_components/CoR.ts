@@ -27,6 +27,11 @@ export const newTokenBalanceVal = [
 export const newGameVal = [
     RequestValidation.checkReqBody,
     RequestValidation.checkReqBodyNewGame,
+    RequestValidation.checkGridDimension,
     RequestValidation.checkAlreadyInGame, // if one of the two challengers are in game the new game cannot be created
     RequestValidation.checkNewGameBalance
+]
+
+export const moveCheck = [
+    RequestValidation.checkInGameAndTurn
 ]

@@ -29,17 +29,19 @@ app.use(bodyParser.json({
 }));
 app.use(CoR.JWTCheck);
 
-app.post('/createGame', [CoR.userAccountAndBalanceCheck,CoR.newGameVal],
+app.post('/game', [CoR.userAccountAndBalanceCheck,CoR.newGameVal],
     async (req,res,next) => {
         userController.newGame(req,res,next);
     }
 );
 
-/*
-app.get('/admin', CoR.adminCheck , (req,res)=>{
-    res.send("Sono admin")
-})
-*/
+
+app.post('/move',CoR.moveCheck ,
+    async (req,res,next) => {
+        userController.move(req,res,next);
+    }
+);
+
 
 //route that only the admin can use in order to update a specific user token balance
 app.post('/token', [CoR.adminCheck,CoR.newTokenBalanceVal], 

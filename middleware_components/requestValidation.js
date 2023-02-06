@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.checkAlreadyInGame = exports.checkReqTokenBalance = exports.checkReqBodyNewGame = exports.checkReqBody = exports.checkNewGameBalance = exports.checkUserTokenBalance = void 0;
+exports.checkInGameAndTurn = exports.checkGridDimension = exports.checkAlreadyInGame = exports.checkReqTokenBalance = exports.checkReqBodyNewGame = exports.checkReqBody = exports.checkNewGameBalance = exports.checkUserTokenBalance = void 0;
 var UserDAO_1 = require("../Model/UserDAO");
 var MessFactory_1 = require("../Logging_Factory/MessFactory");
 var GameDAO_1 = require("../Model/GameDAO");
@@ -138,9 +138,7 @@ var checkAlreadyInGame = function (req, res, next) { return __awaiter(void 0, vo
                 return [4 /*yield*/, gameDao.checkUserGame(req.user.email)];
             case 1:
                 foundGame = _a.sent();
-                console.log(foundGame);
                 if (!foundGame) return [3 /*break*/, 2];
-                console.log("creator in uso");
                 next(MessFactory_1.MessEnum.CreatorAlreadyInGame);
                 return [3 /*break*/, 4];
             case 2: return [4 /*yield*/, gameDao.checkUserGame(req.body.opponent)];
@@ -158,3 +156,45 @@ var checkAlreadyInGame = function (req, res, next) { return __awaiter(void 0, vo
     });
 }); };
 exports.checkAlreadyInGame = checkAlreadyInGame;
+//Checks if the given grid dimension is valid
+var checkGridDimension = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        if (req.body.dimension < 5) {
+            next(MessFactory_1.MessEnum.NotValidDimension);
+        }
+        else {
+            next();
+        }
+        return [2 /*return*/];
+    });
+}); };
+exports.checkGridDimension = checkGridDimension;
+//Checks if the user is in game and if so if it's his turn
+var checkInGameAndTurn = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var gameDao, foundGame;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                gameDao = new GameDAO_1.GameDao();
+                return [4 /*yield*/, gameDao.checkUserGame(req.user.email)];
+            case 1:
+                foundGame = _a.sent();
+                req.game = foundGame;
+                console.log(req.game);
+                if (foundGame) {
+                    if (foundGame.turn == req.user.email) {
+                        console.log("Procedo con il controllo della mossa");
+                        next();
+                    }
+                    else {
+                        next(MessFactory_1.MessEnum.NotYourTurn);
+                    }
+                }
+                else {
+                    next(MessFactory_1.MessEnum.NotInGame);
+                }
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.checkInGameAndTurn = checkInGameAndTurn;

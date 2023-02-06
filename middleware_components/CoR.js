@@ -1,6 +1,6 @@
 "use strict";
 exports.__esModule = true;
-exports.newGameVal = exports.newTokenBalanceVal = exports.adminCheck = exports.userAccountAndBalanceCheck = exports.JWTCheck = void 0;
+exports.moveCheck = exports.newGameVal = exports.newTokenBalanceVal = exports.adminCheck = exports.userAccountAndBalanceCheck = exports.JWTCheck = void 0;
 var JWTValidation = require("./user_validation");
 var RequestValidation = require("./requestValidation");
 exports.JWTCheck = [
@@ -23,6 +23,10 @@ exports.newTokenBalanceVal = [
 exports.newGameVal = [
     RequestValidation.checkReqBody,
     RequestValidation.checkReqBodyNewGame,
+    RequestValidation.checkGridDimension,
     RequestValidation.checkAlreadyInGame,
     RequestValidation.checkNewGameBalance
+];
+exports.moveCheck = [
+    RequestValidation.checkInGameAndTurn
 ];

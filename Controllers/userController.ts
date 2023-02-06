@@ -9,7 +9,13 @@ const gameDaoInst = new GameDao();
 
 export const newGame = async (req,res,next) => {
     
-    await userDaoInst.withdrawTokens(req.user.email, 0.35); 
     await gameDaoInst.createGame(req.user.email, req.body.opponent, req.body.dimension);
+    await userDaoInst.withdrawTokens(req.user.email, 0.35); 
     next(MessEnum.NewGameCreated);
 }
+
+export const move = async (req,res,next) => {
+    console.log("mossa fatta");
+    next();
+}
+

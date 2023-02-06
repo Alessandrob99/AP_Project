@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.newGame = void 0;
+exports.move = exports.newGame = void 0;
 var MessFactory_1 = require("../Logging_Factory/MessFactory");
 var GameDAO_1 = require("../Model/GameDAO");
 var UserDAO_1 = require("../Model/UserDAO");
@@ -45,10 +45,10 @@ var gameDaoInst = new GameDAO_1.GameDao();
 var newGame = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, userDaoInst.withdrawTokens(req.user.email, 0.35)];
+            case 0: return [4 /*yield*/, gameDaoInst.createGame(req.user.email, req.body.opponent, req.body.dimension)];
             case 1:
                 _a.sent();
-                return [4 /*yield*/, gameDaoInst.createGame(req.user.email, req.body.opponent, req.body.dimension)];
+                return [4 /*yield*/, userDaoInst.withdrawTokens(req.user.email, 0.35)];
             case 2:
                 _a.sent();
                 next(MessFactory_1.MessEnum.NewGameCreated);
@@ -57,3 +57,11 @@ var newGame = function (req, res, next) { return __awaiter(void 0, void 0, void 
     });
 }); };
 exports.newGame = newGame;
+var move = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        console.log("mossa fatta");
+        next();
+        return [2 /*return*/];
+    });
+}); };
+exports.move = move;

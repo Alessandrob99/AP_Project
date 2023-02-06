@@ -69,13 +69,14 @@ export const checkReqTokenBalance = async (req: any, res: any, next: any) => {
     }
 }
 
+
+
+
 //Checks if the user is already in game
 export const checkAlreadyInGame = async (req: any, res: any, next: any) => {
     var gameDao = new GameDao()
     var foundGame = await gameDao.checkUserGame(req.user.email);
-    console.log(foundGame);
     if(foundGame){
-        console.log("creator in uso")
         next(MessEnum.CreatorAlreadyInGame);
     }else{
         
@@ -87,6 +88,33 @@ export const checkAlreadyInGame = async (req: any, res: any, next: any) => {
         }
     }
     
+}
+
+//Checks if the given grid dimension is valid
+export const checkGridDimension = async (req: any, res: any, next: any) => {
+    if(req.body.dimension<5){
+        next(MessEnum.NotValidDimension);
+    }else{
+        next();
+    }
+}
+
+//Checks if the user is in game and if so if it's his turn
+export const checkInGameAndTurn = async (req: any, res: any, next: any) => {
+    var gameDao = new GameDao();
+    var foundGame = await gameDao.checkUserGame(req.user.email);
+    req.game = foundGame;
+    console.log(req.game);
+    if(foundGame){
+        if(foundGame.turn==req.user.email){
+            console.log("Procedo con il controllo della mossa");
+            next();
+        }else{
+            next(MessEnum.NotYourTurn);
+        }
+    }else{
+        next(MessEnum.NotInGame)
+    }
 }
 
 

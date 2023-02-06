@@ -14,7 +14,10 @@ export enum MessEnum {
     NotEnoughTokens,
     OpponentAlreadyInGame,
     CreatorAlreadyInGame,
-    NewGameCreated
+    NotInGame,
+    NewGameCreated,
+    NotValidDimension,
+    NotYourTurn,
 }
 
 
@@ -151,7 +154,7 @@ class NewGameCreated implements MessageInt{
     }
 }
 
-//Check is the opponent is already playing in a different game
+//Opponent is already playing in a different game
 class OpponentAlreadyInGame implements MessageInt {
     public getMess(): string {
         return "Forbidden - Opponent is already in game";
@@ -161,7 +164,7 @@ class OpponentAlreadyInGame implements MessageInt {
     }
 }
 
-//Check is the game creator is already playing in a different game
+//Game creator is already playing in a different game
 class CreatorAlreadyInGame implements MessageInt {
     public getMess(): string {
         return "Forbidden - You are already in game";
@@ -170,6 +173,41 @@ class CreatorAlreadyInGame implements MessageInt {
         return 403;
     }
 }
+
+
+//Given grid dimension is not valid
+class NotValidDimension implements MessageInt {
+    public getMess(): string {
+        return "Bad request - Grid dimension must be greater than 4X4";
+    }
+    public getCode(): number {
+        return 400;
+    }
+}
+
+
+//Message tells the user that he is not playing in any game
+class NotInGame implements MessageInt {
+    public getMess(): string {
+        return "Bad request - You must start a game before making moves";
+    }
+    public getCode(): number {
+        return 400;
+    }
+}
+
+
+//Message tells the user that it's not his turn
+class NotYourTurn implements MessageInt {
+    public getMess(): string {
+        return "Bad request - It is not your turn";
+    }
+    public getCode(): number {
+        return 400;
+    }
+}
+
+
 //Concrete factory class - getMessage() allows to return different message objects depending on the given parameters
 export class MessFactory{
     constructor(){}
@@ -217,6 +255,15 @@ export class MessFactory{
                 break;
             case MessEnum.OpponentAlreadyInGame:
                 message = new OpponentAlreadyInGame();
+                break;
+            case MessEnum.NotValidDimension:
+                message = new NotValidDimension();
+                break;
+            case MessEnum.NotInGame:
+                message = new NotInGame();
+                break;
+            case MessEnum.NotYourTurn:
+                message = new NotYourTurn();
                 break;
             default :
                 message = new GenericError();
