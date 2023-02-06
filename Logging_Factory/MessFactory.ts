@@ -18,8 +18,8 @@ export enum MessEnum {
     NewGameCreated,
     NotValidDimension,
     NotYourTurn,
-    GameNotFound,
-    UnauthorizedAccessToGameInfo
+    GameNotFound
+    //UnauthorizedAccessToGameInfo
 }
 
 
@@ -222,6 +222,8 @@ class GameNotFound implements MessageInt {
     }
 }
 
+/*
+Reason for cancellation : Now everyone can access anybody's game info
 //User is not authorized to access game info
 class UnauthorizedAccessToGameInfo implements MessageInt {
     public getMess(): string {
@@ -230,7 +232,7 @@ class UnauthorizedAccessToGameInfo implements MessageInt {
     public getCode(): number {
         return 403;
     }
-}
+}*/
 
 //Concrete factory class - getMessage() allows to return different message objects depending on the given parameters
 export class MessFactory{
@@ -292,9 +294,9 @@ export class MessFactory{
             case MessEnum.GameNotFound:
                 message = new GameNotFound();
                 break;
-            case MessEnum.UnauthorizedAccessToGameInfo:
+            /*case MessEnum.UnauthorizedAccessToGameInfo:
                 message = new UnauthorizedAccessToGameInfo();
-                break;
+                break;*/
             default :
                 message = new GenericError();
                 break;
