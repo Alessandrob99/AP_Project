@@ -21,7 +21,7 @@ var MessEnum;
     MessEnum[MessEnum["NotValidDimension"] = 15] = "NotValidDimension";
     MessEnum[MessEnum["NotYourTurn"] = 16] = "NotYourTurn";
     MessEnum[MessEnum["GameNotFound"] = 17] = "GameNotFound";
-    MessEnum[MessEnum["UnauthorizedAccessToGameInfo"] = 18] = "UnauthorizedAccessToGameInfo";
+    //UnauthorizedAccessToGameInfo
 })(MessEnum = exports.MessEnum || (exports.MessEnum = {}));
 //Message telling the user that the request has no authentication header
 var GenericError = /** @class */ (function () {
@@ -251,18 +251,17 @@ var GameNotFound = /** @class */ (function () {
     };
     return GameNotFound;
 }());
+/*
+Reason for cancellation : Now everyone can access anybody's game info
 //User is not authorized to access game info
-var UnauthorizedAccessToGameInfo = /** @class */ (function () {
-    function UnauthorizedAccessToGameInfo() {
-    }
-    UnauthorizedAccessToGameInfo.prototype.getMess = function () {
+class UnauthorizedAccessToGameInfo implements MessageInt {
+    public getMess(): string {
         return "Forbidden - You are not authorized to access game info";
-    };
-    UnauthorizedAccessToGameInfo.prototype.getCode = function () {
+    }
+    public getCode(): number {
         return 403;
-    };
-    return UnauthorizedAccessToGameInfo;
-}());
+    }
+}*/
 //Concrete factory class - getMessage() allows to return different message objects depending on the given parameters
 var MessFactory = /** @class */ (function () {
     function MessFactory() {
@@ -324,9 +323,9 @@ var MessFactory = /** @class */ (function () {
             case MessEnum.GameNotFound:
                 message = new GameNotFound();
                 break;
-            case MessEnum.UnauthorizedAccessToGameInfo:
+            /*case MessEnum.UnauthorizedAccessToGameInfo:
                 message = new UnauthorizedAccessToGameInfo();
-                break;
+                break;*/
             default:
                 message = new GenericError();
                 break;

@@ -94,5 +94,18 @@ app.post('/token', [CoR.adminCheck, CoR.newTokenBalanceVal], function (req, res,
         return [2 /*return*/];
     });
 }); });
+app.get('/tokenBalance', [], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        userController.getTokenBalance(req, res, next);
+        return [2 /*return*/];
+    });
+}); });
+/**
+ * DA FARE DOMANI
+ * ROTTA CREDITO RESIDUO SEMPRE ACCESSIBILE
+ * AGGIUNGI SCELTA RIORNO SU STORICO PARTITE CSV O JSON
+ * PENSA A COME GESTIRE LE INFO SU PARTITE PERSE E VINTE (SE CON RIDONDADNZA O MENO)
+ * COSA METTERE NELLA TABELLA USER E COSA AGGIUNGERE IN GAME
+ */
 app.use(MessLog_1.messageLogger);
 app.listen(process.env.PORT);

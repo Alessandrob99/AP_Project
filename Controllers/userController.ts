@@ -43,3 +43,11 @@ export const getGameMoves = async(req,res,next) => {
     (foundGame.creator === req.user.email)? res.status(200).send(all_moves.white_moves) : res.status(200).send(all_moves.black_moves);
 
 }
+
+export const getTokenBalance =async (req,res,next) => {
+    var foundUser = await userDaoInst.readUser(req.user.email);
+    res.status(200).send({
+        "token_balance" : foundUser.token_balance
+    });
+    next();
+}

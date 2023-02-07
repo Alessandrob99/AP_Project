@@ -62,6 +62,21 @@ app.post('/token', [CoR.adminCheck,CoR.newTokenBalanceVal],
     }
 );
 
+app.get('/tokenBalance', [],
+    async(req,res,next) => {
+        userController.getTokenBalance(req,res,next);
+    }
+);
+
+
+/**
+ * DA FARE DOMANI
+ * ROTTA CREDITO RESIDUO SEMPRE ACCESSIBILE
+ * AGGIUNGI SCELTA RIORNO SU STORICO PARTITE CSV O JSON
+ * PENSA A COME GESTIRE LE INFO SU PARTITE PERSE E VINTE (SE CON RIDONDADNZA O MENO)
+ * COSA METTERE NELLA TABELLA USER E COSA AGGIUNGERE IN GAME 
+ */
+
 app.use(messageLogger);
 
 app.listen(process.env.PORT);

@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.getGameMoves = exports.getGameInfo = exports.move = exports.newGame = void 0;
+exports.getTokenBalance = exports.getGameMoves = exports.getGameInfo = exports.move = exports.newGame = void 0;
 var MessFactory_1 = require("../Logging_Factory/MessFactory");
 var GameDAO_1 = require("../Model/GameDAO");
 var UserDAO_1 = require("../Model/UserDAO");
@@ -98,15 +98,26 @@ var getGameMoves = function (req, res, next) { return __awaiter(void 0, void 0, 
             case 0: return [4 /*yield*/, gameDaoInst.readGame(req.query.id)];
             case 1:
                 foundGame = _a.sent();
-                if ((foundGame.creator !== req.user.email) && (foundGame.opponent !== req.user.email)) {
-                    next(MessFactory_1.MessEnum.UnauthorizedAccessToGameInfo);
-                }
-                else {
-                    all_moves = JSON.parse(foundGame.moves);
-                    (foundGame.creator === req.user.email) ? res.status(200).send(all_moves.white_moves) : res.status(200).send(all_moves.black_moves);
-                }
+                all_moves = JSON.parse(foundGame.moves);
+                (foundGame.creator === req.user.email) ? res.status(200).send(all_moves.white_moves) : res.status(200).send(all_moves.black_moves);
                 return [2 /*return*/];
         }
     });
 }); };
 exports.getGameMoves = getGameMoves;
+var getTokenBalance = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var foundUser;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, userDaoInst.readUser(req.user.email)];
+            case 1:
+                foundUser = _a.sent();
+                res.status(200).send({
+                    "token_balance": foundUser.token_balance
+                });
+                next();
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.getTokenBalance = getTokenBalance;
