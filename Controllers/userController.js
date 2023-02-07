@@ -40,6 +40,7 @@ exports.getTokenBalance = exports.getGameMoves = exports.getGameInfo = exports.m
 var MessFactory_1 = require("../Logging_Factory/MessFactory");
 var GameDAO_1 = require("../Model/GameDAO");
 var UserDAO_1 = require("../Model/UserDAO");
+var json2csv_1 = require("json2csv");
 var userDaoInst = new UserDAO_1.UserDao();
 var gameDaoInst = new GameDAO_1.GameDao();
 var newGame = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
@@ -92,14 +93,29 @@ var getGameInfo = function (req, res, next) { return __awaiter(void 0, void 0, v
 }); };
 exports.getGameInfo = getGameInfo;
 var getGameMoves = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var foundGame, all_moves;
+    var foundGame, all_moves, csv_white, csv_black;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, gameDaoInst.readGame(req.query.id)];
             case 1:
                 foundGame = _a.sent();
-                all_moves = JSON.parse(foundGame.moves);
-                (foundGame.creator === req.user.email) ? res.status(200).send(all_moves.white_moves) : res.status(200).send(all_moves.black_moves);
+                if (foundGame) {
+                    all_moves = JSON.parse(foundGame.moves);
+                    //FORMAT = 1 means CSV
+                    if (req.query.format === "1") {
+                        console.log("CSV");
+                        csv_white = (0, json2csv_1.parse)(all_moves.white_moves);
+                        csv_black = (0, json2csv_1.parse)(all_moves.black_moves).split("\n").slice(1).join("\n");
+                        res.status(200).send(csv_white + "\n" + csv_black);
+                    }
+                    else {
+                        console.log("JSON");
+                        res.status(200).send(all_moves);
+                    }
+                }
+                else {
+                    next(MessFactory_1.MessEnum.GameNotFound);
+                }
                 return [2 /*return*/];
         }
     });
