@@ -21,6 +21,7 @@ var MessEnum;
     MessEnum[MessEnum["NotValidDimension"] = 15] = "NotValidDimension";
     MessEnum[MessEnum["NotYourTurn"] = 16] = "NotYourTurn";
     MessEnum[MessEnum["GameNotFound"] = 17] = "GameNotFound";
+    MessEnum[MessEnum["RouteNotFound"] = 18] = "RouteNotFound";
     //UnauthorizedAccessToGameInfo
 })(MessEnum = exports.MessEnum || (exports.MessEnum = {}));
 //Message telling the user that the request has no authentication header
@@ -251,6 +252,18 @@ var GameNotFound = /** @class */ (function () {
     };
     return GameNotFound;
 }());
+//Message tells the user that the route doesn't exist
+var RouteNotFound = /** @class */ (function () {
+    function RouteNotFound() {
+    }
+    RouteNotFound.prototype.getMess = function () {
+        return "Not found - Route does not exist";
+    };
+    RouteNotFound.prototype.getCode = function () {
+        return 404;
+    };
+    return RouteNotFound;
+}());
 /*
 Reason for cancellation : Now everyone can access anybody's game info
 //User is not authorized to access game info
@@ -322,6 +335,9 @@ var MessFactory = /** @class */ (function () {
                 break;
             case MessEnum.GameNotFound:
                 message = new GameNotFound();
+                break;
+            case MessEnum.RouteNotFound:
+                message = new RouteNotFound();
                 break;
             /*case MessEnum.UnauthorizedAccessToGameInfo:
                 message = new UnauthorizedAccessToGameInfo();

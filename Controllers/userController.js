@@ -72,7 +72,7 @@ var getGameInfo = function (req, res, next) { return __awaiter(void 0, void 0, v
     var foundGame;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, gameDaoInst.readGame(req.query.id)];
+            case 0: return [4 /*yield*/, gameDaoInst.readGame(parseInt(req.params.id))];
             case 1:
                 foundGame = _a.sent();
                 if (foundGame) {
@@ -97,13 +97,13 @@ var getGameMoves = function (req, res, next) { return __awaiter(void 0, void 0, 
     var foundGame, all_moves, csv_white, csv_black;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, gameDaoInst.readGame(req.query.id)];
+            case 0: return [4 /*yield*/, gameDaoInst.readGame(parseInt(req.params.id))];
             case 1:
                 foundGame = _a.sent();
                 if (foundGame) {
                     all_moves = JSON.parse(foundGame.moves);
                     //FORMAT = 1 means CSV
-                    if (req.query.format === "1") {
+                    if (req.params.format === "csv") {
                         console.log("CSV");
                         csv_white = parse(all_moves.white_moves, { fields: fields });
                         csv_black = parse(all_moves.black_moves, { fields: fields }).split("\n").slice(1).join("\n");

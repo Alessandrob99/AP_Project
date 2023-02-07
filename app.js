@@ -61,6 +61,7 @@ app.use(bodyParser.json({
         }
     }
 }));
+//Rotta quit in post e query string
 app.use(CoR.JWTCheck);
 app.post('/game', [CoR.userAccountAndBalanceCheck, CoR.newGameVal], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
@@ -75,13 +76,15 @@ app.post('/move', [user_validation_1.checkUserEmail, CoR.moveCheck], function (r
         return [2 /*return*/];
     });
 }); });
-app.get('/gameInfo', [CoR.userAccountAndBalanceCheck], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+//con query string
+app.get('/gameInfo/:id', [CoR.userAccountAndBalanceCheck], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         userController.getGameInfo(req, res, next);
         return [2 /*return*/];
     });
 }); });
-app.get('/gameMoves', [CoR.userAccountAndBalanceCheck], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+//Con query string
+app.get('/gameMoves/:id/:format?', [CoR.userAccountAndBalanceCheck], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         userController.getGameMoves(req, res, next);
         return [2 /*return*/];
@@ -107,5 +110,9 @@ app.get('/tokenBalance', [], function (req, res, next) { return __awaiter(void 0
  * PENSA A COME GESTIRE LE INFO SU PARTITE PERSE E VINTE (SE CON RIDONDADNZA O MENO)
  * COSA METTERE NELLA TABELLA USER E COSA AGGIUNGERE IN GAME
  */
+//Route not found
+app.get('*', function (req, res, next) {
+    next(MessFactory_1.MessEnum.RouteNotFound);
+});
 app.use(MessLog_1.messageLogger);
 app.listen(process.env.PORT);

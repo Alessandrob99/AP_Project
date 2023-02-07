@@ -28,6 +28,10 @@ app.use(bodyParser.json({
         }
       }
 }));
+
+
+//Rotta quit in post e query string
+
 app.use(CoR.JWTCheck);
 
 app.post('/game', [CoR.userAccountAndBalanceCheck, CoR.newGameVal],
@@ -43,13 +47,15 @@ app.post('/move',[checkUserEmail, CoR.moveCheck] ,
     }
 );
 
-app.get('/gameInfo',[CoR.userAccountAndBalanceCheck],
+//con query string
+app.get('/gameInfo/:id',[CoR.userAccountAndBalanceCheck],
     async (req,res,next) => {
         userController.getGameInfo(req,res,next);
     }
 );
 
-app.get('/gameMoves',[CoR.userAccountAndBalanceCheck],
+//Con query string
+app.get('/gameMoves/:id/:format?',[CoR.userAccountAndBalanceCheck],
     async (req,res,next) => {
         userController.getGameMoves(req,res,next);
     }
@@ -76,6 +82,12 @@ app.get('/tokenBalance', [],
  * PENSA A COME GESTIRE LE INFO SU PARTITE PERSE E VINTE (SE CON RIDONDADNZA O MENO)
  * COSA METTERE NELLA TABELLA USER E COSA AGGIUNGERE IN GAME 
  */
+
+
+//Route not found
+app.get('*', function(req, res,next){
+    next(MessEnum.RouteNotFound);
+  });
 
 app.use(messageLogger);
 

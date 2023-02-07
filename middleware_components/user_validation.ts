@@ -65,7 +65,7 @@ export const checkJwtPayload = (req: any, res: any, next: any) => {
 This method was aimed at checking whether a user existed in the the db or not
 If not a new record was created. This controll is done for every user route
 So whenever someone is authenticated through a token a this user has never been seen before,
-a new user profile il automatically created in the DB.
+a new user profile is automatically created in the DB.
 Edit: I had to remove the Message sent when a user was created because fsr it caused the 
 CoR to be cut right after that
 */

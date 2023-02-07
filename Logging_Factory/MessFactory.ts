@@ -18,7 +18,8 @@ export enum MessEnum {
     NewGameCreated,
     NotValidDimension,
     NotYourTurn,
-    GameNotFound
+    GameNotFound,
+    RouteNotFound
     //UnauthorizedAccessToGameInfo
 }
 
@@ -222,6 +223,15 @@ class GameNotFound implements MessageInt {
     }
 }
 
+//Message tells the user that the route doesn't exist
+class RouteNotFound implements MessageInt {
+    public getMess(): string {
+        return "Not found - Route does not exist";
+    }
+    public getCode(): number {
+        return 404;
+    }
+}
 /*
 Reason for cancellation : Now everyone can access anybody's game info
 //User is not authorized to access game info
@@ -294,9 +304,13 @@ export class MessFactory{
             case MessEnum.GameNotFound:
                 message = new GameNotFound();
                 break;
+            case MessEnum.RouteNotFound:
+                message = new RouteNotFound();
+                break;
             /*case MessEnum.UnauthorizedAccessToGameInfo:
                 message = new UnauthorizedAccessToGameInfo();
                 break;*/
+            
             default :
                 message = new GenericError();
                 break;

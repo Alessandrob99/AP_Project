@@ -9,7 +9,6 @@ const userDaoInst = new UserDao();
 const gameDaoInst = new GameDao();
 
 export const newGame = async (req,res,next) => {
-    
     await gameDaoInst.createGame(req.user.email, req.body.opponent, req.body.dimension);
     await userDaoInst.withdrawTokens(req.user.email, 0.35); 
     next(MessEnum.NewGameCreated);
@@ -22,7 +21,7 @@ export const move = async (req,res,next) => {
 }
 
 export const getGameInfo = async (req,res,next) => {
-    var foundGame = await gameDaoInst.readGame(req.query.id);
+    var foundGame = await gameDaoInst.readGame(parseInt(req.params.id));
     if(foundGame){
         res.status(200).send({
             "creator" :foundGame.creator,
@@ -38,11 +37,11 @@ export const getGameInfo = async (req,res,next) => {
 }
 
 export const getGameMoves = async(req,res,next) => {
-    var foundGame = await gameDaoInst.readGame(req.query.id);
+    var foundGame = await gameDaoInst.readGame(parseInt(req.params.id));
     if(foundGame){
         let all_moves = JSON.parse(foundGame.moves);
         //FORMAT = 1 means CSV
-        if(req.query.format === "1"){
+        if(req.params.format === "csv"){
             console.log("CSV");
             const csv_white = parse(all_moves.white_moves, {fields});
             const csv_black =  parse(all_moves.black_moves,{fields}).split("\n").slice(1).join("\n")
