@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.checkInGameAndTurn = exports.checkGridDimension = exports.checkUserInGame = exports.checkUsersAlreadyInGame = exports.checkReqTokenBalance = exports.checkReqBodyNewGame = exports.checkNewGameBalance = exports.checkUserEmailOpponent = exports.checkUserTokenBalance = void 0;
+exports.checkUserEmailNoCreate = exports.checkInGameAndTurn = exports.checkGridDimension = exports.checkUserInGame = exports.checkUsersAlreadyInGame = exports.checkReqTokenBalance = exports.checkReqBodyNewGame = exports.checkNewGameBalance = exports.checkUserEmailOpponent = exports.checkUserTokenBalance = void 0;
 var UserDAO_1 = require("../Model/UserDAO");
 var MessFactory_1 = require("../Logging_Factory/MessFactory");
 var GameDAO_1 = require("../Model/GameDAO");
@@ -260,3 +260,23 @@ var checkInGameAndTurn = function (req, res, next) { return __awaiter(void 0, vo
     });
 }); };
 exports.checkInGameAndTurn = checkInGameAndTurn;
+var checkUserEmailNoCreate = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var userDao, foundUser;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                userDao = new UserDAO_1.UserDao();
+                return [4 /*yield*/, userDao.readUser(req.params.email)];
+            case 1:
+                foundUser = _a.sent();
+                if (foundUser) {
+                    next();
+                }
+                else {
+                    next(MessFactory_1.MessEnum.UserNotFound);
+                }
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.checkUserEmailNoCreate = checkUserEmailNoCreate;

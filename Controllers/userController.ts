@@ -74,3 +74,45 @@ export const quitGame =async (req,res,next) => {
     gameDaoInst.updateGameInfo(parseInt(req.params.id),"abandoned",winner,req.game.moves,"",req.game.positions);
     res.status(200).json({Status : 200, Description: "Operation completed - You abandoned the game"});
 }
+
+//Methods that returns the specified user's statistics
+export const getStats =async (req,res,next) => {
+    //Check if the user hasn't played any games yet
+    var foundGames = await gameDaoInst.checkAllUserGames(req.params.email);
+    if(foundGames){
+        //All games
+        const games = foundGames.filter( game => game.state !== "started");
+        const tot_games = games.length;
+
+        //Wins - losses - All moves to win - All moves to lose - Wins and Losses due to abandon  
+        var wins = 0;
+        var losses = 0;
+        var wins_abandon = 0;
+        var losses_abandon = 0;
+        var win_moves = 0;
+        var loss_moves = 0;
+        for(var i = 0; i<tot_games;i++){
+            var moves = JSON.parse(games[i].moves)
+            if(games[i].winner === req.params.email){
+                (req.params.email===games[i].creator)? win_moves+=moves.white_moves.length : win_moves+=moves.black_moves.length;
+                wins+=1;
+                (games[i].state==="abandoned")? wins_abandon+=1 : {};
+            }else{
+                (req.params.email===games[i].creator)? loss_moves+=moves.white_moves.length : loss_moves+=moves.black_moves.length;
+                losses+=1;
+                (games[i].state==="abandoned")? losses_abandon+=1 : {};
+            } 
+        }
+        res.status(200).json({
+            total_games : tot_games,
+            won_games: wins,
+            lost_games: losses,
+            won_abandoned_games : wins_abandon,
+            lost_abandoned_games: losses_abandon,
+            avg_n_moves_to_win : (win_moves/wins),
+            avg_n_moves_to_lose: (loss_moves/losses)
+        });
+    }else{
+        res.status(200).json({Status : 200, Description: "Operation completed - You abandoned the game"});
+    }
+}

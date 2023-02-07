@@ -8,7 +8,7 @@ export enum MessEnum {
     //UserCreated,
     UnauthorizedError,
     UserNotFound,
-    NoBodyError,
+    //NoBodyError,
     BadlyFormattedBody,
     TokenBalanceUpdated,
     NotEnoughTokens,
@@ -21,7 +21,8 @@ export enum MessEnum {
     GameNotFound,
     GameTerminated,
     RouteNotFound,
-    CantPlayAgainstUrself
+    CantPlayAgainstUrself,
+    NoGamesFound
     //UnauthorizedAccessToGameInfo
 }
 
@@ -112,6 +113,8 @@ class UserNotFound implements MessageInt {
     }
 }
 
+/*
+Never Used
 //The request doesn't have a body
 class NoBodyError implements MessageInt {
     public getMess(): string {
@@ -121,6 +124,7 @@ class NoBodyError implements MessageInt {
         return 400;
     }
 }
+*/
 
 //The request body is badly formatted
 class BadlyFormattedBody implements MessageInt {
@@ -268,6 +272,16 @@ class CantPlayAgainstUrself implements MessageInt {
 }
 
 
+//Message that tells the user that the given account has no recorded games yet
+class NoGamesFound implements MessageInt {
+    public getMess(): string {
+        return "Not found - User has not played any games yet";
+    }
+    public getCode(): number {
+        return 404;
+    }
+}
+
 //Concrete factory class - getMessage() allows to return different message objects depending on the given parameters
 export class MessFactory{
     constructor(){}
@@ -295,9 +309,9 @@ export class MessFactory{
             case MessEnum.UserNotFound:
                 message = new UserNotFound();
                 break;
-            case MessEnum.NoBodyError:
+           /* case MessEnum.NoBodyError:
                 message = new NoBodyError();
-                break;
+                break;*/
             case MessEnum.BadlyFormattedBody:
                 message = new BadlyFormattedBody();
                 break;
@@ -339,6 +353,9 @@ export class MessFactory{
                 break;
             case MessEnum.CantPlayAgainstUrself:
                 message = new CantPlayAgainstUrself();
+                break;
+            case MessEnum.NoGamesFound:
+                message = new NoGamesFound();
                 break;
             default :
                 message = new GenericError();

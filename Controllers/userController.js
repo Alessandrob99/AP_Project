@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.quitGame = exports.getTokenBalance = exports.getGameMoves = exports.getGameInfo = exports.move = exports.newGame = void 0;
+exports.getStats = exports.quitGame = exports.getTokenBalance = exports.getGameMoves = exports.getGameInfo = exports.move = exports.newGame = void 0;
 var MessFactory_1 = require("../Logging_Factory/MessFactory");
 var GameDAO_1 = require("../Model/GameDAO");
 var UserDAO_1 = require("../Model/UserDAO");
@@ -149,3 +149,51 @@ var quitGame = function (req, res, next) { return __awaiter(void 0, void 0, void
     });
 }); };
 exports.quitGame = quitGame;
+//Methods that returns the specified user's statistics
+var getStats = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var foundGames, games, tot_games, wins, losses, wins_abandon, losses_abandon, win_moves, loss_moves, i, moves;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, gameDaoInst.checkAllUserGames(req.params.email)];
+            case 1:
+                foundGames = _a.sent();
+                if (foundGames) {
+                    games = foundGames.filter(function (game) { return game.state !== "started"; });
+                    tot_games = games.length;
+                    wins = 0;
+                    losses = 0;
+                    wins_abandon = 0;
+                    losses_abandon = 0;
+                    win_moves = 0;
+                    loss_moves = 0;
+                    for (i = 0; i < tot_games; i++) {
+                        moves = JSON.parse(games[i].moves);
+                        if (games[i].winner === req.params.email) {
+                            (req.params.email === games[i].creator) ? win_moves += moves.white_moves.length : win_moves += moves.black_moves.length;
+                            wins += 1;
+                            (games[i].state === "abandoned") ? wins_abandon += 1 : {};
+                        }
+                        else {
+                            (req.params.email === games[i].creator) ? loss_moves += moves.white_moves.length : loss_moves += moves.black_moves.length;
+                            losses += 1;
+                            (games[i].state === "abandoned") ? losses_abandon += 1 : {};
+                        }
+                    }
+                    res.status(200).json({
+                        total_games: tot_games,
+                        won_games: wins,
+                        lost_games: losses,
+                        won_abandoned_games: wins_abandon,
+                        lost_abandoned_games: losses_abandon,
+                        avg_n_moves_to_win: (win_moves / wins),
+                        avg_n_moves_to_lose: (loss_moves / losses)
+                    });
+                }
+                else {
+                    res.status(200).json({ Status: 200, Description: "Operation completed - You abandoned the game" });
+                }
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.getStats = getStats;

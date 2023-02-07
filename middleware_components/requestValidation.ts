@@ -154,5 +154,13 @@ export const checkInGameAndTurn = async (req: any, res: any, next: any) => {
     }
 }
 
-
+export const checkUserEmailNoCreate = async (req: any, res: any, next: any) => {
+    var userDao = new UserDao()
+    var foundUser = await userDao.readUser(req.params.email);
+    if(foundUser){
+        next();
+    }else{ 
+        next(MessEnum.UserNotFound);
+    }
+}
 

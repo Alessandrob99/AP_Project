@@ -78,6 +78,12 @@ app.post('/:id/quit', requestValidation_1.checkUserInGame, function (req, res, n
         return [2 /*return*/];
     });
 }); });
+app.get('/stats/:email', requestValidation_1.checkUserEmailNoCreate, function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        userController.getStats(req, res, next);
+        return [2 /*return*/];
+    });
+}); });
 //Here there is no Token balance check since the credit can go below 0 while playing a game
 app.post('/move', [user_validation_1.checkUserEmail, CoR.moveCheck], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {

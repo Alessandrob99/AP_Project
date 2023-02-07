@@ -34,3 +34,4 @@ export const newGameVal = [
 export const moveCheck = [
     RequestValidation.checkInGameAndTurn
 ]
+

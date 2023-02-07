@@ -10,20 +10,21 @@ var MessEnum;
     //UserCreated,
     MessEnum[MessEnum["UnauthorizedError"] = 5] = "UnauthorizedError";
     MessEnum[MessEnum["UserNotFound"] = 6] = "UserNotFound";
-    MessEnum[MessEnum["NoBodyError"] = 7] = "NoBodyError";
-    MessEnum[MessEnum["BadlyFormattedBody"] = 8] = "BadlyFormattedBody";
-    MessEnum[MessEnum["TokenBalanceUpdated"] = 9] = "TokenBalanceUpdated";
-    MessEnum[MessEnum["NotEnoughTokens"] = 10] = "NotEnoughTokens";
-    MessEnum[MessEnum["OpponentAlreadyInGame"] = 11] = "OpponentAlreadyInGame";
-    MessEnum[MessEnum["CreatorAlreadyInGame"] = 12] = "CreatorAlreadyInGame";
-    MessEnum[MessEnum["NotInGame"] = 13] = "NotInGame";
-    MessEnum[MessEnum["NewGameCreated"] = 14] = "NewGameCreated";
-    MessEnum[MessEnum["NotValidDimension"] = 15] = "NotValidDimension";
-    MessEnum[MessEnum["NotYourTurn"] = 16] = "NotYourTurn";
-    MessEnum[MessEnum["GameNotFound"] = 17] = "GameNotFound";
-    MessEnum[MessEnum["GameTerminated"] = 18] = "GameTerminated";
-    MessEnum[MessEnum["RouteNotFound"] = 19] = "RouteNotFound";
-    MessEnum[MessEnum["CantPlayAgainstUrself"] = 20] = "CantPlayAgainstUrself";
+    //NoBodyError,
+    MessEnum[MessEnum["BadlyFormattedBody"] = 7] = "BadlyFormattedBody";
+    MessEnum[MessEnum["TokenBalanceUpdated"] = 8] = "TokenBalanceUpdated";
+    MessEnum[MessEnum["NotEnoughTokens"] = 9] = "NotEnoughTokens";
+    MessEnum[MessEnum["OpponentAlreadyInGame"] = 10] = "OpponentAlreadyInGame";
+    MessEnum[MessEnum["CreatorAlreadyInGame"] = 11] = "CreatorAlreadyInGame";
+    MessEnum[MessEnum["NotInGame"] = 12] = "NotInGame";
+    MessEnum[MessEnum["NewGameCreated"] = 13] = "NewGameCreated";
+    MessEnum[MessEnum["NotValidDimension"] = 14] = "NotValidDimension";
+    MessEnum[MessEnum["NotYourTurn"] = 15] = "NotYourTurn";
+    MessEnum[MessEnum["GameNotFound"] = 16] = "GameNotFound";
+    MessEnum[MessEnum["GameTerminated"] = 17] = "GameTerminated";
+    MessEnum[MessEnum["RouteNotFound"] = 18] = "RouteNotFound";
+    MessEnum[MessEnum["CantPlayAgainstUrself"] = 19] = "CantPlayAgainstUrself";
+    MessEnum[MessEnum["NoGamesFound"] = 20] = "NoGamesFound";
     //UnauthorizedAccessToGameInfo
 })(MessEnum = exports.MessEnum || (exports.MessEnum = {}));
 //Message telling the user that the request has no authentication header
@@ -122,18 +123,18 @@ var UserNotFound = /** @class */ (function () {
     };
     return UserNotFound;
 }());
+/*
+Never Used
 //The request doesn't have a body
-var NoBodyError = /** @class */ (function () {
-    function NoBodyError() {
-    }
-    NoBodyError.prototype.getMess = function () {
+class NoBodyError implements MessageInt {
+    public getMess(): string {
         return "Bad request - Missing request body";
-    };
-    NoBodyError.prototype.getCode = function () {
+    }
+    public getCode(): number {
         return 400;
-    };
-    return NoBodyError;
-}());
+    }
+}
+*/
 //The request body is badly formatted
 var BadlyFormattedBody = /** @class */ (function () {
     function BadlyFormattedBody() {
@@ -301,6 +302,18 @@ var CantPlayAgainstUrself = /** @class */ (function () {
     };
     return CantPlayAgainstUrself;
 }());
+//Message that tells the user that the given account has no recorded games yet
+var NoGamesFound = /** @class */ (function () {
+    function NoGamesFound() {
+    }
+    NoGamesFound.prototype.getMess = function () {
+        return "Not found - User has not played any games yet";
+    };
+    NoGamesFound.prototype.getCode = function () {
+        return 404;
+    };
+    return NoGamesFound;
+}());
 //Concrete factory class - getMessage() allows to return different message objects depending on the given parameters
 var MessFactory = /** @class */ (function () {
     function MessFactory() {
@@ -329,9 +342,9 @@ var MessFactory = /** @class */ (function () {
             case MessEnum.UserNotFound:
                 message = new UserNotFound();
                 break;
-            case MessEnum.NoBodyError:
-                message = new NoBodyError();
-                break;
+            /* case MessEnum.NoBodyError:
+                 message = new NoBodyError();
+                 break;*/
             case MessEnum.BadlyFormattedBody:
                 message = new BadlyFormattedBody();
                 break;
@@ -373,6 +386,9 @@ var MessFactory = /** @class */ (function () {
                 break;
             case MessEnum.CantPlayAgainstUrself:
                 message = new CantPlayAgainstUrself();
+                break;
+            case MessEnum.NoGamesFound:
+                message = new NoGamesFound();
                 break;
             default:
                 message = new GenericError();

@@ -4,7 +4,7 @@ import * as adminController from './Controllers/adminController';
 import * as userController from './Controllers/userController';
 import { MessFactory , MessEnum } from "./Logging_Factory/MessFactory";
 import { checkUserEmail } from './middleware_components/user_validation';
-import { checkUserInGame } from './middleware_components/requestValidation';
+import { checkUserEmailNoCreate, checkUserInGame } from './middleware_components/requestValidation';
 
 
 var express = require('express');
@@ -48,6 +48,12 @@ app.post('/game', [CoR.userAccountAndBalanceCheck, CoR.newGameVal],
 app.post('/:id/quit',checkUserInGame, 
     async (req,res,next) => {
         userController.quitGame(req,res,next);
+    }
+);
+
+app.get('/stats/:email',checkUserEmailNoCreate,
+    async (req,res,next) => {
+        userController.getStats(req,res,next);
     }
 );
 
