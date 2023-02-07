@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.getTokenBalance = exports.getGameMoves = exports.getGameInfo = exports.move = exports.newGame = void 0;
+exports.quitGame = exports.getTokenBalance = exports.getGameMoves = exports.getGameInfo = exports.move = exports.newGame = void 0;
 var MessFactory_1 = require("../Logging_Factory/MessFactory");
 var GameDAO_1 = require("../Model/GameDAO");
 var UserDAO_1 = require("../Model/UserDAO");
@@ -79,11 +79,11 @@ var getGameInfo = function (req, res, next) { return __awaiter(void 0, void 0, v
                     res.status(200).send({
                         "creator": foundGame.creator,
                         "opponent": foundGame.opponent,
+                        "state": foundGame.state,
                         "turn": foundGame.turn,
                         "winner": foundGame.winner,
                         "positions": foundGame.positions
                     });
-                    next();
                 }
                 else {
                     next(MessFactory_1.MessEnum.GameNotFound);
@@ -132,9 +132,20 @@ var getTokenBalance = function (req, res, next) { return __awaiter(void 0, void 
                 res.status(200).send({
                     "token_balance": foundUser.token_balance
                 });
-                next();
                 return [2 /*return*/];
         }
     });
 }); };
 exports.getTokenBalance = getTokenBalance;
+//Methods that makes the user quit a game and updates all the game info in the db
+var quitGame = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var winner;
+    return __generator(this, function (_a) {
+        //We know at this point that the user is wheter the creator or the opponent
+        (req.user.email === req.game.creator) ? winner = req.game.opponent : winner = req.game.creator;
+        gameDaoInst.updateGameInfo(parseInt(req.params.id), "abandoned", winner, req.game.moves, "", req.game.positions);
+        res.status(200).json({ Status: 200, Description: "Operation completed - You abandoned the game" });
+        return [2 /*return*/];
+    });
+}); };
+exports.quitGame = quitGame;

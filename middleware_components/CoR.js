@@ -17,14 +17,13 @@ exports.adminCheck = [
     JWTValidation.checkAdminEmail,
 ];
 exports.newTokenBalanceVal = [
-    RequestValidation.checkReqBody,
     RequestValidation.checkReqTokenBalance
 ];
 exports.newGameVal = [
-    RequestValidation.checkReqBody,
     RequestValidation.checkReqBodyNewGame,
+    RequestValidation.checkUserEmailOpponent,
     RequestValidation.checkGridDimension,
-    RequestValidation.checkAlreadyInGame,
+    RequestValidation.checkUsersAlreadyInGame,
     RequestValidation.checkNewGameBalance
 ];
 exports.moveCheck = [

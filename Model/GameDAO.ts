@@ -158,21 +158,30 @@ export class GameDao{
         return game;
     }
 
+    public async checkAllUserGames(email : String){
+        const { Op } = require("sequelize");
+        var games = await this.game.findAll({where: 
+            {[Op.or]: [
+                {creator: email},
+                {opponent: email}
+            ]}
+        });
+        return games;
+    }
+
     //Updating methods
     //Update game
-    public async updateGame(email : String){
-        const { Op } = require("sequelize");
-        var game = await this.game.findOne({where: 
-            {
-                [Op.and]: [
-                    {[Op.or]: [
-                        {creator: email},
-                        {opponent: email}
-                    ]},
-                    {state: "started"}
-                ]
-            }
+    public async updateGameInfo(id: number, state: String, winner: String, moves: String, turn : String, positions: String){
+        var gameToUpdate = await this.game.findByPk(id);
+        //No need to do a check bc at this point we know that the game exists
+        await gameToUpdate.update({
+            state: state,
+            winner: winner,
+            moves: moves,
+            turn: turn,
+            positions: positions 
         });
-        return game;
+        await gameToUpdate.save();
     }
+
 }

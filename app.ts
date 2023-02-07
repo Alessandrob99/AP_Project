@@ -4,6 +4,7 @@ import * as adminController from './Controllers/adminController';
 import * as userController from './Controllers/userController';
 import { MessFactory , MessEnum } from "./Logging_Factory/MessFactory";
 import { checkUserEmail } from './middleware_components/user_validation';
+import { checkUserInGame } from './middleware_components/requestValidation';
 
 
 var express = require('express');
@@ -13,7 +14,11 @@ require('dotenv').config();
 var bodyParser = require('body-parser');
 
 
-var app = express();  
+var app = express(); 
+
+
+//Checks if the json passed in the request body has the correct json format
+//Note: doesn't check the type and format of the several fields in the json!
 app.use(bodyParser.json({
     verify : (req, res, buf, encoding) => {
         try {
@@ -37,6 +42,12 @@ app.use(CoR.JWTCheck);
 app.post('/game', [CoR.userAccountAndBalanceCheck, CoR.newGameVal],
     async (req,res,next) => {
         userController.newGame(req,res,next);
+    }
+);
+
+app.post('/:id/quit',checkUserInGame, 
+    async (req,res,next) => {
+        userController.quitGame(req,res,next);
     }
 );
 
@@ -73,15 +84,6 @@ app.get('/tokenBalance', [],
         userController.getTokenBalance(req,res,next);
     }
 );
-
-
-/**
- * DA FARE DOMANI
- * ROTTA CREDITO RESIDUO SEMPRE ACCESSIBILE
- * AGGIUNGI SCELTA RIORNO SU STORICO PARTITE CSV O JSON
- * PENSA A COME GESTIRE LE INFO SU PARTITE PERSE E VINTE (SE CON RIDONDADNZA O MENO)
- * COSA METTERE NELLA TABELLA USER E COSA AGGIUNGERE IN GAME 
- */
 
 
 //Route not found

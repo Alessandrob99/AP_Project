@@ -18,8 +18,19 @@ export const checkUserTokenBalance = async (req: any, res: any, next: any) => {
     
 };
 
+//Checks if the given opponent's email matches a record in the users table
+export const checkUserEmailOpponent = async (req: any, res: any, next: any) => {    
+    var dao = new UserDao();
+    var user = await dao.readUser(req.body.opponent);
+    if(!user){
+        next(MessEnum.UserNotFound);
+    }else{
+        next();
+    } 
+};
+
+//Checks if the user has enough tokens to start a new game
 export const checkNewGameBalance = async (req: any, res: any, next: any) => {
-    
     var dao = new UserDao();
 
     var user = await dao.readUser(req.user.email)
@@ -31,6 +42,11 @@ export const checkNewGameBalance = async (req: any, res: any, next: any) => {
 };
 
 
+/*
+Deleted because if we put the json format controll check at the beginning through the 
+'use' express method this trigger is never activated. This is due to the fact that 
+if we don't have a req body, the format check (at the beginning of app.ts)
+triggers the error anyways...
 
 export const checkReqBody = async (req: any, res: any, next: any) => {
     
@@ -43,13 +59,19 @@ export const checkReqBody = async (req: any, res: any, next: any) => {
     
 };
 
+*/
 
+//Checks the correct type and format of the information contained in the "/game" route request
 export const checkReqBodyNewGame = async (req: any, res: any, next: any) => {
     var validator = require("email-validator");
     if((typeof req.body.opponent === "string") 
     && (validator.validate(req.body.opponent) 
     && (typeof req.body.dimension === 'number'))){
-            next();
+            if(req.body.opponent === req.user.email){
+                next(MessEnum.CantPlayAgainstUrself);
+            }else{
+                next();
+            }
     }else{
         next(MessEnum.BadlyFormattedBody);
     }
@@ -71,14 +93,13 @@ export const checkReqTokenBalance = async (req: any, res: any, next: any) => {
 
 
 
-//Checks if the user is already in game
-export const checkAlreadyInGame = async (req: any, res: any, next: any) => {
+//Checks if at least one of the the users is already in game
+export const checkUsersAlreadyInGame = async (req: any, res: any, next: any) => {
     var gameDao = new GameDao()
     var foundGame = await gameDao.checkUserGame(req.user.email);
     if(foundGame){
         next(MessEnum.CreatorAlreadyInGame);
-    }else{
-        
+    }else{ 
         foundGame = await gameDao.checkUserGame(req.body.opponent)
         if(foundGame){
             next(MessEnum.OpponentAlreadyInGame);
@@ -86,7 +107,26 @@ export const checkAlreadyInGame = async (req: any, res: any, next: any) => {
             next();
         }
     }
-    
+}
+
+//Checks if the user is playing in a given game (by id)
+export const checkUserInGame = async (req: any, res: any, next: any) => {
+    var gameDao = new GameDao()
+    var foundGame = await gameDao.readGame(req.params.id);
+    if(foundGame){
+        if((foundGame.creator === req.user.email)||(foundGame.opponent === req.user.email)){
+            if(foundGame.state === "started"){
+                req.game = foundGame;
+                next();
+            }else{
+                next(MessEnum.GameTerminated);
+            }
+        }else{
+            next(MessEnum.UnauthorizedError);
+        }
+    }else{ 
+        next(MessEnum.GameNotFound);
+    }
 }
 
 //Checks if the given grid dimension is valid
@@ -103,10 +143,8 @@ export const checkInGameAndTurn = async (req: any, res: any, next: any) => {
     var gameDao = new GameDao();
     var foundGame = await gameDao.checkUserGame(req.user.email);
     req.game = foundGame;
-    console.log(req.game);
     if(foundGame){
         if(foundGame.turn==req.user.email){
-            console.log("Procedo con il controllo della mossa");
             next();
         }else{
             next(MessEnum.NotYourTurn);

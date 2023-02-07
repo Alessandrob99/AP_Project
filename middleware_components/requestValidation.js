@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.checkInGameAndTurn = exports.checkGridDimension = exports.checkAlreadyInGame = exports.checkReqTokenBalance = exports.checkReqBodyNewGame = exports.checkReqBody = exports.checkNewGameBalance = exports.checkUserTokenBalance = void 0;
+exports.checkInGameAndTurn = exports.checkGridDimension = exports.checkUserInGame = exports.checkUsersAlreadyInGame = exports.checkReqTokenBalance = exports.checkReqBodyNewGame = exports.checkNewGameBalance = exports.checkUserEmailOpponent = exports.checkUserTokenBalance = void 0;
 var UserDAO_1 = require("../Model/UserDAO");
 var MessFactory_1 = require("../Logging_Factory/MessFactory");
 var GameDAO_1 = require("../Model/GameDAO");
@@ -61,6 +61,28 @@ var checkUserTokenBalance = function (req, res, next) { return __awaiter(void 0,
     });
 }); };
 exports.checkUserTokenBalance = checkUserTokenBalance;
+//Checks if the given opponent's email matches a record in the users table
+var checkUserEmailOpponent = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var dao, user;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                dao = new UserDAO_1.UserDao();
+                return [4 /*yield*/, dao.readUser(req.body.opponent)];
+            case 1:
+                user = _a.sent();
+                if (!user) {
+                    next(MessFactory_1.MessEnum.UserNotFound);
+                }
+                else {
+                    next();
+                }
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.checkUserEmailOpponent = checkUserEmailOpponent;
+//Checks if the user has enough tokens to start a new game
 var checkNewGameBalance = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var dao, user;
     return __generator(this, function (_a) {
@@ -81,20 +103,25 @@ var checkNewGameBalance = function (req, res, next) { return __awaiter(void 0, v
     });
 }); };
 exports.checkNewGameBalance = checkNewGameBalance;
-var checkReqBody = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var postBody;
-    return __generator(this, function (_a) {
-        postBody = req.body;
-        if (Object.keys(req.body).length === 0) {
-            next(MessFactory_1.MessEnum.NoBodyError);
-        }
-        else {
-            next();
-        }
-        return [2 /*return*/];
-    });
-}); };
-exports.checkReqBody = checkReqBody;
+/*
+Deleted because if we put the json format controll check at the beginning through the
+'use' express method this trigger is never activated. This is due to the fact that
+if we don't have a req body, the format check (at the beginning of app.ts)
+triggers the error anyways...
+
+export const checkReqBody = async (req: any, res: any, next: any) => {
+    
+    const postBody = req.body;
+    if(Object.keys(req.body).length === 0) {
+        next(MessEnum.NoBodyError);
+    }else{
+        next();
+    }
+    
+};
+
+*/
+//Checks the correct type and format of the information contained in the "/game" route request
 var checkReqBodyNewGame = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var validator;
     return __generator(this, function (_a) {
@@ -102,7 +129,12 @@ var checkReqBodyNewGame = function (req, res, next) { return __awaiter(void 0, v
         if ((typeof req.body.opponent === "string")
             && (validator.validate(req.body.opponent)
                 && (typeof req.body.dimension === 'number'))) {
-            next();
+            if (req.body.opponent === req.user.email) {
+                next(MessFactory_1.MessEnum.CantPlayAgainstUrself);
+            }
+            else {
+                next();
+            }
         }
         else {
             next(MessFactory_1.MessEnum.BadlyFormattedBody);
@@ -128,8 +160,8 @@ var checkReqTokenBalance = function (req, res, next) { return __awaiter(void 0, 
     });
 }); };
 exports.checkReqTokenBalance = checkReqTokenBalance;
-//Checks if the user is already in game
-var checkAlreadyInGame = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+//Checks if at least one of the the users is already in game
+var checkUsersAlreadyInGame = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var gameDao, foundGame;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -155,7 +187,39 @@ var checkAlreadyInGame = function (req, res, next) { return __awaiter(void 0, vo
         }
     });
 }); };
-exports.checkAlreadyInGame = checkAlreadyInGame;
+exports.checkUsersAlreadyInGame = checkUsersAlreadyInGame;
+//Checks if the user is playing in a given game (by id)
+var checkUserInGame = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var gameDao, foundGame;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                gameDao = new GameDAO_1.GameDao();
+                return [4 /*yield*/, gameDao.readGame(req.params.id)];
+            case 1:
+                foundGame = _a.sent();
+                if (foundGame) {
+                    if ((foundGame.creator === req.user.email) || (foundGame.opponent === req.user.email)) {
+                        if (foundGame.state === "started") {
+                            req.game = foundGame;
+                            next();
+                        }
+                        else {
+                            next(MessFactory_1.MessEnum.GameTerminated);
+                        }
+                    }
+                    else {
+                        next(MessFactory_1.MessEnum.UnauthorizedError);
+                    }
+                }
+                else {
+                    next(MessFactory_1.MessEnum.GameNotFound);
+                }
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.checkUserInGame = checkUserInGame;
 //Checks if the given grid dimension is valid
 var checkGridDimension = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
@@ -180,10 +244,8 @@ var checkInGameAndTurn = function (req, res, next) { return __awaiter(void 0, vo
             case 1:
                 foundGame = _a.sent();
                 req.game = foundGame;
-                console.log(req.game);
                 if (foundGame) {
                     if (foundGame.turn == req.user.email) {
-                        console.log("Procedo con il controllo della mossa");
                         next();
                     }
                     else {

@@ -26,11 +26,11 @@ export const getGameInfo = async (req,res,next) => {
         res.status(200).send({
             "creator" :foundGame.creator,
             "opponent" :foundGame.opponent,
+            "state": foundGame.state,
             "turn": foundGame.turn,
             "winner": foundGame.winner,
             "positions": foundGame.positions
         });
-        next();
     }else{
         next(MessEnum.GameNotFound);
     }
@@ -63,5 +63,14 @@ export const getTokenBalance =async (req,res,next) => {
     res.status(200).send({
         "token_balance" : foundUser.token_balance
     });
-    next();
+}
+
+
+//Methods that makes the user quit a game and updates all the game info in the db
+export const quitGame =async (req,res,next) => {
+    var winner : String;
+    //We know at this point that the user is wheter the creator or the opponent
+    (req.user.email === req.game.creator)? winner = req.game.opponent : winner = req.game.creator;
+    gameDaoInst.updateGameInfo(parseInt(req.params.id),"abandoned",winner,req.game.moves,"",req.game.positions);
+    res.status(200).json({Status : 200, Description: "Operation completed - You abandoned the game"});
 }

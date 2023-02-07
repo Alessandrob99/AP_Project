@@ -19,7 +19,9 @@ export enum MessEnum {
     NotValidDimension,
     NotYourTurn,
     GameNotFound,
-    RouteNotFound
+    GameTerminated,
+    RouteNotFound,
+    CantPlayAgainstUrself
     //UnauthorizedAccessToGameInfo
 }
 
@@ -213,6 +215,16 @@ class NotYourTurn implements MessageInt {
     }
 }
 
+//Message tells the user that the game is terminated
+class GameTerminated implements MessageInt {
+    public getMess(): string {
+        return "Bad request - Game is terminated";
+    }
+    public getCode(): number {
+        return 400;
+    }
+}
+
 //Message tells the user that the game was not found in the db
 class GameNotFound implements MessageInt {
     public getMess(): string {
@@ -243,6 +255,18 @@ class UnauthorizedAccessToGameInfo implements MessageInt {
         return 403;
     }
 }*/
+
+
+//Message that tells the user that he cant play a game against him/her self
+class CantPlayAgainstUrself implements MessageInt {
+    public getMess(): string {
+        return "Forbidden - You can not play against yourself";
+    }
+    public getCode(): number {
+        return 403;
+    }
+}
+
 
 //Concrete factory class - getMessage() allows to return different message objects depending on the given parameters
 export class MessFactory{
@@ -310,7 +334,12 @@ export class MessFactory{
             /*case MessEnum.UnauthorizedAccessToGameInfo:
                 message = new UnauthorizedAccessToGameInfo();
                 break;*/
-            
+            case MessEnum.GameTerminated:
+                message = new GameTerminated();
+                break;
+            case MessEnum.CantPlayAgainstUrself:
+                message = new CantPlayAgainstUrself();
+                break;
             default :
                 message = new GenericError();
                 break;

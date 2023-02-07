@@ -20,15 +20,14 @@ export const adminCheck = [
 
 
 export const newTokenBalanceVal = [
-    RequestValidation.checkReqBody,
     RequestValidation.checkReqTokenBalance
 ]
 
 export const newGameVal = [
-    RequestValidation.checkReqBody,
     RequestValidation.checkReqBodyNewGame,
+    RequestValidation.checkUserEmailOpponent,
     RequestValidation.checkGridDimension,
-    RequestValidation.checkAlreadyInGame, // if one of the two challengers are in game the new game cannot be created
+    RequestValidation.checkUsersAlreadyInGame, // if one of the two challengers are in game the new game cannot be created
     RequestValidation.checkNewGameBalance
 ]
 

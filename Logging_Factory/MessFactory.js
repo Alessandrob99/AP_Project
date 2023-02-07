@@ -21,7 +21,9 @@ var MessEnum;
     MessEnum[MessEnum["NotValidDimension"] = 15] = "NotValidDimension";
     MessEnum[MessEnum["NotYourTurn"] = 16] = "NotYourTurn";
     MessEnum[MessEnum["GameNotFound"] = 17] = "GameNotFound";
-    MessEnum[MessEnum["RouteNotFound"] = 18] = "RouteNotFound";
+    MessEnum[MessEnum["GameTerminated"] = 18] = "GameTerminated";
+    MessEnum[MessEnum["RouteNotFound"] = 19] = "RouteNotFound";
+    MessEnum[MessEnum["CantPlayAgainstUrself"] = 20] = "CantPlayAgainstUrself";
     //UnauthorizedAccessToGameInfo
 })(MessEnum = exports.MessEnum || (exports.MessEnum = {}));
 //Message telling the user that the request has no authentication header
@@ -240,6 +242,18 @@ var NotYourTurn = /** @class */ (function () {
     };
     return NotYourTurn;
 }());
+//Message tells the user that the game is terminated
+var GameTerminated = /** @class */ (function () {
+    function GameTerminated() {
+    }
+    GameTerminated.prototype.getMess = function () {
+        return "Bad request - Game is terminated";
+    };
+    GameTerminated.prototype.getCode = function () {
+        return 400;
+    };
+    return GameTerminated;
+}());
 //Message tells the user that the game was not found in the db
 var GameNotFound = /** @class */ (function () {
     function GameNotFound() {
@@ -275,6 +289,18 @@ class UnauthorizedAccessToGameInfo implements MessageInt {
         return 403;
     }
 }*/
+//Message that tells the user that he cant play a game against him/her self
+var CantPlayAgainstUrself = /** @class */ (function () {
+    function CantPlayAgainstUrself() {
+    }
+    CantPlayAgainstUrself.prototype.getMess = function () {
+        return "Forbidden - You can not play against yourself";
+    };
+    CantPlayAgainstUrself.prototype.getCode = function () {
+        return 403;
+    };
+    return CantPlayAgainstUrself;
+}());
 //Concrete factory class - getMessage() allows to return different message objects depending on the given parameters
 var MessFactory = /** @class */ (function () {
     function MessFactory() {
@@ -342,6 +368,12 @@ var MessFactory = /** @class */ (function () {
             /*case MessEnum.UnauthorizedAccessToGameInfo:
                 message = new UnauthorizedAccessToGameInfo();
                 break;*/
+            case MessEnum.GameTerminated:
+                message = new GameTerminated();
+                break;
+            case MessEnum.CantPlayAgainstUrself:
+                message = new CantPlayAgainstUrself();
+                break;
             default:
                 message = new GenericError();
                 break;

@@ -42,10 +42,13 @@ var adminController = require("./Controllers/adminController");
 var userController = require("./Controllers/userController");
 var MessFactory_1 = require("./Logging_Factory/MessFactory");
 var user_validation_1 = require("./middleware_components/user_validation");
+var requestValidation_1 = require("./middleware_components/requestValidation");
 var express = require('express');
 require('dotenv').config();
 var bodyParser = require('body-parser');
 var app = express();
+//Checks if the json passed in the request body has the correct json format
+//Note: doesn't check the type and format of the several fields in the json!
 app.use(bodyParser.json({
     verify: function (req, res, buf, encoding) {
         try {
@@ -66,6 +69,12 @@ app.use(CoR.JWTCheck);
 app.post('/game', [CoR.userAccountAndBalanceCheck, CoR.newGameVal], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         userController.newGame(req, res, next);
+        return [2 /*return*/];
+    });
+}); });
+app.post('/:id/quit', requestValidation_1.checkUserInGame, function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        userController.quitGame(req, res, next);
         return [2 /*return*/];
     });
 }); });
@@ -103,13 +112,6 @@ app.get('/tokenBalance', [], function (req, res, next) { return __awaiter(void 0
         return [2 /*return*/];
     });
 }); });
-/**
- * DA FARE DOMANI
- * ROTTA CREDITO RESIDUO SEMPRE ACCESSIBILE
- * AGGIUNGI SCELTA RIORNO SU STORICO PARTITE CSV O JSON
- * PENSA A COME GESTIRE LE INFO SU PARTITE PERSE E VINTE (SE CON RIDONDADNZA O MENO)
- * COSA METTERE NELLA TABELLA USER E COSA AGGIUNGERE IN GAME
- */
 //Route not found
 app.get('*', function (req, res, next) {
     next(MessFactory_1.MessEnum.RouteNotFound);

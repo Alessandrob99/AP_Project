@@ -189,29 +189,51 @@ var GameDao = /** @class */ (function () {
             });
         });
     };
-    //Updating methods
-    //Update game
-    GameDao.prototype.updateGame = function (email) {
+    GameDao.prototype.checkAllUserGames = function (email) {
         return __awaiter(this, void 0, void 0, function () {
-            var Op, game;
-            var _a, _b;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            var Op, games;
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
                         Op = require("sequelize").Op;
-                        return [4 /*yield*/, this.game.findOne({ where: (_a = {},
-                                    _a[Op.and] = [
-                                        (_b = {}, _b[Op.or] = [
-                                            { creator: email },
-                                            { opponent: email }
-                                        ], _b),
-                                        { state: "started" }
-                                    ],
-                                    _a)
+                        return [4 /*yield*/, this.game.findAll({ where: (_a = {}, _a[Op.or] = [
+                                    { creator: email },
+                                    { opponent: email }
+                                ], _a)
                             })];
                     case 1:
-                        game = _c.sent();
-                        return [2 /*return*/, game];
+                        games = _b.sent();
+                        return [2 /*return*/, games];
+                }
+            });
+        });
+    };
+    //Updating methods
+    //Update game
+    GameDao.prototype.updateGameInfo = function (id, state, winner, moves, turn, positions) {
+        return __awaiter(this, void 0, void 0, function () {
+            var gameToUpdate;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.game.findByPk(id)];
+                    case 1:
+                        gameToUpdate = _a.sent();
+                        //No need to do a check bc at this point we know that the game exists
+                        return [4 /*yield*/, gameToUpdate.update({
+                                state: state,
+                                winner: winner,
+                                moves: moves,
+                                turn: turn,
+                                positions: positions
+                            })];
+                    case 2:
+                        //No need to do a check bc at this point we know that the game exists
+                        _a.sent();
+                        return [4 /*yield*/, gameToUpdate.save()];
+                    case 3:
+                        _a.sent();
+                        return [2 /*return*/];
                 }
             });
         });

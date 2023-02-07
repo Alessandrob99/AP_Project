@@ -85,6 +85,8 @@ export const checkUserEmail = async (req: any, res: any, next: any) => {
 
 
 
+
+
 export const checkAdminEmail = (req: any, res: any, next: any) => {
     //checking if the user has the role of admin (2)
     if(req.user.role!==2){
