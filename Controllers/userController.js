@@ -40,7 +40,8 @@ exports.getTokenBalance = exports.getGameMoves = exports.getGameInfo = exports.m
 var MessFactory_1 = require("../Logging_Factory/MessFactory");
 var GameDAO_1 = require("../Model/GameDAO");
 var UserDAO_1 = require("../Model/UserDAO");
-var json2csv_1 = require("json2csv");
+var parse = require('json2csv').parse;
+var fields = ['pawn', 'xfrom', 'yfrom', 'xto', 'yto'];
 var userDaoInst = new UserDAO_1.UserDao();
 var gameDaoInst = new GameDAO_1.GameDao();
 var newGame = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
@@ -104,8 +105,8 @@ var getGameMoves = function (req, res, next) { return __awaiter(void 0, void 0, 
                     //FORMAT = 1 means CSV
                     if (req.query.format === "1") {
                         console.log("CSV");
-                        csv_white = (0, json2csv_1.parse)(all_moves.white_moves);
-                        csv_black = (0, json2csv_1.parse)(all_moves.black_moves).split("\n").slice(1).join("\n");
+                        csv_white = parse(all_moves.white_moves, { fields: fields });
+                        csv_black = parse(all_moves.black_moves, { fields: fields }).split("\n").slice(1).join("\n");
                         res.status(200).send(csv_white + "\n" + csv_black);
                     }
                     else {

@@ -124,7 +124,7 @@ export class GameDao{
                 positions: positions,
                 winner: null,
                 turn: creator,
-                moves: "{'white_moves':[],'black_moves':[]}"
+                moves: String('{"white_moves":[],"black_moves":[]}')
             }
         );
         await newGame.save();

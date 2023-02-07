@@ -136,7 +136,7 @@ var GameDao = /** @class */ (function () {
                             positions: positions,
                             winner: null,
                             turn: creator,
-                            moves: "{'white_moves':[],'black_moves':[]}"
+                            moves: String('{"white_moves":[],"black_moves":[]}')
                         });
                         return [4 /*yield*/, newGame.save()];
                     case 1:

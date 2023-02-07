@@ -2,7 +2,8 @@ import { MessEnum } from "../Logging_Factory/MessFactory";
 import { GameDao } from "../Model/GameDAO";
 import { UserDao } from "../Model/UserDAO";
 import { messageLogger } from "../middleware_components/MessLog";
-import { parse } from 'json2csv';
+const { parse } = require('json2csv');
+const fields = ['pawn', 'xfrom', 'yfrom', 'xto', 'yto'];
 
 const userDaoInst = new UserDao();
 const gameDaoInst = new GameDao();
@@ -43,8 +44,8 @@ export const getGameMoves = async(req,res,next) => {
         //FORMAT = 1 means CSV
         if(req.query.format === "1"){
             console.log("CSV");
-            const csv_white = parse(all_moves.white_moves);
-            const csv_black =  parse(all_moves.black_moves).split("\n").slice(1).join("\n")
+            const csv_white = parse(all_moves.white_moves, {fields});
+            const csv_black =  parse(all_moves.black_moves,{fields}).split("\n").slice(1).join("\n")
             res.status(200).send(csv_white+"\n"+csv_black);
         }else{ 
             console.log("JSON");
