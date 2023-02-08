@@ -36,6 +36,7 @@ export const getGameInfo = async (req,res,next) => {
     }
 }
 
+//Returns all moves done in a game through either a csv or a json
 export const getGameMoves = async(req,res,next) => {
     var foundGame = await gameDaoInst.readGame(parseInt(req.params.id));
     if(foundGame){
@@ -56,7 +57,7 @@ export const getGameMoves = async(req,res,next) => {
 
 }
 
-
+//Given an email, returns the token balance associated with it
 export const getTokenBalance =async (req,res,next) => {
     var foundUser = await userDaoInst.readUser(req.user.email);
     
@@ -69,7 +70,7 @@ export const getTokenBalance =async (req,res,next) => {
 //Methods that makes the user quit a game and updates all the game info in the db
 export const quitGame =async (req,res,next) => {
     var winner : String;
-    //We know at this point that the user is wheter the creator or the opponent
+    //We know at this point that the user is either the creator or the opponent
     (req.user.email === req.game.creator)? winner = req.game.opponent : winner = req.game.creator;
     gameDaoInst.updateGameInfo(parseInt(req.params.id),"abandoned",winner,req.game.moves,"",req.game.positions);
     res.status(200).json({Status : 200, Description: "Operation completed - You abandoned the game"});
@@ -77,9 +78,9 @@ export const quitGame =async (req,res,next) => {
 
 //Methods that returns the specified user's statistics
 export const getStats =async (req,res,next) => {
-    //Check if the user hasn't played any games yet
+    //Check if the user hasn't played any games yet (we know the user exists)
     var foundGames = await gameDaoInst.checkAllUserGames(req.params.email);
-    if(foundGames){
+    if(foundGames.length!== 0){
         //All games
         const games = foundGames.filter( game => game.state !== "started");
         const tot_games = games.length;
@@ -113,6 +114,6 @@ export const getStats =async (req,res,next) => {
             avg_n_moves_to_lose: (loss_moves/losses)
         });
     }else{
-        res.status(200).json({Status : 200, Description: "Operation completed - You abandoned the game"});
+        next(MessEnum.NoGamesFound);
     }
 }

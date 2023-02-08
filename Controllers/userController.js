@@ -93,6 +93,7 @@ var getGameInfo = function (req, res, next) { return __awaiter(void 0, void 0, v
     });
 }); };
 exports.getGameInfo = getGameInfo;
+//Returns all moves done in a game through either a csv or a json
 var getGameMoves = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var foundGame, all_moves, csv_white, csv_black;
     return __generator(this, function (_a) {
@@ -122,6 +123,7 @@ var getGameMoves = function (req, res, next) { return __awaiter(void 0, void 0, 
     });
 }); };
 exports.getGameMoves = getGameMoves;
+//Given an email, returns the token balance associated with it
 var getTokenBalance = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var foundUser;
     return __generator(this, function (_a) {
@@ -141,7 +143,7 @@ exports.getTokenBalance = getTokenBalance;
 var quitGame = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var winner;
     return __generator(this, function (_a) {
-        //We know at this point that the user is wheter the creator or the opponent
+        //We know at this point that the user is either the creator or the opponent
         (req.user.email === req.game.creator) ? winner = req.game.opponent : winner = req.game.creator;
         gameDaoInst.updateGameInfo(parseInt(req.params.id), "abandoned", winner, req.game.moves, "", req.game.positions);
         res.status(200).json({ Status: 200, Description: "Operation completed - You abandoned the game" });
@@ -157,7 +159,7 @@ var getStats = function (req, res, next) { return __awaiter(void 0, void 0, void
             case 0: return [4 /*yield*/, gameDaoInst.checkAllUserGames(req.params.email)];
             case 1:
                 foundGames = _a.sent();
-                if (foundGames) {
+                if (foundGames.length !== 0) {
                     games = foundGames.filter(function (game) { return game.state !== "started"; });
                     tot_games = games.length;
                     wins = 0;
@@ -190,7 +192,7 @@ var getStats = function (req, res, next) { return __awaiter(void 0, void 0, void
                     });
                 }
                 else {
-                    res.status(200).json({ Status: 200, Description: "Operation completed - You abandoned the game" });
+                    next(MessFactory_1.MessEnum.NoGamesFound);
                 }
                 return [2 /*return*/];
         }
