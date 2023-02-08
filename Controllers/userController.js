@@ -61,8 +61,8 @@ var newGame = function (req, res, next) { return __awaiter(void 0, void 0, void 
 exports.newGame = newGame;
 var move = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        //TBD Check move validity
-        console.log("mossa fatta");
+        //Register the move 
+        //withdraw tokens
         next();
         return [2 /*return*/];
     });

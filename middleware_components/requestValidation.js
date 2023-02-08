@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.checkUserEmailNoCreate = exports.checkInGameAndTurn = exports.checkGridDimension = exports.checkUserInGame = exports.checkUsersAlreadyInGame = exports.checkReqTokenBalance = exports.checkReqBodyNewGame = exports.checkNewGameBalance = exports.checkUserEmailOpponent = exports.checkUserTokenBalance = void 0;
+exports.checkGridLimits = exports.checkReqMove = exports.checkInGameAndTurn = exports.checkUserEmailNoCreate = exports.checkGridDimension = exports.checkUserInGame = exports.checkUsersAlreadyInGame = exports.checkReqTokenBalance = exports.checkReqBodyNewGame = exports.checkNewGameBalance = exports.checkUserEmailOpponent = exports.checkUserTokenBalance = void 0;
 var UserDAO_1 = require("../Model/UserDAO");
 var MessFactory_1 = require("../Logging_Factory/MessFactory");
 var GameDAO_1 = require("../Model/GameDAO");
@@ -233,33 +233,6 @@ var checkGridDimension = function (req, res, next) { return __awaiter(void 0, vo
     });
 }); };
 exports.checkGridDimension = checkGridDimension;
-//Checks if the user is in game and if so if it's his turn
-var checkInGameAndTurn = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var gameDao, foundGame;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                gameDao = new GameDAO_1.GameDao();
-                return [4 /*yield*/, gameDao.checkUserGame(req.user.email)];
-            case 1:
-                foundGame = _a.sent();
-                req.game = foundGame;
-                if (foundGame) {
-                    if (foundGame.turn == req.user.email) {
-                        next();
-                    }
-                    else {
-                        next(MessFactory_1.MessEnum.NotYourTurn);
-                    }
-                }
-                else {
-                    next(MessFactory_1.MessEnum.NotInGame);
-                }
-                return [2 /*return*/];
-        }
-    });
-}); };
-exports.checkInGameAndTurn = checkInGameAndTurn;
 var checkUserEmailNoCreate = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var userDao, foundUser;
     return __generator(this, function (_a) {
@@ -280,3 +253,98 @@ var checkUserEmailNoCreate = function (req, res, next) { return __awaiter(void 0
     });
 }); };
 exports.checkUserEmailNoCreate = checkUserEmailNoCreate;
+//MOVES VALIDATIONS--------------------------------------
+//Checks if the user is in game and if so if it's his turn
+var checkInGameAndTurn = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var gameDao, foundGame;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                gameDao = new GameDAO_1.GameDao();
+                return [4 /*yield*/, gameDao.checkUserGame(req.user.email)];
+            case 1:
+                foundGame = _a.sent();
+                if (foundGame) {
+                    if (foundGame.turn == req.user.email) {
+                        req.game = foundGame;
+                        req.grid = JSON.parse(foundGame.positions);
+                        req.game.dimension = req.grid.whites.length;
+                        next();
+                    }
+                    else {
+                        next(MessFactory_1.MessEnum.NotYourTurn);
+                    }
+                }
+                else {
+                    next(MessFactory_1.MessEnum.NotInGame);
+                }
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.checkInGameAndTurn = checkInGameAndTurn;
+//Checks if the "move" request body is correctly formatted
+var checkReqMove = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, wb, num, _b, wb, num;
+    return __generator(this, function (_c) {
+        if ((typeof req.body.pawn === "string")
+            && (typeof req.body.x === "number")
+            && (typeof req.body.y === 'number')) {
+            //Check that specified pawn exists and is not dead and it can be moved by the user
+            if (req.game.creator === req.user.email) {
+                _a = split(req.body.pawn, 1), wb = _a[0], num = _a[1];
+                //The second part of the string is a number
+                (isNaN(Number(num))) ? next(MessFactory_1.MessEnum.BadlyFormattedBody) : {};
+                //This number is referring to an existing pawn
+                (parseInt(num) > req.game.dimension) ? next(MessFactory_1.MessEnum.BadlyFormattedBody) : {};
+                //First part of the string is either "w" or "b"
+                if (wb !== "w") {
+                    //If "b" the creator cant move it (he can only move white pawns)
+                    (wb === "b") ? next(MessFactory_1.MessEnum.InvalidMove) : next(MessFactory_1.MessEnum.BadlyFormattedBody);
+                }
+                next();
+            }
+            if (req.game.opponent === req.user.email) {
+                _b = split(req.body.pawn, 1), wb = _b[0], num = _b[1];
+                //The second part of the string is a number
+                (isNaN(Number(num))) ? next(MessFactory_1.MessEnum.BadlyFormattedBody) : {};
+                //This number is referring to an existing pawn
+                (parseInt(num) > req.game.dimension) ? next(MessFactory_1.MessEnum.BadlyFormattedBody) : {};
+                //First part of the string is either "w" or "b"
+                if (wb !== "b") {
+                    //If "w" the opponent cant move it (he can only move black pawns)
+                    (wb === "w") ? next(MessFactory_1.MessEnum.InvalidMove) : next(MessFactory_1.MessEnum.BadlyFormattedBody);
+                }
+                next();
+            }
+            next();
+        }
+        else {
+            next(MessFactory_1.MessEnum.BadlyFormattedBody);
+        }
+        return [2 /*return*/];
+    });
+}); };
+exports.checkReqMove = checkReqMove;
+//Makes sure that the move doesn't make the pawn fall out of the grid
+var checkGridLimits = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        if ((parseInt(req.body.x) < 1) || (parseInt(req.body.y) < 1)) {
+            next(MessFactory_1.MessEnum.InvalidMove);
+        }
+        else {
+            if ((parseInt(req.body.x) > req.game.dimension) || (parseInt(req.body.y) > req.game.dimension)) {
+                next(MessFactory_1.MessEnum.InvalidMove);
+            }
+            else {
+                next();
+            }
+        }
+        return [2 /*return*/];
+    });
+}); };
+exports.checkGridLimits = checkGridLimits;
+function split(str, index) {
+    var result = [str.slice(0, index), str.slice(index)];
+    return result;
+}

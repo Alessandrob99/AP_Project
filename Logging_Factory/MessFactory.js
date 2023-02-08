@@ -25,6 +25,7 @@ var MessEnum;
     MessEnum[MessEnum["RouteNotFound"] = 18] = "RouteNotFound";
     MessEnum[MessEnum["CantPlayAgainstUrself"] = 19] = "CantPlayAgainstUrself";
     MessEnum[MessEnum["NoGamesFound"] = 20] = "NoGamesFound";
+    MessEnum[MessEnum["InvalidMove"] = 21] = "InvalidMove";
     //UnauthorizedAccessToGameInfo
 })(MessEnum = exports.MessEnum || (exports.MessEnum = {}));
 //Message telling the user that the request has no authentication header
@@ -314,6 +315,18 @@ var NoGamesFound = /** @class */ (function () {
     };
     return NoGamesFound;
 }());
+//Message that tells the user that the move is not valid
+var InvalidMove = /** @class */ (function () {
+    function InvalidMove() {
+    }
+    InvalidMove.prototype.getMess = function () {
+        return "Bad request - Move is not valid";
+    };
+    InvalidMove.prototype.getCode = function () {
+        return 400;
+    };
+    return InvalidMove;
+}());
 //Concrete factory class - getMessage() allows to return different message objects depending on the given parameters
 var MessFactory = /** @class */ (function () {
     function MessFactory() {
@@ -389,6 +402,9 @@ var MessFactory = /** @class */ (function () {
                 break;
             case MessEnum.NoGamesFound:
                 message = new NoGamesFound();
+                break;
+            case MessEnum.InvalidMove:
+                message = new InvalidMove();
                 break;
             default:
                 message = new GenericError();

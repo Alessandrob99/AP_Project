@@ -3,6 +3,7 @@ import { UserDao } from "../Model/UserDAO";
 
 import { MessEnum } from '../Logging_Factory/MessFactory';
 import { GameDao } from "../Model/GameDAO";
+import { spliceStr } from "sequelize/types/utils";
 
 //Checks whether the user has enought credits to operate or not
 export const checkUserTokenBalance = async (req: any, res: any, next: any) => {
@@ -138,21 +139,7 @@ export const checkGridDimension = async (req: any, res: any, next: any) => {
     }
 }
 
-//Checks if the user is in game and if so if it's his turn
-export const checkInGameAndTurn = async (req: any, res: any, next: any) => {
-    var gameDao = new GameDao();
-    var foundGame = await gameDao.checkUserGame(req.user.email);
-    req.game = foundGame;
-    if(foundGame){
-        if(foundGame.turn==req.user.email){
-            next();
-        }else{
-            next(MessEnum.NotYourTurn);
-        }
-    }else{
-        next(MessEnum.NotInGame)
-    }
-}
+
 
 export const checkUserEmailNoCreate = async (req: any, res: any, next: any) => {
     var userDao = new UserDao()
@@ -164,3 +151,80 @@ export const checkUserEmailNoCreate = async (req: any, res: any, next: any) => {
     }
 }
 
+
+//MOVES VALIDATIONS--------------------------------------
+
+//Checks if the user is in game and if so if it's his turn
+export const checkInGameAndTurn = async (req: any, res: any, next: any) => {
+    var gameDao = new GameDao();
+    var foundGame = await gameDao.checkUserGame(req.user.email);
+    if(foundGame){
+        if(foundGame.turn==req.user.email){
+            req.game = foundGame;
+            req.grid = JSON.parse(foundGame.positions);
+            req.game.dimension = req.grid.whites.length
+            next();
+        }else{
+            next(MessEnum.NotYourTurn);
+        }
+    }else{
+        next(MessEnum.NotInGame)
+    }
+}
+
+//Checks if the "move" request body is correctly formatted
+export const checkReqMove = async (req: any, res: any, next: any) => {
+    if((typeof req.body.pawn === "string") 
+    && (typeof req.body.x === "number") 
+    && (typeof req.body.y === 'number')){
+            //Check that specified pawn exists and is not dead and it can be moved by the user
+            if(req.game.creator === req.user.email){
+                const [wb, num] = split(req.body.pawn, 1);   
+                //The second part of the string is a number
+                (isNaN(Number(num)))? next(MessEnum.BadlyFormattedBody): {};
+                //This number is referring to an existing pawn
+                (parseInt(num)>req.game.dimension)? next(MessEnum.BadlyFormattedBody) : {};
+                //First part of the string is either "w" or "b"
+                if(wb!=="w"){
+                    //If "b" the creator cant move it (he can only move white pawns)
+                    (wb==="b")? next(MessEnum.InvalidMove): next(MessEnum.BadlyFormattedBody);
+                }
+                next();
+            }
+            if(req.game.opponent === req.user.email){
+                const [wb, num] = split(req.body.pawn, 1);   
+                //The second part of the string is a number
+                (isNaN(Number(num)))? next(MessEnum.BadlyFormattedBody): {};
+                //This number is referring to an existing pawn
+                (parseInt(num)>req.game.dimension)? next(MessEnum.BadlyFormattedBody) : {};
+                //First part of the string is either "w" or "b"
+                if(wb!=="b"){
+                    //If "w" the opponent cant move it (he can only move black pawns)
+                    (wb==="w")? next(MessEnum.InvalidMove): next(MessEnum.BadlyFormattedBody);
+                }
+                next();
+            }
+            next();
+    }else{
+        next(MessEnum.BadlyFormattedBody);
+    }
+}
+
+//Makes sure that the move doesn't make the pawn fall out of the grid
+export const checkGridLimits = async (req: any, res: any, next: any) => {
+    if((parseInt(req.body.x)<1)||(parseInt(req.body.y)<1)){
+        next(MessEnum.InvalidMove);
+    }else{
+        if((parseInt(req.body.x)>req.game.dimension)||(parseInt(req.body.y)>req.game.dimension)){
+            next(MessEnum.InvalidMove);
+        }else{
+            next();
+        }
+    }
+}
+
+function split(str, index) {
+    const result = [str.slice(0, index), str.slice(index)];
+  
+    return result;
+  }

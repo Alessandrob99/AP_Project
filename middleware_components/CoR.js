@@ -27,5 +27,10 @@ exports.newGameVal = [
     RequestValidation.checkNewGameBalance
 ];
 exports.moveCheck = [
-    RequestValidation.checkInGameAndTurn
+    RequestValidation.checkInGameAndTurn,
+    RequestValidation.checkReqMove,
+    RequestValidation.checkGridLimits
+    //Check move request body
+    // limiti mappa
+    //Gameover?
 ];

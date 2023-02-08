@@ -22,7 +22,8 @@ export enum MessEnum {
     GameTerminated,
     RouteNotFound,
     CantPlayAgainstUrself,
-    NoGamesFound
+    NoGamesFound,
+    InvalidMove
     //UnauthorizedAccessToGameInfo
 }
 
@@ -282,6 +283,16 @@ class NoGamesFound implements MessageInt {
     }
 }
 
+//Message that tells the user that the move is not valid
+class InvalidMove implements MessageInt {
+    public getMess(): string {
+        return "Bad request - Move is not valid";
+    }
+    public getCode(): number {
+        return 400;
+    }
+}
+
 //Concrete factory class - getMessage() allows to return different message objects depending on the given parameters
 export class MessFactory{
     constructor(){}
@@ -356,6 +367,9 @@ export class MessFactory{
                 break;
             case MessEnum.NoGamesFound:
                 message = new NoGamesFound();
+                break;
+            case MessEnum.InvalidMove:
+                message = new InvalidMove();
                 break;
             default :
                 message = new GenericError();

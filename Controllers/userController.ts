@@ -15,8 +15,10 @@ export const newGame = async (req,res,next) => {
 }
 
 export const move = async (req,res,next) => {
-    //TBD Check move validity
-    console.log("mossa fatta");
+
+    //Register the move 
+    //withdraw tokens
+    
     next();
 }
 
