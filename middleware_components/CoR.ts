@@ -34,8 +34,9 @@ export const newGameVal = [
 export const moveCheck = [
     RequestValidation.checkInGameAndTurn,
     RequestValidation.checkReqMove,
-    RequestValidation.checkGridLimits
-    //Check move request body
+    RequestValidation.checkGridLimits,
+    RequestValidation.checkCellFree,
+    RequestValidation.checkMoveReachability
     // limiti mappa
 
     //Gameover?

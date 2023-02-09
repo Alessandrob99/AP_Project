@@ -61,7 +61,7 @@ var GameDao = /** @class */ (function () {
                 allowNull: false
             },
             positions: {
-                type: sequelize_1.DataTypes.STRING(1000),
+                type: sequelize_1.DataTypes.STRING(10000),
                 allowNull: false
             },
             winner: {

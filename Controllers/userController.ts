@@ -16,8 +16,57 @@ export const newGame = async (req,res,next) => {
 
 export const move = async (req,res,next) => {
 
-    //Register the move 
-    //withdraw tokens
+    //Updating the DB game variable
+
+    var moves = JSON.parse(req.game.moves);
+    var all_dead = true;
+    var state = "started"
+    if(req.game.turn === req.game.creator){
+
+        await userDaoInst.withdrawTokens(req.game.creator,0.015)
+
+        for(var p=0; p<req.grid.blacks.length;p++){
+            (req.grid.blacks[p].role!=="dead")? all_dead=false: {};
+            break;
+        }
+        moves.white_moves.push({
+            "pawn": req.pawn.name,
+            "xfrom": req.xfrom,
+            "yfrom": req.yfrom,
+            "xto": req.body.moves[req.body.moves.length-1].x,
+            "yto": req.body.moves[req.body.moves.length-1].y,
+        })
+        console.log(moves);
+        if(all_dead){
+            //SAVE
+            console.log("GAME IS TERMINATED");
+            console.log(req.game.creator+" won!!!")
+            //await gameDaoInst.updateGameInfo(req.game.id,"terminated",req.game.creator,JSON.stringify(moves),"",JSON.stringify(req.grid))
+        }
+    }else{
+
+        await userDaoInst.withdrawTokens(req.game.opponent,0.015)
+
+        for(var p=0; p<req.grid.whites.length;p++){
+            (req.grid.whites[p].role!=="dead")? all_dead=false: {};
+            break;
+        }
+        moves.black_moves.push({
+            "pawn": req.pawn.name,
+            "xfrom": req.xfrom,
+            "yfrom": req.yfrom,
+            "xto": req.body.moves[req.body.moves.length-1].x,
+            "yto": req.body.moves[req.body.moves.length-1].y
+        })
+        console.log(moves);
+        if(all_dead){
+            //SAVE
+            console.log("GAME IS TERMINATED");
+            console.log(req.game.opponent+" won!!!")
+            //await gameDaoInst.updateGameInfo(req.game.id,"terminated",req.game.opponent,JSON.stringify(moves),"",JSON.stringify(req.grid))
+        }
+    }
+
     
     next();
 }

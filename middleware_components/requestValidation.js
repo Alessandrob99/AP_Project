@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.checkGridLimits = exports.checkReqMove = exports.checkInGameAndTurn = exports.checkUserEmailNoCreate = exports.checkGridDimension = exports.checkUserInGame = exports.checkUsersAlreadyInGame = exports.checkReqTokenBalance = exports.checkReqBodyNewGame = exports.checkNewGameBalance = exports.checkUserEmailOpponent = exports.checkUserTokenBalance = void 0;
+exports.checkMoveReachability = exports.checkCellFree = exports.checkGridLimits = exports.checkReqMove = exports.checkInGameAndTurn = exports.checkUserEmailNoCreate = exports.checkGridDimension = exports.checkUserInGame = exports.checkUsersAlreadyInGame = exports.checkReqTokenBalance = exports.checkReqBodyNewGame = exports.checkNewGameBalance = exports.checkUserEmailOpponent = exports.checkUserTokenBalance = void 0;
 var UserDAO_1 = require("../Model/UserDAO");
 var MessFactory_1 = require("../Logging_Factory/MessFactory");
 var GameDAO_1 = require("../Model/GameDAO");
@@ -254,12 +254,18 @@ var checkUserEmailNoCreate = function (req, res, next) { return __awaiter(void 0
 }); };
 exports.checkUserEmailNoCreate = checkUserEmailNoCreate;
 //MOVES VALIDATIONS--------------------------------------
+/*
+DA FARE DOMANI
+-ADATTARE I METODI DI CONTROLLO AL FATTO CHE ORA ABBIAMO UN ARRAY DI SPOSTAMENTI
+-SOPRA BISOGNA AGGIUNGERE IL CONTROLLO DELLA SEQUENZA DI SPOSTAMENTI (SE SONO + DI UNO ALLORA CI SI DEVE SPOSTARE DI 2 IN 2)
+*/
 //Checks if the user is in game and if so if it's his turn
 var checkInGameAndTurn = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var gameDao, foundGame;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
+                console.log("checkInGameAndTurn");
                 gameDao = new GameDAO_1.GameDao();
                 return [4 /*yield*/, gameDao.checkUserGame(req.user.email)];
             case 1:
@@ -283,68 +289,454 @@ var checkInGameAndTurn = function (req, res, next) { return __awaiter(void 0, vo
     });
 }); };
 exports.checkInGameAndTurn = checkInGameAndTurn;
+function split(str, index) {
+    var result = [str.slice(0, index), str.slice(index)];
+    return result;
+}
 //Checks if the "move" request body is correctly formatted
 var checkReqMove = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, wb, num, _b, wb, num;
+    var _a, wb, num, _b, wb, num, m;
     return __generator(this, function (_c) {
-        if ((typeof req.body.pawn === "string")
-            && (typeof req.body.x === "number")
-            && (typeof req.body.y === 'number')) {
-            //Check that specified pawn exists and is not dead and it can be moved by the user
-            if (req.game.creator === req.user.email) {
-                _a = split(req.body.pawn, 1), wb = _a[0], num = _a[1];
-                //The second part of the string is a number
-                (isNaN(Number(num))) ? next(MessFactory_1.MessEnum.BadlyFormattedBody) : {};
-                //This number is referring to an existing pawn
-                (parseInt(num) > req.game.dimension) ? next(MessFactory_1.MessEnum.BadlyFormattedBody) : {};
-                //First part of the string is either "w" or "b"
-                if (wb !== "w") {
-                    //If "b" the creator cant move it (he can only move white pawns)
-                    (wb === "b") ? next(MessFactory_1.MessEnum.InvalidMove) : next(MessFactory_1.MessEnum.BadlyFormattedBody);
-                }
-                next();
+        console.log("checkReqMove");
+        ((typeof req.body.pawn === "string") && (req.body.pawn.length >= 2)) ? {} : next(MessFactory_1.MessEnum.BadlyFormattedBody);
+        //Check that specified pawn exists and it can be moved by the user
+        if (req.game.creator === req.user.email) {
+            _a = split(req.body.pawn, 1), wb = _a[0], num = _a[1];
+            //The second part of the string is not a number
+            (isNaN(Number(num))) ? next(MessFactory_1.MessEnum.BadlyFormattedBody) : {};
+            //This number is referring to an existing pawn
+            (parseInt(num) > req.game.dimension) ? next(MessFactory_1.MessEnum.BadlyFormattedBody) : {};
+            //First part of the string is either "w" or "b"
+            if (wb !== "w") {
+                //If "b" the creator cant move it (he can only move white pawns)
+                (wb === "b") ? next(MessFactory_1.MessEnum.InvalidMove) : next(MessFactory_1.MessEnum.BadlyFormattedBody);
             }
-            if (req.game.opponent === req.user.email) {
-                _b = split(req.body.pawn, 1), wb = _b[0], num = _b[1];
-                //The second part of the string is a number
-                (isNaN(Number(num))) ? next(MessFactory_1.MessEnum.BadlyFormattedBody) : {};
-                //This number is referring to an existing pawn
-                (parseInt(num) > req.game.dimension) ? next(MessFactory_1.MessEnum.BadlyFormattedBody) : {};
-                //First part of the string is either "w" or "b"
-                if (wb !== "b") {
-                    //If "w" the opponent cant move it (he can only move black pawns)
-                    (wb === "w") ? next(MessFactory_1.MessEnum.InvalidMove) : next(MessFactory_1.MessEnum.BadlyFormattedBody);
-                }
-                next();
+        }
+        if (req.game.opponent === req.user.email) {
+            _b = split(req.body.pawn, 1), wb = _b[0], num = _b[1];
+            //The second part of the string is a number
+            (isNaN(Number(num))) ? next(MessFactory_1.MessEnum.BadlyFormattedBody) : {};
+            //This number is referring to an existing pawn
+            (parseInt(num) > req.game.dimension) ? next(MessFactory_1.MessEnum.BadlyFormattedBody) : {};
+            //First part of the string is either "w" or "b"
+            if (wb !== "b") {
+                //If "w" the opponent cant move it (he can only move black pawns)
+                (wb === "w") ? next(MessFactory_1.MessEnum.InvalidMove) : next(MessFactory_1.MessEnum.BadlyFormattedBody);
             }
-            next();
         }
-        else {
-            next(MessFactory_1.MessEnum.BadlyFormattedBody);
+        //var movesTypeIsOK = true;
+        for (m = 0; m < req.body.moves.length; m++) {
+            if ((typeof req.body.moves[m].x !== "number") || (typeof req.body.moves[m].y !== 'number')) {
+                next(MessFactory_1.MessEnum.BadlyFormattedBody);
+            }
         }
+        next();
         return [2 /*return*/];
     });
 }); };
 exports.checkReqMove = checkReqMove;
 //Makes sure that the move doesn't make the pawn fall out of the grid
 var checkGridLimits = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var m;
     return __generator(this, function (_a) {
-        if ((parseInt(req.body.x) < 1) || (parseInt(req.body.y) < 1)) {
-            next(MessFactory_1.MessEnum.InvalidMove);
-        }
-        else {
-            if ((parseInt(req.body.x) > req.game.dimension) || (parseInt(req.body.y) > req.game.dimension)) {
-                next(MessFactory_1.MessEnum.InvalidMove);
-            }
-            else {
-                next();
+        console.log("checkGridLimits");
+        //   var areMovesInGrid = true;
+        for (m = 0; m < req.body.moves.length; m++) {
+            if ((parseInt(req.body.moves[m].x) < 1) || (parseInt(req.body.moves[m].y) < 1)
+                || (parseInt(req.body.moves[m].x) > req.game.dimension) || (parseInt(req.body.moves[m].y) > req.game.dimension)) {
+                next(MessFactory_1.MessEnum.BadlyFormattedBody);
             }
         }
+        next();
         return [2 /*return*/];
     });
 }); };
 exports.checkGridLimits = checkGridLimits;
-function split(str, index) {
-    var result = [str.slice(0, index), str.slice(index)];
-    return result;
-}
+//Makes sure that the destination cell is free
+//This check includes the fact that the pawn is not staying in the same place
+var checkCellFree = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var m, i;
+    return __generator(this, function (_a) {
+        console.log("checkCellFree");
+        // var occupied : Boolean = false;
+        //If the user selected a dame it could be possible for it to go back to the initial spot
+        for (m = 0; m < req.body.moves.length; m++) {
+            for (i = 0; i < req.game.dimension; i++) {
+                //We insert in the req the pawn object
+                (req.grid.whites[i].name === req.body.pawn) ? req.pawn = req.grid.whites[i] : {};
+                (req.grid.blacks[i].name === req.body.pawn) ? req.pawn = req.grid.blacks[i] : {};
+                //The pawn must not be dead in order to cover the position
+                if (((req.grid.whites[i].x === req.body.moves[m].x) && (req.grid.whites[i].y === req.body.moves[m].y) && (req.grid.whites[i].role !== "dead"))
+                    || ((req.grid.blacks[i].x === req.body.moves[m].x) && (req.grid.blacks[i].y === req.body.moves[m].y) && (req.grid.blacks[i].role !== "dead"))) {
+                    if (!((req.pawn.role === "dame") && (m !== 0))) { //A dame could possibily go back to the initial spot... but not with the first move (it cant stand still)
+                        next(MessFactory_1.MessEnum.InvalidMove);
+                    }
+                }
+            }
+        }
+        next();
+        return [2 /*return*/];
+    });
+}); };
+exports.checkCellFree = checkCellFree;
+//Checks if the destination can be reached withoud infringing any game rules
+var checkMoveReachability = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, wb, num, killed_pawn, moved_pawn, m, p, p, m, p, p;
+    return __generator(this, function (_b) {
+        //Check that the pawn is alive
+        console.log("checkMoveReachability");
+        (req.pawn.role === "dead") ? next(MessFactory_1.MessEnum.InvalidMove) : {};
+        req.xfrom = req.pawn.x;
+        req.yfrom = req.pawn.y;
+        _a = split(req.pawn.name, 1), wb = _a[0], num = _a[1];
+        killed_pawn = null;
+        moved_pawn = false;
+        if (req.pawn.role === "pawn") {
+            //Cell is unrachable (moving diagonally)
+            for (m = 0; m < req.body.moves.length; m++) {
+                (((req.body.moves[m].x + req.body.moves[m].y) % 2) !== 0) ? next(MessFactory_1.MessEnum.BadlyFormattedBody) : {};
+                //Since we are already scanning the array we use this loop to check if the sequence of moves is valid
+                //Cant eat a dame, can eat only if the destination is 2 away diagonally with an opponent pawn in the middle   
+                //For the pawn is easy cz Δy = 2 = 1 eaten, Δy=4 = 2 eaten pawns
+                if (wb === "w") {
+                    if (((req.body.moves[m].y !== req.pawn.y + 1) && (req.body.moves[m].y !== req.pawn.y + 2))
+                        || ((req.body.moves[m].x !== req.pawn.x + 1) && (req.body.moves[m].x !== req.pawn.x - 1)
+                            && (req.body.moves[m].x !== req.pawn.x + 2) && (req.body.moves[m].x !== req.pawn.x - 2))) {
+                        console.log("Out of the allowed range");
+                        next(MessFactory_1.MessEnum.InvalidMove);
+                        break;
+                    }
+                    else {
+                        //It means that we are trying to eat
+                        if (req.body.moves[m].y === req.pawn.y + 2) {
+                            //To the left or to the right?
+                            if (moved_pawn) {
+                                console.log("Can't move again after eating a pawn or moving");
+                                next(MessFactory_1.MessEnum.InvalidMove);
+                                break;
+                            } //Can't eat after moving
+                            for (p = 0; p < req.grid.blacks.length; p++) {
+                                killed_pawn = null;
+                                if ((req.grid.blacks[p].x === ((req.pawn.x + req.body.moves[m].x) / 2)) && (req.grid.blacks[p].y === ((req.pawn.y + req.body.moves[m].y) / 2)) && (req.grid.blacks[p].role === "pawn")) {
+                                    console.log(req.pawn);
+                                    killed_pawn = req.grid.blacks[p];
+                                    req.grid.blacks[p].role = "dead"; //GRID IS GOING TO BE USED TO UPDATE THE DB
+                                    req.grid.whites[parseInt(num)].x = req.pawn.x + 2; //Update of the pawn's position in the grid
+                                    req.grid.whites[parseInt(num)].y = req.pawn.y + 2;
+                                    req.pawn.x = req.body.moves[m].x; //Update our variable position
+                                    req.pawn.y = req.body.moves[m].y;
+                                    console.log("Moved to");
+                                    console.log(req.pawn);
+                                    console.log("+ Killing +");
+                                    console.log(killed_pawn);
+                                    console.log("----------------------");
+                                    break; //Break bc if we dont stop all the pawns aligned diagonally are going to die :(
+                                }
+                            }
+                            (killed_pawn) ? {} : next(MessFactory_1.MessEnum.InvalidMove);
+                        }
+                        else { //It means we are not trying to eat with the next move
+                            if ((killed_pawn !== null) || (moved_pawn)) {
+                                console.log("Can't move again after eating a pawn or moving");
+                                next(MessFactory_1.MessEnum.InvalidMove);
+                            }
+                            else {
+                                //Move one to right or left
+                                moved_pawn = true;
+                                if (req.body.moves[m].x === req.pawn.x + 1) { //RIGHT
+                                    console.log(req.pawn);
+                                    req.grid.whites[parseInt(num)].x = req.pawn.x + 1; //Update of the pawn's position in the grid
+                                    req.grid.whites[parseInt(num)].y = req.pawn.y + 1;
+                                    req.pawn.x = req.body.moves[m].x; //Update our variable position
+                                    req.pawn.y = req.body.moves[m].y;
+                                    console.log("Moved to");
+                                    console.log(req.pawn);
+                                    console.log("----------------------");
+                                }
+                                else { //LEFT
+                                    console.log(req.pawn);
+                                    req.grid.whites[parseInt(num)].x = req.pawn.x - 1; //Update of the pawn's position in the grid
+                                    req.grid.whites[parseInt(num)].y = req.pawn.y + 1;
+                                    req.pawn.x = req.body.moves[m].x; //Update our variable position
+                                    req.pawn.y = req.body.moves[m].y;
+                                    console.log("Moved to");
+                                    console.log(req.pawn);
+                                    console.log("----------------------");
+                                }
+                                console.log("GAME GRID:");
+                                console.log(req.grid);
+                            }
+                        }
+                    }
+                    if (req.pawn.y == req.game.dimension) {
+                        req.grid.whites[parseInt(num) - 1].role = "dame";
+                        console.log("w" + num + " became a dame!");
+                    }
+                }
+                else { //BLACK PAWNS CONTROLLS
+                    if (((req.body.moves[m].y !== req.pawn.y - 1) && (req.body.moves[m].y !== req.pawn.y - 2))
+                        || ((req.body.moves[m].x !== req.pawn.x + 1) && (req.body.moves[m].x !== req.pawn.x - 1)
+                            && (req.body.moves[m].x !== req.pawn.x + 2) && (req.body.moves[m].x !== req.pawn.x - 2))) {
+                        console.log("Out of the allowed range");
+                        next(MessFactory_1.MessEnum.InvalidMove);
+                        break;
+                    }
+                    else {
+                        //It means that we are trying to eat
+                        if (req.body.moves[m].y === req.pawn.y - 2) {
+                            //To the left or to the right?
+                            if (moved_pawn) {
+                                console.log("Can't move again after eating a pawn or moving");
+                                next(MessFactory_1.MessEnum.InvalidMove);
+                                break;
+                            } //Can't eat after moving
+                            for (p = 0; p < req.grid.whites.length; p++) {
+                                killed_pawn = null;
+                                if ((req.grid.whites[p].x === ((req.pawn.x + req.body.moves[m].x) / 2)) && (req.grid.whites[p].y === ((req.pawn.y + req.body.moves[m].y) / 2)) && (req.grid.whites[p].role === "pawn")) {
+                                    console.log(req.pawn);
+                                    killed_pawn = req.grid.whites[p];
+                                    req.grid.whites[p].role = "dead"; //GRID IS GOING TO BE USED TO UPDATE THE DB
+                                    req.grid.blacks[parseInt(num)].x = req.pawn.x + 2; //Update of the pawn's position in the grid
+                                    req.grid.blacks[parseInt(num)].y = req.pawn.y + 2;
+                                    req.pawn.x = req.body.moves[m].x; //Update our variable position
+                                    req.pawn.y = req.body.moves[m].y;
+                                    console.log("Moved to");
+                                    console.log(req.pawn);
+                                    console.log("+ Killing +");
+                                    console.log(killed_pawn);
+                                    console.log("----------------------");
+                                    break; //Break bc if we dont stop all the pawns aligned diagonally are going to die :(
+                                }
+                            }
+                            (killed_pawn) ? {} : next(MessFactory_1.MessEnum.InvalidMove);
+                        }
+                        else { //It means we are not trying to eat with the next move
+                            if ((killed_pawn !== null) || (moved_pawn)) {
+                                console.log("Can't move again after eating a pawn or moving");
+                                next(MessFactory_1.MessEnum.InvalidMove);
+                            }
+                            else {
+                                //Move one to right or left
+                                moved_pawn = true;
+                                if (req.body.moves[m].x === req.pawn.x + 1) { //RIGHT
+                                    console.log(req.pawn);
+                                    req.grid.blacks[parseInt(num)].x = req.pawn.x + 1; //Update of the pawn's position in the grid
+                                    req.grid.blacks[parseInt(num)].y = req.pawn.y - 1;
+                                    req.pawn.x = req.body.moves[m].x; //Update our variable position
+                                    req.pawn.y = req.body.moves[m].y;
+                                    console.log("Moved to");
+                                    console.log(req.pawn);
+                                    console.log("----------------------");
+                                }
+                                else { //LEFT
+                                    console.log(req.pawn);
+                                    req.grid.blacks[parseInt(num)].x = req.pawn.x - 1; //Update of the pawn's position in the grid
+                                    req.grid.blacks[parseInt(num)].y = req.pawn.y - 1;
+                                    req.pawn.x = req.body.moves[m].x; //Update our variable position
+                                    req.pawn.y = req.body.moves[m].y;
+                                    console.log("Moved to");
+                                    console.log(req.pawn);
+                                    console.log("----------------------");
+                                }
+                                console.log("GAME GRID:");
+                                console.log(req.grid);
+                            }
+                        }
+                    }
+                    if (req.pawn.y == 1) {
+                        req.grid.blacks[parseInt(num) - 1].role = "dame";
+                        console.log("b" + num + " became a dame!");
+                    }
+                }
+            }
+        }
+        if (req.pawn.role === "dame") {
+            for (m = 0; m < req.body.moves.length; m++) {
+                (((req.body.moves[m].x + req.body.moves[m].y) % 2) !== 0) ? next(MessFactory_1.MessEnum.BadlyFormattedBody) : {};
+                if (((req.body.moves[m].y !== req.pawn.y + 1) && (req.body.moves[m].y !== req.pawn.y - 1)
+                    && (req.body.moves[m].y !== req.pawn.y + 2) && (req.body.moves[m].y !== req.pawn.y - 2))
+                    || ((req.body.moves[m].x !== req.pawn.x + 1) && (req.body.moves[m].x !== req.pawn.x - 1)
+                        && (req.body.moves[m].x !== req.pawn.x + 2) && (req.body.moves[m].x !== req.pawn.x - 2))) {
+                    console.log("Out of the allowed range");
+                    next(MessFactory_1.MessEnum.InvalidMove);
+                    break;
+                }
+                if (wb === "w") { //WHITE DAME
+                    //It means that we are trying to eat
+                    if (Math.abs(req.body.moves[m].y - req.pawn.y) === 2) {
+                        //To the left or to the right?
+                        if (moved_pawn) {
+                            console.log("Can't move again after eating a pawn or moving");
+                            next(MessFactory_1.MessEnum.InvalidMove);
+                            break;
+                        } //Can't eat after moving
+                        for (p = 0; p < req.grid.blacks.length; p++) {
+                            killed_pawn = null;
+                            if ((req.grid.blacks[p].x === ((req.pawn.x + req.body.moves[m].x) / 2)) && (req.grid.blacks[p].y === ((req.pawn.y + req.body.moves[m].y) / 2)) && ((req.grid.blacks[p].role === "pawn") || (req.grid.blacks[p].role === "dame"))) {
+                                console.log(req.pawn);
+                                killed_pawn = req.grid.blacks[p];
+                                req.grid.blacks[p].role = "dead"; //GRID IS GOING TO BE USED TO UPDATE THE DB
+                                req.grid.whites[parseInt(num)].x = req.pawn.x + 2; //Update of the pawn's position in the grid
+                                req.grid.whites[parseInt(num)].y = req.pawn.y + 2;
+                                req.pawn.x = req.body.moves[m].x; //Update our variable position
+                                req.pawn.y = req.body.moves[m].y;
+                                console.log("Moved to");
+                                console.log(req.pawn);
+                                console.log("+ Killing +");
+                                console.log(killed_pawn);
+                                console.log("----------------------");
+                                break; //Break bc if we dont stop all the pawns aligned diagonally are going to die :(
+                            }
+                        }
+                        (killed_pawn) ? {} : next(MessFactory_1.MessEnum.InvalidMove);
+                    }
+                    else { //It means we are not trying to eat with the next move
+                        if ((killed_pawn !== null) || (moved_pawn)) {
+                            console.log("Can't move again after eating a pawn or moving");
+                            next(MessFactory_1.MessEnum.InvalidMove);
+                        }
+                        else {
+                            //Move one to right or left
+                            moved_pawn = true;
+                            if (req.body.moves[m].y === req.pawn.y + 1) { //Moving upward
+                                if (req.body.moves[m].x === req.pawn.x + 1) { //RIGHT
+                                    console.log(req.pawn);
+                                    req.grid.whites[parseInt(num)].x = req.pawn.x + 1; //Update of the pawn's position in the grid
+                                    req.grid.whites[parseInt(num)].y = req.pawn.y + 1;
+                                    req.pawn.x = req.body.moves[m].x; //Update our variable position
+                                    req.pawn.y = req.body.moves[m].y;
+                                    console.log("Moved to");
+                                    console.log(req.pawn);
+                                    console.log("----------------------");
+                                }
+                                else { //LEFT
+                                    console.log(req.pawn);
+                                    req.grid.whites[parseInt(num)].x = req.pawn.x - 1; //Update of the pawn's position in the grid
+                                    req.grid.whites[parseInt(num)].y = req.pawn.y + 1;
+                                    req.pawn.x = req.body.moves[m].x; //Update our variable position
+                                    req.pawn.y = req.body.moves[m].y;
+                                    console.log("Moved to");
+                                    console.log(req.pawn);
+                                    console.log("----------------------");
+                                }
+                            }
+                            if (req.body.moves[m].y === req.pawn.y - 1) { //moving downward
+                                if (req.body.moves[m].x === req.pawn.x + 1) { //RIGHT
+                                    console.log(req.pawn);
+                                    req.grid.whites[parseInt(num)].x = req.pawn.x + 1; //Update of the pawn's position in the grid
+                                    req.grid.whites[parseInt(num)].y = req.pawn.y - 1;
+                                    req.pawn.x = req.body.moves[m].x; //Update our variable position
+                                    req.pawn.y = req.body.moves[m].y;
+                                    console.log("Moved to");
+                                    console.log(req.pawn);
+                                    console.log("----------------------");
+                                }
+                                else { //LEFT
+                                    console.log(req.pawn);
+                                    req.grid.whites[parseInt(num)].x = req.pawn.x - 1; //Update of the pawn's position in the grid
+                                    req.grid.whites[parseInt(num)].y = req.pawn.y - 1;
+                                    req.pawn.x = req.body.moves[m].x; //Update our variable position
+                                    req.pawn.y = req.body.moves[m].y;
+                                    console.log("Moved to");
+                                    console.log(req.pawn);
+                                    console.log("----------------------");
+                                }
+                            }
+                            console.log("GAME GRID:");
+                            console.log(req.grid);
+                        }
+                    }
+                }
+                else { //BLACK DAME
+                    //It means that we are trying to eat
+                    if (Math.abs(req.body.moves[m].y - req.pawn.y) === 2) {
+                        //To the left or to the right?
+                        if (moved_pawn) {
+                            console.log("Can't move again after eating a pawn or moving");
+                            next(MessFactory_1.MessEnum.InvalidMove);
+                            break;
+                        } //Can't eat after moving
+                        for (p = 0; p < req.grid.whites.length; p++) {
+                            killed_pawn = null;
+                            if ((req.grid.whites[p].x === ((req.pawn.x + req.body.moves[m].x) / 2)) && (req.grid.whites[p].y === ((req.pawn.y + req.body.moves[m].y) / 2)) && ((req.grid.whites[p].role === "pawn") || (req.grid.whites[p].role === "dame"))) {
+                                console.log(req.pawn);
+                                killed_pawn = req.grid.whites[p];
+                                req.grid.blacks[p].role = "dead"; //GRID IS GOING TO BE USED TO UPDATE THE DB
+                                req.grid.blacks[parseInt(num)].x = req.pawn.x + 2; //Update of the pawn's position in the grid
+                                req.grid.blacks[parseInt(num)].y = req.pawn.y + 2;
+                                req.pawn.x = req.body.moves[m].x; //Update our variable position
+                                req.pawn.y = req.body.moves[m].y;
+                                console.log("Moved to");
+                                console.log(req.pawn);
+                                console.log("+ Killing +");
+                                console.log(killed_pawn);
+                                console.log("----------------------");
+                                break; //Break bc if we dont stop all the pawns aligned diagonally are going to die :(
+                            }
+                        }
+                        (killed_pawn) ? {} : next(MessFactory_1.MessEnum.InvalidMove);
+                    }
+                    else { //It means we are not trying to eat with the next move
+                        if ((killed_pawn !== null) || (moved_pawn)) {
+                            console.log("Can't move again after eating a pawn or moving");
+                            next(MessFactory_1.MessEnum.InvalidMove);
+                        }
+                        else {
+                            //Move one to right or left
+                            moved_pawn = true;
+                            if (req.body.moves[m].y === req.pawn.y + 1) { //Moving upward
+                                if (req.body.moves[m].x === req.pawn.x + 1) { //RIGHT
+                                    console.log(req.pawn);
+                                    req.grid.blacks[parseInt(num)].x = req.pawn.x + 1; //Update of the pawn's position in the grid
+                                    req.grid.blacks[parseInt(num)].y = req.pawn.y + 1;
+                                    req.pawn.x = req.body.moves[m].x; //Update our variable position
+                                    req.pawn.y = req.body.moves[m].y;
+                                    console.log("Moved to");
+                                    console.log(req.pawn);
+                                    console.log("----------------------");
+                                }
+                                else { //LEFT
+                                    console.log(req.pawn);
+                                    req.grid.blacks[parseInt(num)].x = req.pawn.x - 1; //Update of the pawn's position in the grid
+                                    req.grid.blacks[parseInt(num)].y = req.pawn.y + 1;
+                                    req.pawn.x = req.body.moves[m].x; //Update our variable position
+                                    req.pawn.y = req.body.moves[m].y;
+                                    console.log("Moved to");
+                                    console.log(req.pawn);
+                                    console.log("----------------------");
+                                }
+                            }
+                            if (req.body.moves[m].y === req.pawn.y - 1) { //moving downward
+                                if (req.body.moves[m].x === req.pawn.x + 1) { //RIGHT
+                                    console.log(req.pawn);
+                                    req.grid.blacks[parseInt(num)].x = req.pawn.x + 1; //Update of the pawn's position in the grid
+                                    req.grid.blacks[parseInt(num)].y = req.pawn.y - 1;
+                                    req.pawn.x = req.body.moves[m].x; //Update our variable position
+                                    req.pawn.y = req.body.moves[m].y;
+                                    console.log("Moved to");
+                                    console.log(req.pawn);
+                                    console.log("----------------------");
+                                }
+                                else { //LEFT
+                                    console.log(req.pawn);
+                                    req.grid.blacks[parseInt(num)].x = req.pawn.x - 1; //Update of the pawn's position in the grid
+                                    req.grid.blacks[parseInt(num)].y = req.pawn.y - 1;
+                                    req.pawn.x = req.body.moves[m].x; //Update our variable position
+                                    req.pawn.y = req.body.moves[m].y;
+                                    console.log("Moved to");
+                                    console.log(req.pawn);
+                                    console.log("----------------------");
+                                }
+                            }
+                            console.log("GAME GRID:");
+                            console.log(req.grid);
+                        }
+                    }
+                }
+            }
+        }
+        next();
+        return [2 /*return*/];
+    });
+}); };
+exports.checkMoveReachability = checkMoveReachability;

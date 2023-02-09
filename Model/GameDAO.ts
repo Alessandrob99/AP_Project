@@ -29,7 +29,7 @@ export class GameDao{
                     allowNull: false
                 },
                 positions: {
-                    type: DataTypes.STRING(1000),
+                    type: DataTypes.STRING(10000),
                     allowNull: false
                 },
                 winner: {

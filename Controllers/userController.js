@@ -60,11 +60,62 @@ var newGame = function (req, res, next) { return __awaiter(void 0, void 0, void 
 }); };
 exports.newGame = newGame;
 var move = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var moves, all_dead, state, p, p;
     return __generator(this, function (_a) {
-        //Register the move 
-        //withdraw tokens
-        next();
-        return [2 /*return*/];
+        switch (_a.label) {
+            case 0:
+                moves = JSON.parse(req.game.moves);
+                all_dead = true;
+                state = "started";
+                if (!(req.game.turn === req.game.creator)) return [3 /*break*/, 2];
+                return [4 /*yield*/, userDaoInst.withdrawTokens(req.game.creator, 0.015)];
+            case 1:
+                _a.sent();
+                for (p = 0; p < req.grid.blacks.length; p++) {
+                    (req.grid.blacks[p].role !== "dead") ? all_dead = false : {};
+                    break;
+                }
+                moves.white_moves.push({
+                    "pawn": req.pawn.name,
+                    "xfrom": req.xfrom,
+                    "yfrom": req.yfrom,
+                    "xto": req.body.moves[req.body.moves.length - 1].x,
+                    "yto": req.body.moves[req.body.moves.length - 1].y
+                });
+                console.log(moves);
+                if (all_dead) {
+                    //SAVE
+                    console.log("GAME IS TERMINATED");
+                    console.log(req.game.creator + " won!!!");
+                    //await gameDaoInst.updateGameInfo(req.game.id,"terminated",req.game.creator,JSON.stringify(moves),"",JSON.stringify(req.grid))
+                }
+                return [3 /*break*/, 4];
+            case 2: return [4 /*yield*/, userDaoInst.withdrawTokens(req.game.opponent, 0.015)];
+            case 3:
+                _a.sent();
+                for (p = 0; p < req.grid.whites.length; p++) {
+                    (req.grid.whites[p].role !== "dead") ? all_dead = false : {};
+                    break;
+                }
+                moves.black_moves.push({
+                    "pawn": req.pawn.name,
+                    "xfrom": req.xfrom,
+                    "yfrom": req.yfrom,
+                    "xto": req.body.moves[req.body.moves.length - 1].x,
+                    "yto": req.body.moves[req.body.moves.length - 1].y
+                });
+                console.log(moves);
+                if (all_dead) {
+                    //SAVE
+                    console.log("GAME IS TERMINATED");
+                    console.log(req.game.opponent + " won!!!");
+                    //await gameDaoInst.updateGameInfo(req.game.id,"terminated",req.game.opponent,JSON.stringify(moves),"",JSON.stringify(req.grid))
+                }
+                _a.label = 4;
+            case 4:
+                next();
+                return [2 /*return*/];
+        }
     });
 }); };
 exports.move = move;
