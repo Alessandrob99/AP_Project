@@ -67,13 +67,14 @@ var move = function (req, res, next) { return __awaiter(void 0, void 0, void 0, 
                 moves = JSON.parse(req.game.moves);
                 all_dead = true;
                 state = "started";
-                if (!(req.game.turn === req.game.creator)) return [3 /*break*/, 2];
+                console.log("GAME GRID:");
+                console.log(req.grid);
+                if (!(req.game.turn === req.game.creator)) return [3 /*break*/, 6];
                 return [4 /*yield*/, userDaoInst.withdrawTokens(req.game.creator, 0.015)];
             case 1:
                 _a.sent();
                 for (p = 0; p < req.grid.blacks.length; p++) {
                     (req.grid.blacks[p].role !== "dead") ? all_dead = false : {};
-                    break;
                 }
                 moves.white_moves.push({
                     "pawn": req.pawn.name,
@@ -83,19 +84,24 @@ var move = function (req, res, next) { return __awaiter(void 0, void 0, void 0, 
                     "yto": req.body.moves[req.body.moves.length - 1].y
                 });
                 console.log(moves);
-                if (all_dead) {
-                    //SAVE
-                    console.log("GAME IS TERMINATED");
-                    console.log(req.game.creator + " won!!!");
-                    //await gameDaoInst.updateGameInfo(req.game.id,"terminated",req.game.creator,JSON.stringify(moves),"",JSON.stringify(req.grid))
-                }
-                return [3 /*break*/, 4];
-            case 2: return [4 /*yield*/, userDaoInst.withdrawTokens(req.game.opponent, 0.015)];
-            case 3:
+                if (!all_dead) return [3 /*break*/, 3];
+                //SAVE
+                console.log("GAME IS TERMINATED");
+                console.log(req.game.creator + " won!!!");
+                return [4 /*yield*/, gameDaoInst.updateGameInfo(req.game.id, "terminated", req.game.creator, JSON.stringify(moves), "", JSON.stringify(req.grid))];
+            case 2:
+                _a.sent();
+                return [3 /*break*/, 5];
+            case 3: return [4 /*yield*/, gameDaoInst.updateGameInfo(req.game.id, req.game.state, "", JSON.stringify(moves), req.game.opponent, JSON.stringify(req.grid))];
+            case 4:
+                _a.sent();
+                _a.label = 5;
+            case 5: return [3 /*break*/, 11];
+            case 6: return [4 /*yield*/, userDaoInst.withdrawTokens(req.game.opponent, 0.015)];
+            case 7:
                 _a.sent();
                 for (p = 0; p < req.grid.whites.length; p++) {
                     (req.grid.whites[p].role !== "dead") ? all_dead = false : {};
-                    break;
                 }
                 moves.black_moves.push({
                     "pawn": req.pawn.name,
@@ -105,15 +111,20 @@ var move = function (req, res, next) { return __awaiter(void 0, void 0, void 0, 
                     "yto": req.body.moves[req.body.moves.length - 1].y
                 });
                 console.log(moves);
-                if (all_dead) {
-                    //SAVE
-                    console.log("GAME IS TERMINATED");
-                    console.log(req.game.opponent + " won!!!");
-                    //await gameDaoInst.updateGameInfo(req.game.id,"terminated",req.game.opponent,JSON.stringify(moves),"",JSON.stringify(req.grid))
-                }
-                _a.label = 4;
-            case 4:
-                next();
+                if (!all_dead) return [3 /*break*/, 9];
+                //SAVE
+                console.log("GAME IS TERMINATED");
+                console.log(req.game.opponent + " won!!!");
+                return [4 /*yield*/, gameDaoInst.updateGameInfo(req.game.id, "terminated", req.game.opponent, JSON.stringify(moves), "", JSON.stringify(req.grid))];
+            case 8:
+                _a.sent();
+                return [3 /*break*/, 11];
+            case 9: return [4 /*yield*/, gameDaoInst.updateGameInfo(req.game.id, req.game.state, "", JSON.stringify(moves), req.game.creator, JSON.stringify(req.grid))];
+            case 10:
+                _a.sent();
+                _a.label = 11;
+            case 11:
+                res.status(200).json({ Status: 200, Description: "--Turn over--" });
                 return [2 /*return*/];
         }
     });

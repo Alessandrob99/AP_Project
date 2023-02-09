@@ -21,13 +21,14 @@ export const move = async (req,res,next) => {
     var moves = JSON.parse(req.game.moves);
     var all_dead = true;
     var state = "started"
+    console.log("GAME GRID:")
+    console.log(req.grid);    
     if(req.game.turn === req.game.creator){
 
         await userDaoInst.withdrawTokens(req.game.creator,0.015)
 
         for(var p=0; p<req.grid.blacks.length;p++){
             (req.grid.blacks[p].role!=="dead")? all_dead=false: {};
-            break;
         }
         moves.white_moves.push({
             "pawn": req.pawn.name,
@@ -41,7 +42,9 @@ export const move = async (req,res,next) => {
             //SAVE
             console.log("GAME IS TERMINATED");
             console.log(req.game.creator+" won!!!")
-            //await gameDaoInst.updateGameInfo(req.game.id,"terminated",req.game.creator,JSON.stringify(moves),"",JSON.stringify(req.grid))
+            await gameDaoInst.updateGameInfo(req.game.id,"terminated",req.game.creator,JSON.stringify(moves),"",JSON.stringify(req.grid))
+        }else{
+            await gameDaoInst.updateGameInfo(req.game.id,req.game.state,"",JSON.stringify(moves),req.game.opponent,JSON.stringify(req.grid));
         }
     }else{
 
@@ -49,7 +52,6 @@ export const move = async (req,res,next) => {
 
         for(var p=0; p<req.grid.whites.length;p++){
             (req.grid.whites[p].role!=="dead")? all_dead=false: {};
-            break;
         }
         moves.black_moves.push({
             "pawn": req.pawn.name,
@@ -63,12 +65,13 @@ export const move = async (req,res,next) => {
             //SAVE
             console.log("GAME IS TERMINATED");
             console.log(req.game.opponent+" won!!!")
-            //await gameDaoInst.updateGameInfo(req.game.id,"terminated",req.game.opponent,JSON.stringify(moves),"",JSON.stringify(req.grid))
+            await gameDaoInst.updateGameInfo(req.game.id,"terminated",req.game.opponent,JSON.stringify(moves),"",JSON.stringify(req.grid))
+        }else{
+            await gameDaoInst.updateGameInfo(req.game.id,req.game.state,"",JSON.stringify(moves),req.game.creator,JSON.stringify(req.grid));
         }
     }
+    res.status(200).json({Status : 200, Description: "--Turn over--"});
 
-    
-    next();
 }
 
 export const getGameInfo = async (req,res,next) => {

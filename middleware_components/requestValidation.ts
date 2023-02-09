@@ -318,8 +318,8 @@ export const checkMoveReachability = async (req: any, res: any, next: any) => {
                                 console.log(req.pawn);
                                 killed_pawn = req.grid.blacks[p];
                                 req.grid.blacks[p].role="dead"; //GRID IS GOING TO BE USED TO UPDATE THE DB
-                                req.grid.whites[parseInt(num)].x = req.pawn.x+2; //Update of the pawn's position in the grid
-                                req.grid.whites[parseInt(num)].y = req.pawn.y+2;
+                                req.grid.whites[parseInt(num)-1].x = req.pawn.x+2; //Update of the pawn's position in the grid
+                                req.grid.whites[parseInt(num)-1].y = req.pawn.y+2;
                                 req.pawn.x = req.body.moves[m].x; //Update our variable position
                                 req.pawn.y = req.body.moves[m].y
                                 console.log("Moved to");
@@ -340,8 +340,8 @@ export const checkMoveReachability = async (req: any, res: any, next: any) => {
                             moved_pawn = true;
                             if(req.body.moves[m].x===req.pawn.x+1){//RIGHT
                                 console.log(req.pawn);
-                                req.grid.whites[parseInt(num)].x = req.pawn.x+1; //Update of the pawn's position in the grid
-                                req.grid.whites[parseInt(num)].y = req.pawn.y+1;
+                                req.grid.whites[parseInt(num)-1].x = req.pawn.x+1; //Update of the pawn's position in the grid
+                                req.grid.whites[parseInt(num)-1].y = req.pawn.y+1;
                                 req.pawn.x = req.body.moves[m].x; //Update our variable position
                                 req.pawn.y = req.body.moves[m].y
                                 console.log("Moved to");
@@ -349,8 +349,8 @@ export const checkMoveReachability = async (req: any, res: any, next: any) => {
                                 console.log("----------------------");
                             }else{//LEFT
                                 console.log(req.pawn);
-                                req.grid.whites[parseInt(num)].x = req.pawn.x-1; //Update of the pawn's position in the grid
-                                req.grid.whites[parseInt(num)].y = req.pawn.y+1;
+                                req.grid.whites[parseInt(num)-1].x = req.pawn.x-1; //Update of the pawn's position in the grid
+                                req.grid.whites[parseInt(num)-1].y = req.pawn.y+1;
                                 req.pawn.x = req.body.moves[m].x; //Update our variable position
                                 req.pawn.y = req.body.moves[m].y
                                 console.log("Moved to");
@@ -358,14 +358,14 @@ export const checkMoveReachability = async (req: any, res: any, next: any) => {
                                 console.log("----------------------");
                             }
                             
-                            console.log("GAME GRID:")
-                            console.log(req.grid);
+                            
                         }
                     }
                 }
                 if(req.pawn.y==req.game.dimension){
                     req.grid.whites[parseInt(num)-1].role = "dame";
                     console.log("w"+num+" became a dame!");
+                    break;
                 }
             }else{ //BLACK PAWNS CONTROLLS
                 
@@ -390,8 +390,8 @@ export const checkMoveReachability = async (req: any, res: any, next: any) => {
                                 console.log(req.pawn);
                                 killed_pawn = req.grid.whites[p];
                                 req.grid.whites[p].role="dead"; //GRID IS GOING TO BE USED TO UPDATE THE DB
-                                req.grid.blacks[parseInt(num)].x = req.pawn.x+2; //Update of the pawn's position in the grid
-                                req.grid.blacks[parseInt(num)].y = req.pawn.y+2;
+                                req.grid.blacks[parseInt(num)-1].x = req.pawn.x+2; //Update of the pawn's position in the grid
+                                req.grid.blacks[parseInt(num)-1].y = req.pawn.y+2;
                                 req.pawn.x = req.body.moves[m].x; //Update our variable position
                                 req.pawn.y = req.body.moves[m].y
                                 console.log("Moved to");
@@ -412,8 +412,8 @@ export const checkMoveReachability = async (req: any, res: any, next: any) => {
                             moved_pawn = true;
                             if(req.body.moves[m].x===req.pawn.x+1){//RIGHT
                                 console.log(req.pawn);
-                                req.grid.blacks[parseInt(num)].x = req.pawn.x+1; //Update of the pawn's position in the grid
-                                req.grid.blacks[parseInt(num)].y = req.pawn.y-1;
+                                req.grid.blacks[parseInt(num)-1].x = req.pawn.x+1; //Update of the pawn's position in the grid
+                                req.grid.blacks[parseInt(num)-1].y = req.pawn.y-1;
                                 req.pawn.x = req.body.moves[m].x; //Update our variable position
                                 req.pawn.y = req.body.moves[m].y
                                 console.log("Moved to");
@@ -422,8 +422,8 @@ export const checkMoveReachability = async (req: any, res: any, next: any) => {
 
                             }else{//LEFT
                                 console.log(req.pawn);
-                                req.grid.blacks[parseInt(num)].x = req.pawn.x-1; //Update of the pawn's position in the grid
-                                req.grid.blacks[parseInt(num)].y = req.pawn.y-1;
+                                req.grid.blacks[parseInt(num)-1].x = req.pawn.x-1; //Update of the pawn's position in the grid
+                                req.grid.blacks[parseInt(num)-1].y = req.pawn.y-1;
                                 req.pawn.x = req.body.moves[m].x; //Update our variable position
                                 req.pawn.y = req.body.moves[m].y
                                 console.log("Moved to");
@@ -438,12 +438,13 @@ export const checkMoveReachability = async (req: any, res: any, next: any) => {
                 }
                 if(req.pawn.y==1){
                     req.grid.blacks[parseInt(num)-1].role = "dame";
-                    console.log("b"+num+ " became a dame!")
+                    console.log("b"+num+ " became a dame!");
+                    break;
                 } 
             }
         }
     }
-    if(req.pawn.role==="dame"){
+    if((req.pawn.role==="dame")&&(!moved_pawn)){
 
         for(var m=0;m<req.body.moves.length;m++){
             (((req.body.moves[m].x + req.body.moves[m].y)%2)!==0)? next(MessEnum.BadlyFormattedBody): {};
@@ -472,8 +473,8 @@ export const checkMoveReachability = async (req: any, res: any, next: any) => {
                             console.log(req.pawn);
                             killed_pawn = req.grid.blacks[p];
                             req.grid.blacks[p].role="dead"; //GRID IS GOING TO BE USED TO UPDATE THE DB
-                            req.grid.whites[parseInt(num)].x = req.pawn.x+2; //Update of the pawn's position in the grid
-                            req.grid.whites[parseInt(num)].y = req.pawn.y+2;
+                            req.grid.whites[parseInt(num)-1].x = req.pawn.x+2; //Update of the pawn's position in the grid
+                            req.grid.whites[parseInt(num)-1].y = req.pawn.y+2;
                             req.pawn.x = req.body.moves[m].x; //Update our variable position
                             req.pawn.y = req.body.moves[m].y
                             console.log("Moved to");
@@ -495,8 +496,8 @@ export const checkMoveReachability = async (req: any, res: any, next: any) => {
                         if(req.body.moves[m].y===req.pawn.y+1){//Moving upward
                             if(req.body.moves[m].x===req.pawn.x+1){//RIGHT
                                 console.log(req.pawn);
-                                req.grid.whites[parseInt(num)].x = req.pawn.x+1; //Update of the pawn's position in the grid
-                                req.grid.whites[parseInt(num)].y = req.pawn.y+1;
+                                req.grid.whites[parseInt(num)-1].x = req.pawn.x+1; //Update of the pawn's position in the grid
+                                req.grid.whites[parseInt(num)-1].y = req.pawn.y+1;
                                 req.pawn.x = req.body.moves[m].x; //Update our variable position
                                 req.pawn.y = req.body.moves[m].y
                                 console.log("Moved to");
@@ -504,8 +505,8 @@ export const checkMoveReachability = async (req: any, res: any, next: any) => {
                                 console.log("----------------------");
                             }else{//LEFT
                                 console.log(req.pawn);
-                                req.grid.whites[parseInt(num)].x = req.pawn.x-1; //Update of the pawn's position in the grid
-                                req.grid.whites[parseInt(num)].y = req.pawn.y+1;
+                                req.grid.whites[parseInt(num)-1].x = req.pawn.x-1; //Update of the pawn's position in the grid
+                                req.grid.whites[parseInt(num)-1].y = req.pawn.y+1;
                                 req.pawn.x = req.body.moves[m].x; //Update our variable position
                                 req.pawn.y = req.body.moves[m].y
                                 console.log("Moved to");
@@ -517,8 +518,8 @@ export const checkMoveReachability = async (req: any, res: any, next: any) => {
                         if(req.body.moves[m].y===req.pawn.y-1){//moving downward
                             if(req.body.moves[m].x===req.pawn.x+1){//RIGHT
                                 console.log(req.pawn);
-                                req.grid.whites[parseInt(num)].x = req.pawn.x+1; //Update of the pawn's position in the grid
-                                req.grid.whites[parseInt(num)].y = req.pawn.y-1;
+                                req.grid.whites[parseInt(num)-1].x = req.pawn.x+1; //Update of the pawn's position in the grid
+                                req.grid.whites[parseInt(num)-1].y = req.pawn.y-1;
                                 req.pawn.x = req.body.moves[m].x; //Update our variable position
                                 req.pawn.y = req.body.moves[m].y
                                 console.log("Moved to");
@@ -526,8 +527,8 @@ export const checkMoveReachability = async (req: any, res: any, next: any) => {
                                 console.log("----------------------");
                             }else{//LEFT
                                 console.log(req.pawn);
-                                req.grid.whites[parseInt(num)].x = req.pawn.x-1; //Update of the pawn's position in the grid
-                                req.grid.whites[parseInt(num)].y = req.pawn.y-1;
+                                req.grid.whites[parseInt(num)-1].x = req.pawn.x-1; //Update of the pawn's position in the grid
+                                req.grid.whites[parseInt(num)-1].y = req.pawn.y-1;
                                 req.pawn.x = req.body.moves[m].x; //Update our variable position
                                 req.pawn.y = req.body.moves[m].y
                                 console.log("Moved to");
@@ -536,8 +537,7 @@ export const checkMoveReachability = async (req: any, res: any, next: any) => {
                             }
     
                         }                        
-                        console.log("GAME GRID:")
-                        console.log(req.grid);
+
                     }
                 }
             }else{//BLACK DAME
@@ -555,9 +555,9 @@ export const checkMoveReachability = async (req: any, res: any, next: any) => {
                         if((req.grid.whites[p].x===((req.pawn.x+req.body.moves[m].x)/2))&&(req.grid.whites[p].y===((req.pawn.y+req.body.moves[m].y)/2))&&((req.grid.whites[p].role==="pawn")||(req.grid.whites[p].role==="dame"))){
                             console.log(req.pawn);
                             killed_pawn = req.grid.whites[p];
-                            req.grid.blacks[p].role="dead"; //GRID IS GOING TO BE USED TO UPDATE THE DB
-                            req.grid.blacks[parseInt(num)].x = req.pawn.x+2; //Update of the pawn's position in the grid
-                            req.grid.blacks[parseInt(num)].y = req.pawn.y+2;
+                            req.grid.whites[p].role="dead"; //GRID IS GOING TO BE USED TO UPDATE THE DB
+                            req.grid.blacks[parseInt(num)-1].x = req.pawn.x+2; //Update of the pawn's position in the grid
+                            req.grid.blacks[parseInt(num)-1].y = req.pawn.y+2;
                             req.pawn.x = req.body.moves[m].x; //Update our variable position
                             req.pawn.y = req.body.moves[m].y
                             console.log("Moved to");
@@ -579,8 +579,8 @@ export const checkMoveReachability = async (req: any, res: any, next: any) => {
                         if(req.body.moves[m].y===req.pawn.y+1){//Moving upward
                             if(req.body.moves[m].x===req.pawn.x+1){//RIGHT
                                 console.log(req.pawn);
-                                req.grid.blacks[parseInt(num)].x = req.pawn.x+1; //Update of the pawn's position in the grid
-                                req.grid.blacks[parseInt(num)].y = req.pawn.y+1;
+                                req.grid.blacks[parseInt(num)-1].x = req.pawn.x+1; //Update of the pawn's position in the grid
+                                req.grid.blacks[parseInt(num)-1].y = req.pawn.y+1;
                                 req.pawn.x = req.body.moves[m].x; //Update our variable position
                                 req.pawn.y = req.body.moves[m].y
                                 console.log("Moved to");
@@ -588,8 +588,8 @@ export const checkMoveReachability = async (req: any, res: any, next: any) => {
                                 console.log("----------------------");
                             }else{//LEFT
                                 console.log(req.pawn);
-                                req.grid.blacks[parseInt(num)].x = req.pawn.x-1; //Update of the pawn's position in the grid
-                                req.grid.blacks[parseInt(num)].y = req.pawn.y+1;
+                                req.grid.blacks[parseInt(num)-1].x = req.pawn.x-1; //Update of the pawn's position in the grid
+                                req.grid.blacks[parseInt(num)-1].y = req.pawn.y+1;
                                 req.pawn.x = req.body.moves[m].x; //Update our variable position
                                 req.pawn.y = req.body.moves[m].y
                                 console.log("Moved to");
@@ -601,8 +601,8 @@ export const checkMoveReachability = async (req: any, res: any, next: any) => {
                         if(req.body.moves[m].y===req.pawn.y-1){//moving downward
                             if(req.body.moves[m].x===req.pawn.x+1){//RIGHT
                                 console.log(req.pawn);
-                                req.grid.blacks[parseInt(num)].x = req.pawn.x+1; //Update of the pawn's position in the grid
-                                req.grid.blacks[parseInt(num)].y = req.pawn.y-1;
+                                req.grid.blacks[parseInt(num)-1].x = req.pawn.x+1; //Update of the pawn's position in the grid
+                                req.grid.blacks[parseInt(num)-1].y = req.pawn.y-1;
                                 req.pawn.x = req.body.moves[m].x; //Update our variable position
                                 req.pawn.y = req.body.moves[m].y
                                 console.log("Moved to");
@@ -610,8 +610,8 @@ export const checkMoveReachability = async (req: any, res: any, next: any) => {
                                 console.log("----------------------");
                             }else{//LEFT
                                 console.log(req.pawn);
-                                req.grid.blacks[parseInt(num)].x = req.pawn.x-1; //Update of the pawn's position in the grid
-                                req.grid.blacks[parseInt(num)].y = req.pawn.y-1;
+                                req.grid.blacks[parseInt(num)-1].x = req.pawn.x-1; //Update of the pawn's position in the grid
+                                req.grid.blacks[parseInt(num)-1].y = req.pawn.y-1;
                                 req.pawn.x = req.body.moves[m].x; //Update our variable position
                                 req.pawn.y = req.body.moves[m].y
                                 console.log("Moved to");
@@ -620,8 +620,7 @@ export const checkMoveReachability = async (req: any, res: any, next: any) => {
                             }
     
                         }                        
-                        console.log("GAME GRID:")
-                        console.log(req.grid);
+
                     }
                 }
             }
