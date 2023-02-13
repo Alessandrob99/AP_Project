@@ -45,8 +45,8 @@ var UserDao = /** @class */ (function () {
     define the User model through the Sequelize object
     */
     function UserDao() {
-        var seq = singletonDBConnection_1.DB_Singleton.getInstance().getConnection();
-        this.user = seq.define('User', {
+        this.seq = singletonDBConnection_1.DB_Singleton.getInstance().getConnection();
+        this.user = this.seq.define('User', {
             email: {
                 type: sequelize_1.DataTypes.STRING(50),
                 primaryKey: true
@@ -91,6 +91,34 @@ var UserDao = /** @class */ (function () {
                     case 1:
                         foudUser = _a.sent();
                         return [2 /*return*/, foudUser];
+                }
+            });
+        });
+    };
+    //FAI QUERY PER LA CLASSIFICA 
+    //SCRIVI MANCIO
+    //FINISCI I COMMENTI E PULISCI TUTTO
+    //COMINCIA A VEDERE IL README
+    UserDao.prototype.getUsersCharts = function (order) {
+        return __awaiter(this, void 0, void 0, function () {
+            var usersRundown;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!(order == "asc")) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.seq.query("SELECT games.winner as 'player' ,count(games.winner) as 'game_won' FROM `games` GROUP BY games.winner ORDER BY 2 ASC;", {
+                                type: sequelize_1.QueryTypes.SELECT
+                            })];
+                    case 1:
+                        usersRundown = _a.sent();
+                        return [3 /*break*/, 4];
+                    case 2: return [4 /*yield*/, this.seq.query("SELECT games.winner as 'player' ,count(games.winner) as 'game_won' FROM `games` GROUP BY games.winner ORDER BY 2 DESC;", {
+                            type: sequelize_1.QueryTypes.SELECT
+                        })];
+                    case 3:
+                        usersRundown = _a.sent();
+                        _a.label = 4;
+                    case 4: return [2 /*return*/, (usersRundown)];
                 }
             });
         });

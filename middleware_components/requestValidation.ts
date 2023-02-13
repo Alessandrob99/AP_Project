@@ -36,7 +36,7 @@ export const checkNewGameBalance = async (req: any, res: any, next: any) => {
 
     var user = await dao.readUser(req.user.email)
     if(user.token_balance<0.35){
-        next(MessEnum.NotEnoughTokens);
+        next(MessEnum.UnauthorizedError);
     }else{
         next();
     }  
@@ -154,14 +154,6 @@ export const checkUserEmailNoCreate = async (req: any, res: any, next: any) => {
 
 //MOVES VALIDATIONS--------------------------------------
 
-
-/*
-DA FARE DOMANI
--ADATTARE I METODI DI CONTROLLO AL FATTO CHE ORA ABBIAMO UN ARRAY DI SPOSTAMENTI
--SOPRA BISOGNA AGGIUNGERE IL CONTROLLO DELLA SEQUENZA DI SPOSTAMENTI (SE SONO + DI UNO ALLORA CI SI DEVE SPOSTARE DI 2 IN 2)
-*/
-
-
 //Checks if the user is in game and if so if it's his turn
 export const checkInGameAndTurn = async (req: any, res: any, next: any) => {
     console.log("checkInGameAndTurn");
@@ -182,10 +174,9 @@ export const checkInGameAndTurn = async (req: any, res: any, next: any) => {
     }
 }
 
-
+//Used to divide the pawn name string (es. "w" + "5")
 function split(str, index) {
     const result = [str.slice(0, index), str.slice(index)];
-  
     return result;
 }
 
@@ -221,21 +212,18 @@ export const checkReqMove = async (req: any, res: any, next: any) => {
         }
     }
 
-    //var movesTypeIsOK = true;
     for(var m=0;m<req.body.moves.length;m++){
         if((typeof req.body.moves[m].x !== "number")||(typeof req.body.moves[m].y !== 'number')){
             next(MessEnum.BadlyFormattedBody);
         }
     }
     next();
-//    (movesTypeIsOK)? next() : next(MessEnum.BadlyFormattedBody);
 }
 
 //Makes sure that the move doesn't make the pawn fall out of the grid
 export const checkGridLimits = async (req: any, res: any, next: any) => {
     console.log("checkGridLimits");
 
- //   var areMovesInGrid = true;
     for(var m=0; m<req.body.moves.length;m++){
         if((parseInt(req.body.moves[m].x)<1)||(parseInt(req.body.moves[m].y)<1)
         ||(parseInt(req.body.moves[m].x)>req.game.dimension)||(parseInt(req.body.moves[m].y)>req.game.dimension))
@@ -244,7 +232,6 @@ export const checkGridLimits = async (req: any, res: any, next: any) => {
         }
     }
     next();
-//    (areMovesInGrid)? next(): next(MessEnum.BadlyFormattedBody);
 }
 
 
@@ -254,7 +241,6 @@ export const checkGridLimits = async (req: any, res: any, next: any) => {
 export const checkCellFree = async (req: any, res: any, next: any) => {
     console.log("checkCellFree");
 
-   // var occupied : Boolean = false;
     //If the user selected a dame it could be possible for it to go back to the initial spot
     for(var m = 0; m<req.body.moves.length;m++){
         for(var i=0;i<req.game.dimension;i++){
@@ -271,7 +257,6 @@ export const checkCellFree = async (req: any, res: any, next: any) => {
         }
     }
     next();
-
 }
 
 

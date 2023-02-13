@@ -1,28 +1,30 @@
 import { MessEnum } from "../Logging_Factory/MessFactory";
 import { GameDao } from "../Model/GameDAO";
 import { UserDao } from "../Model/UserDAO";
-import { messageLogger } from "../middleware_components/MessLog";
+import { messageLogger } from "../Middleware_Components/MessLog";
 const { parse } = require('json2csv');
 const fields = ['pawn', 'xfrom', 'yfrom', 'xto', 'yto'];
 
 const userDaoInst = new UserDao();
 const gameDaoInst = new GameDao();
 
+//Method that creates a new game in the db
 export const newGame = async (req,res,next) => {
     await gameDaoInst.createGame(req.user.email, req.body.opponent, req.body.dimension);
     await userDaoInst.withdrawTokens(req.user.email, 0.35); 
     next(MessEnum.NewGameCreated);
 }
 
+//This method registers the move in the different DB tables
 export const move = async (req,res,next) => {
-
     //Updating the DB game variable
 
     var moves = JSON.parse(req.game.moves);
     var all_dead = true;
     var state = "started"
     console.log("GAME GRID:")
-    console.log(req.grid);    
+    console.log(req.grid);  
+    //The user who has just completed his/her move is the game creator  
     if(req.game.turn === req.game.creator){
 
         await userDaoInst.withdrawTokens(req.game.creator,0.015)
@@ -38,16 +40,16 @@ export const move = async (req,res,next) => {
             "yto": req.body.moves[req.body.moves.length-1].y,
         })
         console.log(moves);
-        if(all_dead){
+        if(all_dead){ // Game is over
             //SAVE
             console.log("GAME IS TERMINATED");
             console.log(req.game.creator+" won!!!")
             await gameDaoInst.updateGameInfo(req.game.id,"terminated",req.game.creator,JSON.stringify(moves),"",JSON.stringify(req.grid))
-        }else{
+        }else{ //registers the move
             await gameDaoInst.updateGameInfo(req.game.id,req.game.state,"",JSON.stringify(moves),req.game.opponent,JSON.stringify(req.grid));
         }
-    }else{
-
+    }else{    //The user who has just completed his/her move is the game opponent  
+        //Same steps but whites and blacks are inverted and in case of game over the DB is updated differently
         await userDaoInst.withdrawTokens(req.game.opponent,0.015)
 
         for(var p=0; p<req.grid.whites.length;p++){
@@ -74,6 +76,7 @@ export const move = async (req,res,next) => {
 
 }
 
+//Returns general information related to a specific game (creator, opponent, statem, turn, winner, positions)
 export const getGameInfo = async (req,res,next) => {
     var foundGame = await gameDaoInst.readGame(parseInt(req.params.id));
     if(foundGame){
@@ -129,6 +132,13 @@ export const quitGame =async (req,res,next) => {
     gameDaoInst.updateGameInfo(parseInt(req.params.id),"abandoned",winner,req.game.moves,"",req.game.positions);
     res.status(200).json({Status : 200, Description: "Operation completed - You abandoned the game"});
 }
+
+//Method that uses the DAO to get the ranking of all players
+export const getRanking =async (req,res,next) => {
+    var ranking = await userDaoInst.getUsersCharts(req.params.order);
+    res.status(200).json(ranking);
+}
+
 
 //Methods that returns the specified user's statistics
 export const getStats =async (req,res,next) => {

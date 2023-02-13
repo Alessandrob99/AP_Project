@@ -64,26 +64,36 @@ app.use(bodyParser.json({
         }
     }
 }));
-//Rotta quit in post e query string
 app.use(CoR.JWTCheck);
+//Create a new game pointing out the opponent's email and the grid dimension(>=5)
 app.post('/game', [CoR.userAccountAndBalanceCheck, CoR.newGameVal], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         userController.newGame(req, res, next);
         return [2 /*return*/];
     });
 }); });
+//The user abandons the game he/her is playing in, resulting in a loss
 app.post('/:id/quit', requestValidation_1.checkUserInGame, function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         userController.quitGame(req, res, next);
         return [2 /*return*/];
     });
 }); });
+//Calculates the number of wins for each player and makes a list
+app.get('/ranking/:order?', [CoR.userAccountAndBalanceCheck], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        userController.getRanking(req, res, next);
+        return [2 /*return*/];
+    });
+}); });
+//Get stats about a player
 app.get('/stats/:email', requestValidation_1.checkUserEmailNoCreate, function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         userController.getStats(req, res, next);
         return [2 /*return*/];
     });
 }); });
+//Make a new move in the game the user is playing at the moment
 //Here there is no Token balance check since the credit can go below 0 while playing a game
 app.post('/move', [user_validation_1.checkUserEmail, CoR.moveCheck], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
@@ -91,27 +101,28 @@ app.post('/move', [user_validation_1.checkUserEmail, CoR.moveCheck], function (r
         return [2 /*return*/];
     });
 }); });
-//con query string
+//Get game general info (Game indicated by the numeric id) 
 app.get('/gameInfo/:id', [CoR.userAccountAndBalanceCheck], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         userController.getGameInfo(req, res, next);
         return [2 /*return*/];
     });
 }); });
-//Con query string
+//Get the list of moves done in a game by both players (format = 'csv' returns a csv (string), anything else returns a json)
 app.get('/gameMoves/:id/:format?', [CoR.userAccountAndBalanceCheck], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         userController.getGameMoves(req, res, next);
         return [2 /*return*/];
     });
 }); });
-//route that only the admin can use in order to update a specific user token balance
+//Route that only the admin can use in order to update a specific user token balance
 app.post('/token', [CoR.adminCheck, CoR.newTokenBalanceVal], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         adminController.newTokenBalance(req, res, next);
         return [2 /*return*/];
     });
 }); });
+//Returns the user's token balance
 app.get('/tokenBalance', [], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         userController.getTokenBalance(req, res, next);
@@ -122,5 +133,6 @@ app.get('/tokenBalance', [], function (req, res, next) { return __awaiter(void 0
 app.get('*', function (req, res, next) {
     next(MessFactory_1.MessEnum.RouteNotFound);
 });
+//Prints the messages returned by the CoR methods
 app.use(MessLog_1.messageLogger);
 app.listen(process.env.PORT);

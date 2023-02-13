@@ -5,13 +5,10 @@ export enum MessEnum {
     NoHJWTError,
     InvalidJWDError,
     JwtClaimsError,
-    //UserCreated,
     UnauthorizedError,
     UserNotFound,
-    //NoBodyError,
     BadlyFormattedBody,
     TokenBalanceUpdated,
-    NotEnoughTokens,
     OpponentAlreadyInGame,
     CreatorAlreadyInGame,
     NotInGame,
@@ -28,7 +25,7 @@ export enum MessEnum {
 }
 
 
-//Message telling the user that the request has no authentication header
+//Message telling the user that something went wrong (only used if the switch case default)
 class GenericError implements MessageInt {
     public getMess():string {
         return "Something didn't work as supposed to...";
@@ -79,19 +76,6 @@ class JwtClaimsError implements MessageInt {
     }
 }
 
-
-/*
-//Message telling the user that his/her profile was succesfully created
-class UserCreated implements MessageInt {
-    public getMess():string {
-        return "Operation completed - New User profile created";
-    }
-    public getCode():number{
-        return 200;
-    }
-}
-*/
-
 //Message telling the user that the given JWT has not the admin role
 //Or that the user credits are over
 class UnauthorizedError implements MessageInt {
@@ -114,19 +98,6 @@ class UserNotFound implements MessageInt {
     }
 }
 
-/*
-Never Used
-//The request doesn't have a body
-class NoBodyError implements MessageInt {
-    public getMess(): string {
-        return "Bad request - Missing request body";
-    }
-    public getCode(): number {
-        return 400;
-    }
-}
-*/
-
 //The request body is badly formatted
 class BadlyFormattedBody implements MessageInt {
     public getMess(): string {
@@ -147,15 +118,6 @@ class TokenBalanceUpdated implements MessageInt {
     }
 }
 
-//Message to tell the user that his tokens are not sufficient for the operarion
-class NotEnoughTokens implements MessageInt{
-    public getMess(): string {
-        return "Forbidden - Not enough tokens to proceed";
-    }
-    public getCode(): number {
-        return 403;
-    }
-}
 
 //Message to tell the user that a new game was created succesfully and 0.35 tokens have been withdrawn
 class NewGameCreated implements MessageInt{
@@ -202,7 +164,7 @@ class NotValidDimension implements MessageInt {
 //Message tells the user that he is not playing in any game
 class NotInGame implements MessageInt {
     public getMess(): string {
-        return "Bad request - You must start a game before making moves";
+        return "Bad request - You are not in game";
     }
     public getCode(): number {
         return 400;
@@ -249,18 +211,6 @@ class RouteNotFound implements MessageInt {
         return 404;
     }
 }
-/*
-Reason for cancellation : Now everyone can access anybody's game info
-//User is not authorized to access game info
-class UnauthorizedAccessToGameInfo implements MessageInt {
-    public getMess(): string {
-        return "Forbidden - You are not authorized to access game info";
-    }
-    public getCode(): number {
-        return 403;
-    }
-}*/
-
 
 //Message that tells the user that he cant play a game against him/her self
 class CantPlayAgainstUrself implements MessageInt {
@@ -314,24 +264,15 @@ export class MessFactory{
             case MessEnum.JwtClaimsError:
                 message = new JwtClaimsError();
                 break;
-            /*case MessEnum.UserCreated:
-                message = new UserCreated();
-                break;*/
             case MessEnum.UserNotFound:
                 message = new UserNotFound();
                 break;
-           /* case MessEnum.NoBodyError:
-                message = new NoBodyError();
-                break;*/
             case MessEnum.BadlyFormattedBody:
                 message = new BadlyFormattedBody();
                 break;
             case MessEnum.TokenBalanceUpdated:
                 message = new TokenBalanceUpdated();
-                break;
-            case MessEnum.NotEnoughTokens:
-                message = new NotEnoughTokens();
-                break;    
+                break;  
             case MessEnum.NewGameCreated:
                 message = new NewGameCreated();
                 break;
@@ -356,9 +297,6 @@ export class MessFactory{
             case MessEnum.RouteNotFound:
                 message = new RouteNotFound();
                 break;
-            /*case MessEnum.UnauthorizedAccessToGameInfo:
-                message = new UnauthorizedAccessToGameInfo();
-                break;*/
             case MessEnum.GameTerminated:
                 message = new GameTerminated();
                 break;

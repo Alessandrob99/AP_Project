@@ -1,19 +1,20 @@
 import { DB_Singleton } from "../DB_Connection/singletonDBConnection";
 
-import { DataTypes, Sequelize } from 'sequelize';
+import { DataTypes, Sequelize, QueryTypes } from 'sequelize';
 
 
 
 export class UserDao{
 
     private user : any;
+    private seq : any;
     /*
     The constructor gets the DB connection instance and uses it to 
     define the User model through the Sequelize object
     */
     constructor(){
-        const seq = DB_Singleton.getInstance().getConnection();
-        this.user = seq.define(
+        this.seq = DB_Singleton.getInstance().getConnection();
+        this.user = this.seq.define(
             'User',
             {
                 email: {
@@ -52,7 +53,25 @@ export class UserDao{
         return foudUser;
     }
 
+
+    //Returns the players ranking using raw queries
+    public async getUsersCharts(order: String){
+        var usersRundown : any;
+        if(order=="asc"){
+            usersRundown = await this.seq.query("SELECT games.winner as 'player' ,count(games.winner) as 'game_won' FROM `games` GROUP BY games.winner ORDER BY 2 ASC;", {
+                type: QueryTypes.SELECT
+            });
+        }else{
+            usersRundown = await this.seq.query("SELECT games.winner as 'player' ,count(games.winner) as 'game_won' FROM `games` GROUP BY games.winner ORDER BY 2 DESC;", {
+                type: QueryTypes.SELECT
+            });
+        }
+        return(usersRundown);
+    }
+
     //Updating methods
+
+    //Withdraws a certain amount of tokens from a specific user's profile
     public async withdrawTokens(email: String, amount : number){
         var userToUpdate = await this.user.findByPk(email);
         await userToUpdate.update({
@@ -61,6 +80,7 @@ export class UserDao{
         await userToUpdate.save();
     }
 
+    //Updates the token balance of a certain user (Only accessible by the admins)
     public async updateUserTokens(email: String, token_balance : Number) {
         var userToUpdate = await this.user.findByPk(email);
         if(!userToUpdate){

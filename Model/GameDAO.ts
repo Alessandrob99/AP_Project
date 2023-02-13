@@ -142,6 +142,7 @@ export class GameDao{
         return game;
     }
 
+    //Checks if the user is in a game which is not over
     public async checkUserGame(email : String){
         const { Op } = require("sequelize");
         var game = await this.game.findOne({where: 
@@ -158,6 +159,7 @@ export class GameDao{
         return game;
     }
 
+    //Returns all the games related to a specific player
     public async checkAllUserGames(email : String){
         const { Op } = require("sequelize");
         var games = await this.game.findAll({where: 
@@ -170,7 +172,7 @@ export class GameDao{
     }
 
     //Updating methods
-    //Update game
+    //Update game general info 
     public async updateGameInfo(id: number, state: String, winner: String, moves: String, turn : String, positions: String){
         var gameToUpdate = await this.game.findByPk(id);
         //No need to do a check bc at this point we know that the game exists

@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.getStats = exports.quitGame = exports.getTokenBalance = exports.getGameMoves = exports.getGameInfo = exports.move = exports.newGame = void 0;
+exports.getStats = exports.getRanking = exports.quitGame = exports.getTokenBalance = exports.getGameMoves = exports.getGameInfo = exports.move = exports.newGame = void 0;
 var MessFactory_1 = require("../Logging_Factory/MessFactory");
 var GameDAO_1 = require("../Model/GameDAO");
 var UserDAO_1 = require("../Model/UserDAO");
@@ -213,6 +213,20 @@ var quitGame = function (req, res, next) { return __awaiter(void 0, void 0, void
     });
 }); };
 exports.quitGame = quitGame;
+//Method that uses the DAO to get the ranking of all players
+var getRanking = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var ranking;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, userDaoInst.getUsersCharts(req.params.order)];
+            case 1:
+                ranking = _a.sent();
+                res.status(200).json(ranking);
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.getRanking = getRanking;
 //Methods that returns the specified user's statistics
 var getStats = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var foundGames, games, tot_games, wins, losses, wins_abandon, losses_abandon, win_moves, loss_moves, i, moves;

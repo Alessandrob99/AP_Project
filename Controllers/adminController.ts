@@ -1,6 +1,6 @@
 import { MessEnum } from "../Logging_Factory/MessFactory";
 import { UserDao } from "../Model/UserDAO";
-import { messageLogger } from "../middleware_components/MessLog";
+import { messageLogger } from "../Middleware_Components/MessLog";
 
 
 const userDaoInst = new UserDao();
