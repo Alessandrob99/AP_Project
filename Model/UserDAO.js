@@ -95,10 +95,7 @@ var UserDao = /** @class */ (function () {
             });
         });
     };
-    //FAI QUERY PER LA CLASSIFICA 
-    //SCRIVI MANCIO
-    //FINISCI I COMMENTI E PULISCI TUTTO
-    //COMINCIA A VEDERE IL README
+    //Returns the players ranking using raw queries
     UserDao.prototype.getUsersCharts = function (order) {
         return __awaiter(this, void 0, void 0, function () {
             var usersRundown;
@@ -124,6 +121,7 @@ var UserDao = /** @class */ (function () {
         });
     };
     //Updating methods
+    //Withdraws a certain amount of tokens from a specific user's profile
     UserDao.prototype.withdrawTokens = function (email, amount) {
         return __awaiter(this, void 0, void 0, function () {
             var userToUpdate;
@@ -145,6 +143,7 @@ var UserDao = /** @class */ (function () {
             });
         });
     };
+    //Updates the token balance of a certain user (Only accessible by the admins)
     UserDao.prototype.updateUserTokens = function (email, token_balance) {
         return __awaiter(this, void 0, void 0, function () {
             var userToUpdate;

@@ -32,6 +32,4 @@ exports.moveCheck = [
     RequestValidation.checkGridLimits,
     RequestValidation.checkCellFree,
     RequestValidation.checkMoveReachability
-    // limiti mappa
-    //Gameover?
 ];

@@ -93,7 +93,7 @@ var checkNewGameBalance = function (req, res, next) { return __awaiter(void 0, v
             case 1:
                 user = _a.sent();
                 if (user.token_balance < 0.35) {
-                    next(MessFactory_1.MessEnum.NotEnoughTokens);
+                    next(MessFactory_1.MessEnum.UnauthorizedError);
                 }
                 else {
                     next();
@@ -103,24 +103,6 @@ var checkNewGameBalance = function (req, res, next) { return __awaiter(void 0, v
     });
 }); };
 exports.checkNewGameBalance = checkNewGameBalance;
-/*
-Deleted because if we put the json format controll check at the beginning through the
-'use' express method this trigger is never activated. This is due to the fact that
-if we don't have a req body, the format check (at the beginning of app.ts)
-triggers the error anyways...
-
-export const checkReqBody = async (req: any, res: any, next: any) => {
-    
-    const postBody = req.body;
-    if(Object.keys(req.body).length === 0) {
-        next(MessEnum.NoBodyError);
-    }else{
-        next();
-    }
-    
-};
-
-*/
 //Checks the correct type and format of the information contained in the "/game" route request
 var checkReqBodyNewGame = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var validator;
@@ -254,11 +236,6 @@ var checkUserEmailNoCreate = function (req, res, next) { return __awaiter(void 0
 }); };
 exports.checkUserEmailNoCreate = checkUserEmailNoCreate;
 //MOVES VALIDATIONS--------------------------------------
-/*
-DA FARE DOMANI
--ADATTARE I METODI DI CONTROLLO AL FATTO CHE ORA ABBIAMO UN ARRAY DI SPOSTAMENTI
--SOPRA BISOGNA AGGIUNGERE IL CONTROLLO DELLA SEQUENZA DI SPOSTAMENTI (SE SONO + DI UNO ALLORA CI SI DEVE SPOSTARE DI 2 IN 2)
-*/
 //Checks if the user is in game and if so if it's his turn
 var checkInGameAndTurn = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var gameDao, foundGame;
@@ -289,6 +266,7 @@ var checkInGameAndTurn = function (req, res, next) { return __awaiter(void 0, vo
     });
 }); };
 exports.checkInGameAndTurn = checkInGameAndTurn;
+//Used to divide the pawn name string (es. "w" + "5")
 function split(str, index) {
     var result = [str.slice(0, index), str.slice(index)];
     return result;
@@ -324,7 +302,6 @@ var checkReqMove = function (req, res, next) { return __awaiter(void 0, void 0, 
                 (wb === "w") ? next(MessFactory_1.MessEnum.InvalidMove) : next(MessFactory_1.MessEnum.BadlyFormattedBody);
             }
         }
-        //var movesTypeIsOK = true;
         for (m = 0; m < req.body.moves.length; m++) {
             if ((typeof req.body.moves[m].x !== "number") || (typeof req.body.moves[m].y !== 'number')) {
                 next(MessFactory_1.MessEnum.BadlyFormattedBody);
@@ -340,7 +317,6 @@ var checkGridLimits = function (req, res, next) { return __awaiter(void 0, void 
     var m;
     return __generator(this, function (_a) {
         console.log("checkGridLimits");
-        //   var areMovesInGrid = true;
         for (m = 0; m < req.body.moves.length; m++) {
             if ((parseInt(req.body.moves[m].x) < 1) || (parseInt(req.body.moves[m].y) < 1)
                 || (parseInt(req.body.moves[m].x) > req.game.dimension) || (parseInt(req.body.moves[m].y) > req.game.dimension)) {
@@ -358,7 +334,6 @@ var checkCellFree = function (req, res, next) { return __awaiter(void 0, void 0,
     var m, i;
     return __generator(this, function (_a) {
         console.log("checkCellFree");
-        // var occupied : Boolean = false;
         //If the user selected a dame it could be possible for it to go back to the initial spot
         for (m = 0; m < req.body.moves.length; m++) {
             for (i = 0; i < req.game.dimension; i++) {

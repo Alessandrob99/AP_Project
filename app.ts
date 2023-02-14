@@ -47,7 +47,7 @@ app.post('/game', [CoR.userAccountAndBalanceCheck, CoR.newGameVal],
 );
 
 //The user abandons the game he/her is playing in, resulting in a loss
-app.post('/:id/quit',checkUserInGame, 
+app.post('/:id/quit',[checkUserInGame,CoR.userAccountAndBalanceCheck], 
     async (req,res,next) => {
         userController.quitGame(req,res,next);
     }
@@ -61,7 +61,7 @@ app.get('/ranking/:order?', [CoR.userAccountAndBalanceCheck],
 );
 
 //Get stats about a player (indicated by email)
-app.get('/stats/:email',checkUserEmailNoCreate,
+app.get('/stats/:email',[checkUserEmailNoCreate,CoR.userAccountAndBalanceCheck],
     async (req,res,next) => {
         userController.getStats(req,res,next);
     }

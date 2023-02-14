@@ -37,8 +37,5 @@ export const moveCheck = [
     RequestValidation.checkGridLimits,
     RequestValidation.checkCellFree,
     RequestValidation.checkMoveReachability
-    // limiti mappa
-
-    //Gameover?
 ]
 

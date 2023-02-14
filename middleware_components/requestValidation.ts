@@ -43,24 +43,6 @@ export const checkNewGameBalance = async (req: any, res: any, next: any) => {
 };
 
 
-/*
-Deleted because if we put the json format controll check at the beginning through the 
-'use' express method this trigger is never activated. This is due to the fact that 
-if we don't have a req body, the format check (at the beginning of app.ts)
-triggers the error anyways...
-
-export const checkReqBody = async (req: any, res: any, next: any) => {
-    
-    const postBody = req.body;
-    if(Object.keys(req.body).length === 0) {
-        next(MessEnum.NoBodyError);
-    }else{
-        next();
-    }
-    
-};
-
-*/
 
 //Checks the correct type and format of the information contained in the "/game" route request
 export const checkReqBodyNewGame = async (req: any, res: any, next: any) => {

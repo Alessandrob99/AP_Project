@@ -7,28 +7,25 @@ var MessEnum;
     MessEnum[MessEnum["NoHJWTError"] = 2] = "NoHJWTError";
     MessEnum[MessEnum["InvalidJWDError"] = 3] = "InvalidJWDError";
     MessEnum[MessEnum["JwtClaimsError"] = 4] = "JwtClaimsError";
-    //UserCreated,
     MessEnum[MessEnum["UnauthorizedError"] = 5] = "UnauthorizedError";
     MessEnum[MessEnum["UserNotFound"] = 6] = "UserNotFound";
-    //NoBodyError,
     MessEnum[MessEnum["BadlyFormattedBody"] = 7] = "BadlyFormattedBody";
     MessEnum[MessEnum["TokenBalanceUpdated"] = 8] = "TokenBalanceUpdated";
-    MessEnum[MessEnum["NotEnoughTokens"] = 9] = "NotEnoughTokens";
-    MessEnum[MessEnum["OpponentAlreadyInGame"] = 10] = "OpponentAlreadyInGame";
-    MessEnum[MessEnum["CreatorAlreadyInGame"] = 11] = "CreatorAlreadyInGame";
-    MessEnum[MessEnum["NotInGame"] = 12] = "NotInGame";
-    MessEnum[MessEnum["NewGameCreated"] = 13] = "NewGameCreated";
-    MessEnum[MessEnum["NotValidDimension"] = 14] = "NotValidDimension";
-    MessEnum[MessEnum["NotYourTurn"] = 15] = "NotYourTurn";
-    MessEnum[MessEnum["GameNotFound"] = 16] = "GameNotFound";
-    MessEnum[MessEnum["GameTerminated"] = 17] = "GameTerminated";
-    MessEnum[MessEnum["RouteNotFound"] = 18] = "RouteNotFound";
-    MessEnum[MessEnum["CantPlayAgainstUrself"] = 19] = "CantPlayAgainstUrself";
-    MessEnum[MessEnum["NoGamesFound"] = 20] = "NoGamesFound";
-    MessEnum[MessEnum["InvalidMove"] = 21] = "InvalidMove";
+    MessEnum[MessEnum["OpponentAlreadyInGame"] = 9] = "OpponentAlreadyInGame";
+    MessEnum[MessEnum["CreatorAlreadyInGame"] = 10] = "CreatorAlreadyInGame";
+    MessEnum[MessEnum["NotInGame"] = 11] = "NotInGame";
+    MessEnum[MessEnum["NewGameCreated"] = 12] = "NewGameCreated";
+    MessEnum[MessEnum["NotValidDimension"] = 13] = "NotValidDimension";
+    MessEnum[MessEnum["NotYourTurn"] = 14] = "NotYourTurn";
+    MessEnum[MessEnum["GameNotFound"] = 15] = "GameNotFound";
+    MessEnum[MessEnum["GameTerminated"] = 16] = "GameTerminated";
+    MessEnum[MessEnum["RouteNotFound"] = 17] = "RouteNotFound";
+    MessEnum[MessEnum["CantPlayAgainstUrself"] = 18] = "CantPlayAgainstUrself";
+    MessEnum[MessEnum["NoGamesFound"] = 19] = "NoGamesFound";
+    MessEnum[MessEnum["InvalidMove"] = 20] = "InvalidMove";
     //UnauthorizedAccessToGameInfo
 })(MessEnum = exports.MessEnum || (exports.MessEnum = {}));
-//Message telling the user that the request has no authentication header
+//Message telling the user that something went wrong (only used if the switch case default)
 var GenericError = /** @class */ (function () {
     function GenericError() {
     }
@@ -88,17 +85,6 @@ var JwtClaimsError = /** @class */ (function () {
     };
     return JwtClaimsError;
 }());
-/*
-//Message telling the user that his/her profile was succesfully created
-class UserCreated implements MessageInt {
-    public getMess():string {
-        return "Operation completed - New User profile created";
-    }
-    public getCode():number{
-        return 200;
-    }
-}
-*/
 //Message telling the user that the given JWT has not the admin role
 //Or that the user credits are over
 var UnauthorizedError = /** @class */ (function () {
@@ -124,18 +110,6 @@ var UserNotFound = /** @class */ (function () {
     };
     return UserNotFound;
 }());
-/*
-Never Used
-//The request doesn't have a body
-class NoBodyError implements MessageInt {
-    public getMess(): string {
-        return "Bad request - Missing request body";
-    }
-    public getCode(): number {
-        return 400;
-    }
-}
-*/
 //The request body is badly formatted
 var BadlyFormattedBody = /** @class */ (function () {
     function BadlyFormattedBody() {
@@ -159,18 +133,6 @@ var TokenBalanceUpdated = /** @class */ (function () {
         return 200;
     };
     return TokenBalanceUpdated;
-}());
-//Message to tell the user that his tokens are not sufficient for the operarion
-var NotEnoughTokens = /** @class */ (function () {
-    function NotEnoughTokens() {
-    }
-    NotEnoughTokens.prototype.getMess = function () {
-        return "Forbidden - Not enough tokens to proceed";
-    };
-    NotEnoughTokens.prototype.getCode = function () {
-        return 403;
-    };
-    return NotEnoughTokens;
 }());
 //Message to tell the user that a new game was created succesfully and 0.35 tokens have been withdrawn
 var NewGameCreated = /** @class */ (function () {
@@ -225,7 +187,7 @@ var NotInGame = /** @class */ (function () {
     function NotInGame() {
     }
     NotInGame.prototype.getMess = function () {
-        return "Bad request - You must start a game before making moves";
+        return "Bad request - You are not in game";
     };
     NotInGame.prototype.getCode = function () {
         return 400;
@@ -280,17 +242,6 @@ var RouteNotFound = /** @class */ (function () {
     };
     return RouteNotFound;
 }());
-/*
-Reason for cancellation : Now everyone can access anybody's game info
-//User is not authorized to access game info
-class UnauthorizedAccessToGameInfo implements MessageInt {
-    public getMess(): string {
-        return "Forbidden - You are not authorized to access game info";
-    }
-    public getCode(): number {
-        return 403;
-    }
-}*/
 //Message that tells the user that he cant play a game against him/her self
 var CantPlayAgainstUrself = /** @class */ (function () {
     function CantPlayAgainstUrself() {
@@ -349,23 +300,14 @@ var MessFactory = /** @class */ (function () {
             case MessEnum.JwtClaimsError:
                 message = new JwtClaimsError();
                 break;
-            /*case MessEnum.UserCreated:
-                message = new UserCreated();
-                break;*/
             case MessEnum.UserNotFound:
                 message = new UserNotFound();
                 break;
-            /* case MessEnum.NoBodyError:
-                 message = new NoBodyError();
-                 break;*/
             case MessEnum.BadlyFormattedBody:
                 message = new BadlyFormattedBody();
                 break;
             case MessEnum.TokenBalanceUpdated:
                 message = new TokenBalanceUpdated();
-                break;
-            case MessEnum.NotEnoughTokens:
-                message = new NotEnoughTokens();
                 break;
             case MessEnum.NewGameCreated:
                 message = new NewGameCreated();
@@ -391,9 +333,6 @@ var MessFactory = /** @class */ (function () {
             case MessEnum.RouteNotFound:
                 message = new RouteNotFound();
                 break;
-            /*case MessEnum.UnauthorizedAccessToGameInfo:
-                message = new UnauthorizedAccessToGameInfo();
-                break;*/
             case MessEnum.GameTerminated:
                 message = new GameTerminated();
                 break;

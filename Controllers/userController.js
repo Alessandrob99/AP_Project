@@ -44,6 +44,7 @@ var parse = require('json2csv').parse;
 var fields = ['pawn', 'xfrom', 'yfrom', 'xto', 'yto'];
 var userDaoInst = new UserDAO_1.UserDao();
 var gameDaoInst = new GameDAO_1.GameDao();
+//Method that creates a new game in the db
 var newGame = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -59,6 +60,7 @@ var newGame = function (req, res, next) { return __awaiter(void 0, void 0, void 
     });
 }); };
 exports.newGame = newGame;
+//This method registers the move in the different DB tables
 var move = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var moves, all_dead, state, p, p;
     return __generator(this, function (_a) {
@@ -92,13 +94,17 @@ var move = function (req, res, next) { return __awaiter(void 0, void 0, void 0, 
             case 2:
                 _a.sent();
                 return [3 /*break*/, 5];
-            case 3: return [4 /*yield*/, gameDaoInst.updateGameInfo(req.game.id, req.game.state, "", JSON.stringify(moves), req.game.opponent, JSON.stringify(req.grid))];
+            case 3: //registers the move
+            return [4 /*yield*/, gameDaoInst.updateGameInfo(req.game.id, req.game.state, "", JSON.stringify(moves), req.game.opponent, JSON.stringify(req.grid))];
             case 4:
                 _a.sent();
                 _a.label = 5;
             case 5: return [3 /*break*/, 11];
-            case 6: return [4 /*yield*/, userDaoInst.withdrawTokens(req.game.opponent, 0.015)];
+            case 6: //The user who has just completed his/her move is the game opponent  
+            //Same steps but whites and blacks are inverted and in case of game over the DB is updated differently
+            return [4 /*yield*/, userDaoInst.withdrawTokens(req.game.opponent, 0.015)];
             case 7:
+                //Same steps but whites and blacks are inverted and in case of game over the DB is updated differently
                 _a.sent();
                 for (p = 0; p < req.grid.whites.length; p++) {
                     (req.grid.whites[p].role !== "dead") ? all_dead = false : {};
@@ -130,6 +136,7 @@ var move = function (req, res, next) { return __awaiter(void 0, void 0, void 0, 
     });
 }); };
 exports.move = move;
+//Returns general information related to a specific game (creator, opponent, statem, turn, winner, positions)
 var getGameInfo = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var foundGame;
     return __generator(this, function (_a) {

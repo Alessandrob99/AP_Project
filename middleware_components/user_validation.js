@@ -127,8 +127,8 @@ var checkUserEmail = function (req, res, next) { return __awaiter(void 0, void 0
     });
 }); };
 exports.checkUserEmail = checkUserEmail;
+//Checking if the user has the role of admin (2)
 var checkAdminEmail = function (req, res, next) {
-    //checking if the user has the role of admin (2)
     if (req.user.role !== 2) {
         next(MessFactory_1.MessEnum.UnauthorizedError);
     }

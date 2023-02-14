@@ -76,7 +76,7 @@ export const move = async (req,res,next) => {
 
 }
 
-//Returns general information related to a specific game (creator, opponent, statem, turn, winner, positions)
+//Returns general information related to a specific game (creator, opponent, state, turn, winner, positions)
 export const getGameInfo = async (req,res,next) => {
     var foundGame = await gameDaoInst.readGame(parseInt(req.params.id));
     if(foundGame){

@@ -36,13 +36,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-var CoR = require("./middleware_components/CoR");
-var MessLog_1 = require("./middleware_components/MessLog");
+var CoR = require("./Middleware_Components/CoR");
+var MessLog_1 = require("./Middleware_Components/MessLog");
 var adminController = require("./Controllers/adminController");
 var userController = require("./Controllers/userController");
 var MessFactory_1 = require("./Logging_Factory/MessFactory");
-var user_validation_1 = require("./middleware_components/user_validation");
-var requestValidation_1 = require("./middleware_components/requestValidation");
+var user_validation_1 = require("./Middleware_Components/user_validation");
+var requestValidation_1 = require("./Middleware_Components/requestValidation");
 var express = require('express');
 require('dotenv').config();
 var bodyParser = require('body-parser');
@@ -64,8 +64,10 @@ app.use(bodyParser.json({
         }
     }
 }));
+//JWT Token authentication done for all routes, w/o a token it'll be impossible to use the app
 app.use(CoR.JWTCheck);
-//Create a new game pointing out the opponent's email and the grid dimension(>=5)
+//=================================ROUTES========================================//
+//Creates a new game pointing out the opponent's email and the grid dimension(>=5)
 app.post('/game', [CoR.userAccountAndBalanceCheck, CoR.newGameVal], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         userController.newGame(req, res, next);
@@ -73,21 +75,21 @@ app.post('/game', [CoR.userAccountAndBalanceCheck, CoR.newGameVal], function (re
     });
 }); });
 //The user abandons the game he/her is playing in, resulting in a loss
-app.post('/:id/quit', requestValidation_1.checkUserInGame, function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+app.post('/:id/quit', [requestValidation_1.checkUserInGame, CoR.userAccountAndBalanceCheck], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         userController.quitGame(req, res, next);
         return [2 /*return*/];
     });
 }); });
-//Calculates the number of wins for each player and makes a list
+//Calculates the number of wins for each player and makes a list, order = 'asc' makes an ascending list
 app.get('/ranking/:order?', [CoR.userAccountAndBalanceCheck], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         userController.getRanking(req, res, next);
         return [2 /*return*/];
     });
 }); });
-//Get stats about a player
-app.get('/stats/:email', requestValidation_1.checkUserEmailNoCreate, function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+//Get stats about a player (indicated by email)
+app.get('/stats/:email', [requestValidation_1.checkUserInGame, CoR.userAccountAndBalanceCheck], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         userController.getStats(req, res, next);
         return [2 /*return*/];

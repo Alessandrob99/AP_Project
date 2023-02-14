@@ -164,6 +164,7 @@ var GameDao = /** @class */ (function () {
             });
         });
     };
+    //Checks if the user is in a game which is not over
     GameDao.prototype.checkUserGame = function (email) {
         return __awaiter(this, void 0, void 0, function () {
             var Op, game;
@@ -189,6 +190,7 @@ var GameDao = /** @class */ (function () {
             });
         });
     };
+    //Returns all the games related to a specific player
     GameDao.prototype.checkAllUserGames = function (email) {
         return __awaiter(this, void 0, void 0, function () {
             var Op, games;
@@ -210,7 +212,7 @@ var GameDao = /** @class */ (function () {
         });
     };
     //Updating methods
-    //Update game
+    //Update game general info 
     GameDao.prototype.updateGameInfo = function (id, state, winner, moves, turn, positions) {
         return __awaiter(this, void 0, void 0, function () {
             var gameToUpdate;
