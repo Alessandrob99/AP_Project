@@ -96,6 +96,69 @@ This is the only route accessible exclusively by the administrator; it allows to
   <img src="https://user-images.githubusercontent.com/24567662/218710586-cdf03139-7ff7-4bc2-8cf6-09eb34ba5e98.PNG" />
 </p>
 
+## Design
+## Use Case Diagram
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/24567662/218714048-45cda074-12ba-4da8-a7e0-1bf6493ae3b1.PNG" />
+</p>
+
+## Sequence Diagrams
+### New Game 
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/24567662/218785351-28b42658-f2b8-4342-a970-ffe7f159778b.PNG" />
+</p>
+
+### Move
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/24567662/218785514-ac64df88-ca9d-4164-9bec-fe89f5d9515f.png" />
+</p>
+
+### Game State
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/24567662/218786078-4284c243-134f-4c6b-bfb1-1aff95c646bf.png" />
+</p>
+
+### Quit Game
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/24567662/218786178-e5799379-7ae3-469a-8fca-3b714777df97.png" />
+</p>
+
+### Game Moves
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/24567662/218786248-a225894c-26cf-4627-ab78-8e9c6464cc13.png" />
+</p>
+
+
+### Get Ranking
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/24567662/218786408-2ce2bb7b-2c1b-48c5-9cfe-5bc20b064cbf.png" />
+</p>
+
+### Get Stats
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/24567662/218786499-4c798ece-de8c-4f5a-ae63-e5fe910be529.png" />
+</p>
+
+### Token Balance
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/24567662/218787630-4ce17909-47f1-42ed-a8f1-92f6ca63b9b2.png" />
+</p>
+
+### Set Tokens
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/24567662/218787712-7777abde-03dc-4ac8-9c18-896cc4284efb.png" />
+</p>
+
+
+
 ## Frameworks, Libraries and Tools
 * [Express](https://expressjs.com/)
 * [Node.js](https://nodejs.org/en/)
