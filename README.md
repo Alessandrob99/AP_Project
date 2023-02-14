@@ -35,7 +35,9 @@ The software provides a default administrator account, which allows to give user
 
 In the following section it will be explained in detail how to interact with the system through the routes mentioned above. It is key to understand that all the routes are preceeded by a JWToken authentication head; this means that without one of this tokens the user cannot do any action. The JWT for this project have been generated using https://jwt.io/ (A service which allows to obtain JWT from payload claims and a secret key).<br/>
 The secret key used to generate tokens for this project can be found in the .env file; on the website linked above the claims must me indicated as follows:
-![alt text](https://github.com/[Alessandrob99]/[AP_project]/blob/[branch]/image.jpg?raw=true)
+![alt text](https://github.com/[Alessandrob99]/[AP_project]/Res/[master]/newGame.PNG.jpg?raw=true)
+
+
 Once the token has been obtained, in order to use the software, it has to be passed in the HTTP Request Authentication head as 'Bearer Token'.
 
 ### Create Game
