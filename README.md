@@ -49,7 +49,7 @@ The game is created by passing in the POST request's body a JSON containing the 
 </p>
 
 ### Move Pawn
-This route allows the user to move a pawn in the game he/her is playing (*if the user is not in game an error is returned*) by indicating the array of moves that the pawn has to do in order to reach its final destination. All moves done by the pawn are verified and if some of them violate one or more game rules an error is returned.<br/> the game creator always controlls the white pawns while the opponent has the black ones. Pawn names are always composed by two parts: ('w'/'b') + (pawn number from creator's left to his right); for example the black pawn to the far left (*from the creator point of view*) is named b1.
+This route allows the user to move a pawn in the game he/her is playing (*if the user is not in game an error is returned*) by indicating the array of moves that the pawn has to do in order to reach its final destination. All moves done by the pawn are verified and if some of them violate one or more game rules an error is returned.<br/> The game creator always controlls the white pawns while the opponent has the black ones. Pawn names are always composed by two parts: ('w'/'b') + (pawn number from creator's left to his right); for example the black pawn to the far left (*from the creator point of view*) is named b1.
 <p align="center">
   <img src="https://user-images.githubusercontent.com/24567662/218702195-3b911a2a-bafd-4df8-bd75-9be6f77c8361.PNG" />
 </p>
@@ -85,7 +85,7 @@ This time the query string parameter is the email of the player whose statistics
 </p>
 
 ### Token Balance
-As said before, in order to use this route it's not necessary for the user's credit to be greater than 0.
+As said before, in order to use this route it's not necessary for the user's token credit to be greater than 0.
 <p align="center">
   <img src="https://user-images.githubusercontent.com/24567662/218709668-117ba391-bc23-48a2-bc1b-b2fb756f91d3.PNG" />
 </p>
