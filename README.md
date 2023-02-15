@@ -7,15 +7,15 @@ The software provides a default administrator account, which allows to give user
 ## Features and Actions
 | Role  | Action | Description |
 | ------------- | ------------- | ------------- |
-| User/Admin  | Create Game  | Create a new game indicating the grid dimension (*which has to be greater than 4*) and the opponent's email. Upon creation 0.35 tokens are withdrawn from user's account. |
-| User/Admin  | Move Pawn  | Move a specific pawn in the game you are playing, indicating the different cells that the pawn has to go through (*cells could be more than 1 in case the pawn eliminates different enemy pawns*). |
-| User/Admin  | Game State  | Obtain information (*creator and opponent's emails, state, turn, winner and pawns' positions*) about the state of any game (*terminated or not*).  |
-| User/Admin  | Quit Game | The user leaves the game he/her is playing in at the moment. This will attribute a win to the opponent and a loss to the user. |
-| User/Admin  | Game Moves | Obtain a list (*JSON or CSV*) off all moves done by all pawns in a specific game (*terminated or not*). |
-| User/Admin  | Get Ranking | Obtain a list (*ascending or descending*) of all players sorted by their number of wins. |
-| User/Admin  | Get Stats | Get statistics (*total games, n° of wins/losses, games won due to abandon/games lost due to abandon, avarage moves to win/lose*) about a specific player. |
-| User/Admin  | Token Balance | Allows the user to check how many tokens he/her has left (*This action is the only one which doesn't require the user to have a token balance greater than 0*). |
-| Admin  | Set Tokens | The Admin user can set any users' token balance to a certain level. |
+| User/Admin  | **Create Game**  | Create a new game indicating the grid dimension (*which has to be greater than 4*) and the opponent's email. Upon creation 0.35 tokens are withdrawn from user's account. |
+| User/Admin  | **Move Pawn** | Move a specific pawn in the game you are playing, indicating the different cells that the pawn has to go through (*cells could be more than 1 in case the pawn eliminates different enemy pawns*). |
+| User/Admin  | **Game State** | Obtain information (*creator and opponent's emails, state, turn, winner and pawns' positions*) about the state of any game (*terminated or not*).  |
+| User/Admin  | **Quit Game** | The user leaves the game he/her is playing in at the moment. This will attribute a win to the opponent and a loss to the user. |
+| User/Admin  | **Game Moves** | Obtain a list (*JSON or CSV*) off all moves done by all pawns in a specific game (*terminated or not*). |
+| User/Admin  | **Get Ranking** | Obtain a list (*ascending or descending*) of all players sorted by their number of wins. |
+| User/Admin  | **Get Stats** | Get statistics (*total games, n° of wins/losses, games won due to abandon/games lost due to abandon, avarage moves to win/lose*) about a specific player. |
+| User/Admin  | **Token Balance** | Allows the user to check how many tokens he/her has left (*This action is the only one which doesn't require the user to have a token balance greater than 0*). |
+| Admin  | **Set Tokens** | The Admin user can set any users' token balance to a certain level. |
 
 ## Routes
 
@@ -180,3 +180,6 @@ By default, the service can be reached via port 3000 (http://127.0.0.1:3000/), b
 * [Nodemon](https://www.npmjs.com/package/nodemon)
 * [Postman](https://www.postman.com/company/about-postman/)
 * [XAMPP](https://www.apachefriends.org/)
+
+## Devs
+:man_student: [Bedetta Alessandro](https://github.com/Alessandrob99)
