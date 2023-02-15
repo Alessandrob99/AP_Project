@@ -157,6 +157,49 @@ This is the only route accessible exclusively by the administrator; it allows to
   <img src="https://user-images.githubusercontent.com/24567662/218787712-7777abde-03dc-4ac8-9c18-896cc4284efb.png" />
 </p>
 
+## Patterns
+### Model View Controller
+The MVC pattern helps us break up the frontend and backend code into separate components. This way, it's much easier to manage and make changes to either side without them interfering with each other.
+It is made up of 3 components:
+1. **Model** :
+The model's job is to simply manage the data. Whether the data is from a database, API, or a JSON object, the model is responsible for managing it.
+2. **Views** :
+The view's job is to decide what the user will see on their screen, and how.
+3. **Controller** :
+The controller's responsibility is to pull, modify, and provide data to the user. Essentially, the controller is the link between the view and model.
+In our case, since the View component is represented only by the routes, we didn't have to worry about the notorious problem related to the View-Model relation.
+
+<p align="center">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/MVC_Diagram_%28Model-View-Controller%29.svg/1200px-MVC_Diagram_%28Model-View-Controller%29.svg.png" width="400" />
+</p>
+
+### Chain of Responsability
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/24567662/218787712-7777abde-03dc-4ac8-9c18-896cc4284efb.png" />
+</p>
+
+### Factory
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/24567662/218787712-7777abde-03dc-4ac8-9c18-896cc4284efb.png" />
+</p>
+
+### Singleton
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/24567662/218787712-7777abde-03dc-4ac8-9c18-896cc4284efb.png" />
+</p>
+
+### DAO
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/24567662/218787712-7777abde-03dc-4ac8-9c18-896cc4284efb.png" />
+</p>
+
+
+
+
 ## How to run the software 
 1. First of all, clone the git repository in order to obtain all needed files.
 
