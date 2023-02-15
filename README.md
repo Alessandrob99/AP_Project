@@ -97,12 +97,12 @@ This is the only route accessible exclusively by the administrator; it allows to
 </p>
 
 ## Design
-## Use Case Diagram
+### Use Case Diagram
 <p align="center">
   <img src="https://user-images.githubusercontent.com/24567662/218714048-45cda074-12ba-4da8-a7e0-1bf6493ae3b1.PNG" />
 </p>
 
-## Sequence Diagrams
+### Sequence Diagrams
 ### New Game 
 
 <p align="center">
