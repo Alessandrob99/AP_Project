@@ -1,4 +1,4 @@
-# Advanced Programming Project
+# :chess_pawn: Advanced Programming Project 	:crown:
 ## Project Objective
 The developed system is a software backend which is aimed at handling games of "Italian Dame" between different users. After being authenticated through a JSON Web Token (JWT), the users can choose between different actions (routes) that will allow them to create games, make moves, quit games etc, ect...<br/>
 All users' profiles, as soon as created, are associated with a token credit; this tokens are consumed after starting a game (-0.35 tokens) and moving pawns (-0.015 for each move); once a user has no tokens left, it will be impossible for him/her to interact with the system.<br/>
@@ -7,15 +7,15 @@ The software provides a default administrator account, which allows to give user
 ## Features and Actions
 | Role  | Action | Description |
 | ------------- | ------------- | ------------- |
-| User/Admin  | Create Game  | Create a new game indicating the grid dimension (*which has to be greater than 4*) and the opponent's email. Upon creation 0.35 tokens are withdrawn from user's account. |
-| User/Admin  | Move Pawn  | Move a specific pawn in the game you are playing, indicating the different cells that the pawn has to go through (*cells could be more than 1 in case the pawn eliminates different enemy pawns*). |
-| User/Admin  | Game State  | Obtain information (*creator and opponent's emails, state, turn, winner and pawns' positions*) about the state of any game (*terminated or not*).  |
-| User/Admin  | Quit Game | The user leaves the game he/her is playing in at the moment. This will attribute a win to the opponent and a loss to the user. |
-| User/Admin  | Game Moves | Obtain a list (*JSON or CSV*) off all moves done by all pawns in a specific game (*terminated or not*). |
-| User/Admin  | Get Ranking | Obtain a list (*ascending or descending*) of all players sorted by their number of wins. |
-| User/Admin  | Get Stats | Get statistics (*total games, n° of wins/losses, games won due to abandon/games lost due to abandon, avarage moves to win/lose*) about a specific player. |
-| User/Admin  | Token Balance | Allows the user to check how many tokens he/her has left (*This action is the only one which doesn't require the user to have a token balance greater than 0*). |
-| Admin  | Set Tokens | The Admin user can set any users' token balance to a certain level. |
+| User/Admin  | **Create Game**  | Create a new game indicating the grid dimension (*which has to be greater than 4*) and the opponent's email. Upon creation 0.35 tokens are withdrawn from user's account. |
+| User/Admin  | **Move Pawn** | Move a specific pawn in the game you are playing, indicating the different cells that the pawn has to go through (*cells could be more than 1 in case the pawn eliminates different enemy pawns*). |
+| User/Admin  | **Game State** | Obtain information (*creator and opponent's emails, state, turn, winner and pawns' positions*) about the state of any game (*terminated or not*).  |
+| User/Admin  | **Quit Game** | The user leaves the game he/her is playing in at the moment. This will attribute a win to the opponent and a loss to the user. |
+| User/Admin  | **Game Moves** | Obtain a list (*JSON or CSV*) off all moves done by all pawns in a specific game (*terminated or not*). |
+| User/Admin  | **Get Ranking** | Obtain a list (*ascending or descending*) of all players sorted by their number of wins. |
+| User/Admin  | **Get Stats** | Get statistics (*total games, n° of wins/losses, games won due to abandon/games lost due to abandon, avarage moves to win/lose*) about a specific player. |
+| User/Admin  | **Token Balance** | Allows the user to check how many tokens he/her has left (*This action is the only one which doesn't require the user to have a token balance greater than 0*). |
+| Admin  | **Set Tokens** | The Admin user can set any users' token balance to a certain level. |
 
 ## Routes
 
@@ -33,7 +33,7 @@ The software provides a default administrator account, which allows to give user
 
 ## Routes description
 
-In the following section it will be explained in detail how to interact with the system through the routes mentioned above. It is crucial to understand that all the routes are preceeded by a JWToken authentication head; this means that without one of this tokens the user cannot do any action. The JWT for this project have been generated using https://jwt.io/ (A service which allows to obtain JWT from payload claims and a secret key).<br/>
+In the following section it will be explained in detail how to interact with the system through the routes mentioned above. It is crucial to understand that all the routes are preceeded by a JWToken authentication head; this means that without one of this tokens the user cannot do any action. The JWT for this project have been generated using https://jwt.io/ (*A service which allows to obtain JWT from payload claims and a secret key*).<br/>
 The secret key used to generate tokens for this project can be found in the .env file; on the website linked above the claims must me indicated as follows:
 <p align="center">
   <img src="https://user-images.githubusercontent.com/24567662/218695257-0c72f1e1-51b5-4b1f-a073-637d12e49408.PNG" width="800" />
@@ -49,7 +49,7 @@ The game is created by passing in the POST request's body a JSON containing the 
 </p>
 
 ### Move Pawn
-This route allows the user to move a pawn in the game he/her is playing (*if the user is not in game an error is returned*) by indicating the array of moves that the pawn has to do in order to reach its final destination. All moves done by the pawn are verified and if some of them violate one or more game rules an error is returned.<br/> the game creator always controlls the white pawns while the opponent has the black ones. Pawn names are always composed by two parts: ('w'/'b') + (pawn number from creator's left to his right); for example the black pawn to the far left (*from the creator point of view*) is named b1.
+This route allows the user to move a pawn in the game he/her is playing (*if the user is not in game an error is returned*) by indicating the array of moves that the pawn has to do in order to reach its final destination. All moves done by the pawn are verified and if some of them violate one or more game rules an error is returned.<br/> The game creator always controlls the white pawns while the opponent has the black ones. Pawn names are always composed by two parts: ('w'/'b') + (pawn number from creator's left to his right); for example the black pawn to the far left (*from the creator point of view*) is named b1.
 <p align="center">
   <img src="https://user-images.githubusercontent.com/24567662/218702195-3b911a2a-bafd-4df8-bd75-9be6f77c8361.PNG" />
 </p>
@@ -85,7 +85,7 @@ This time the query string parameter is the email of the player whose statistics
 </p>
 
 ### Token Balance
-As said before, in order to use this route it's not necessary for the user's credit to be greater than 0.
+As said before, in order to use this route it's not necessary for the user's token credit to be greater than 0.
 <p align="center">
   <img src="https://user-images.githubusercontent.com/24567662/218709668-117ba391-bc23-48a2-bc1b-b2fb756f91d3.PNG" />
 </p>
@@ -157,8 +157,61 @@ This is the only route accessible exclusively by the administrator; it allows to
   <img src="https://user-images.githubusercontent.com/24567662/218787712-7777abde-03dc-4ac8-9c18-896cc4284efb.png" />
 </p>
 
+## Patterns
+### Model View Controller
+The MVC pattern helps us break up the frontend and backend code into separate components. This way, it's much easier to manage and make changes to either side without them interfering with each other.
+It is made up of 3 components:
+1. **Model** :
+The model's job is to simply manage the data. Whether the data is from a database, API, or a JSON object, the model is responsible for managing it.
+2. **Views** :
+The view's job is to decide what the user will see on their screen, and how.
+3. **Controller** :
+The controller's responsibility is to pull, modify, and provide data to the user. Essentially, the controller is the link between the view and model.
+
+In our case, since the View component is represented only by the routes, we didn't have to worry about the notorious problem related to the View-Model relation.
+
+<p align="center">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/MVC_Diagram_%28Model-View-Controller%29.svg/1200px-MVC_Diagram_%28Model-View-Controller%29.svg.png" width="400" />
+</p>
+
+### Chain of Responsability
+This pattern chains receiving objects together, and then passes any request messages from object to object until it reaches an object capable of handling the message. The number and type of handler objects isn't known a priori, they can be configured dynamically. The chaining mechanism uses recursive composition to allow an unlimited number of handlers to be linked.<br/>
+Chain of Responsibility simplifies object interconnections. Instead of senders and receivers maintaining references to all candidate receivers, each sender keeps a single reference to the head of the chain, and each receiver keeps a single reference to its immediate successor in the chain.<br/>
+In our case, sequential objects are middleware functions that have access to the requested object (req), the response object (res), and the subsequent middleware function in the request-response application loop. The next middleware function is commonly indicated by a variable called next.
+<p align="center">
+  <img src="https://refactoring.guru/images/patterns/diagrams/chain-of-responsibility/solution1-en.png?id=dccad3e628bd2b8f1856c99369ca6e5b" width="580" />
+</p>
+
+### Factory
+The factory design pattern is used when we have a superclass with multiple sub-classes and based on input, we need to return one of the sub-class. This pattern takes out the responsibility of the instantiation of a class from the client program to the factory class.<br/>
+In our case we used the factory to instantiate the different log message objects.
+<p align="center">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/New_WikiFactoryMethod.png/734px-New_WikiFactoryMethod.png" width="650"/>
+</p>
+
+### Singleton
+Singleton is a creational design pattern that lets you ensure that a class has only one instance, while providing a global access point to this instance.
+The Singleton pattern solves two problems at the same time:
+1. Ensure that a class has just a single instance.
+2. Provide a global access point to that instance. 
+
+In our case we used the singleton pattern to handle the access to the shared database (*which otherwise could be modified by different objects at the same time*)
+<p align="center">
+  <img src="https://refactoring.guru/images/patterns/content/singleton/singleton-3x.png" width="350"/>
+</p>
+
+### DAO
+DAO stands for Data Access Object. DAO Design Pattern is used to separate the data persistence logic in a separate layer. This way, the service remains completely in dark about how the low-level operations to access the database is done. <br/>
+In our case we used this pattern to separate the User related operations from the Game related operations (*both done on the same DB*).
+<p align="center">
+  <img src="https://journaldev.nyc3.digitaloceanspaces.com/2017/11/DAO-Pattern.png" />
+</p>
+
+
+
+
 ## How to run the software 
-1. First of all, clone the git repository in order to obtain all needed files.
+1. First of all, clone the git repository in order to obtain all files needed.
 
 ```
 git clone https://github.com/Alessandrob99/AP_Project
@@ -180,3 +233,6 @@ By default, the service can be reached via port 3000 (http://127.0.0.1:3000/), b
 * [Nodemon](https://www.npmjs.com/package/nodemon)
 * [Postman](https://www.postman.com/company/about-postman/)
 * [XAMPP](https://www.apachefriends.org/)
+
+## Devs
+:man_student: [Bedetta Alessandro](https://github.com/Alessandrob99)
