@@ -39,7 +39,6 @@ export const move = async (req,res,next) => {
             "xto": req.body.moves[req.body.moves.length-1].x,
             "yto": req.body.moves[req.body.moves.length-1].y,
         })
-        console.log(moves);
         if(all_dead){ // Game is over
             //SAVE
             console.log("GAME IS TERMINATED");
@@ -62,7 +61,6 @@ export const move = async (req,res,next) => {
             "xto": req.body.moves[req.body.moves.length-1].x,
             "yto": req.body.moves[req.body.moves.length-1].y
         })
-        console.log(moves);
         if(all_dead){
             //SAVE
             console.log("GAME IS TERMINATED");

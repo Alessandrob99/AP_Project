@@ -104,6 +104,10 @@ app.get('/tokenBalance', [checkUserEmail],
 app.get('*', function(req, res,next){
     next(MessEnum.RouteNotFound);
   });
+//Route not found
+app.post('*', function(req, res,next){
+    next(MessEnum.RouteNotFound);
+  });
 
 //Prints the messages returned by the CoR methods
 app.use(messageLogger);

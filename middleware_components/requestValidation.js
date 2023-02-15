@@ -242,7 +242,6 @@ var checkInGameAndTurn = function (req, res, next) { return __awaiter(void 0, vo
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                console.log("checkInGameAndTurn");
                 gameDao = new GameDAO_1.GameDao();
                 return [4 /*yield*/, gameDao.checkUserGame(req.user.email)];
             case 1:
@@ -275,7 +274,6 @@ function split(str, index) {
 var checkReqMove = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var _a, wb, num, _b, wb, num, m;
     return __generator(this, function (_c) {
-        console.log("checkReqMove");
         ((typeof req.body.pawn === "string") && (req.body.pawn.length >= 2)) ? {} : next(MessFactory_1.MessEnum.BadlyFormattedBody);
         //Check that specified pawn exists and it can be moved by the user
         if (req.game.creator === req.user.email) {
@@ -316,7 +314,6 @@ exports.checkReqMove = checkReqMove;
 var checkGridLimits = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var m;
     return __generator(this, function (_a) {
-        console.log("checkGridLimits");
         for (m = 0; m < req.body.moves.length; m++) {
             if ((parseInt(req.body.moves[m].x) < 1) || (parseInt(req.body.moves[m].y) < 1)
                 || (parseInt(req.body.moves[m].x) > req.game.dimension) || (parseInt(req.body.moves[m].y) > req.game.dimension)) {
@@ -333,7 +330,6 @@ exports.checkGridLimits = checkGridLimits;
 var checkCellFree = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var m, i;
     return __generator(this, function (_a) {
-        console.log("checkCellFree");
         //If the user selected a dame it could be possible for it to go back to the initial spot
         for (m = 0; m < req.body.moves.length; m++) {
             for (i = 0; i < req.game.dimension; i++) {
@@ -356,16 +352,16 @@ var checkCellFree = function (req, res, next) { return __awaiter(void 0, void 0,
 exports.checkCellFree = checkCellFree;
 //Checks if the destination can be reached withoud infringing any game rules
 var checkMoveReachability = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, wb, num, killed_pawn, moved_pawn, m, p, p, m, p, p;
+    var _a, wb, num, killed_pawn, moved_pawn, became_dame, m, p, p, m, p, p;
     return __generator(this, function (_b) {
         //Check that the pawn is alive
-        console.log("checkMoveReachability");
         (req.pawn.role === "dead") ? next(MessFactory_1.MessEnum.InvalidMove) : {};
         req.xfrom = req.pawn.x;
         req.yfrom = req.pawn.y;
         _a = split(req.pawn.name, 1), wb = _a[0], num = _a[1];
         killed_pawn = null;
         moved_pawn = false;
+        became_dame = false;
         if (req.pawn.role === "pawn") {
             //Cell is unrachable (moving diagonally)
             for (m = 0; m < req.body.moves.length; m++) {
@@ -444,6 +440,7 @@ var checkMoveReachability = function (req, res, next) { return __awaiter(void 0,
                     if (req.pawn.y == req.game.dimension) {
                         req.grid.whites[parseInt(num) - 1].role = "dame";
                         console.log("w" + num + " became a dame!");
+                        became_dame = true;
                         break;
                     }
                 }
@@ -512,20 +509,19 @@ var checkMoveReachability = function (req, res, next) { return __awaiter(void 0,
                                     console.log(req.pawn);
                                     console.log("----------------------");
                                 }
-                                console.log("GAME GRID:");
-                                console.log(req.grid);
                             }
                         }
                     }
                     if (req.pawn.y == 1) {
                         req.grid.blacks[parseInt(num) - 1].role = "dame";
                         console.log("b" + num + " became a dame!");
+                        became_dame = true;
                         break;
                     }
                 }
             }
         }
-        if ((req.pawn.role === "dame") && (!moved_pawn)) {
+        if ((req.pawn.role === "dame") && (!became_dame)) {
             for (m = 0; m < req.body.moves.length; m++) {
                 (((req.body.moves[m].x + req.body.moves[m].y) % 2) !== 0) ? next(MessFactory_1.MessEnum.BadlyFormattedBody) : {};
                 if (((req.body.moves[m].y !== req.pawn.y + 1) && (req.body.moves[m].y !== req.pawn.y - 1)

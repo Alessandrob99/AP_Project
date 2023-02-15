@@ -135,6 +135,10 @@ app.get('/tokenBalance', [user_validation_1.checkUserEmail], function (req, res,
 app.get('*', function (req, res, next) {
     next(MessFactory_1.MessEnum.RouteNotFound);
 });
+//Route not found
+app.post('*', function (req, res, next) {
+    next(MessFactory_1.MessEnum.RouteNotFound);
+});
 //Prints the messages returned by the CoR methods
 app.use(MessLog_1.messageLogger);
 app.listen(process.env.PORT);

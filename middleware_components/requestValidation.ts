@@ -138,7 +138,6 @@ export const checkUserEmailNoCreate = async (req: any, res: any, next: any) => {
 
 //Checks if the user is in game and if so if it's his turn
 export const checkInGameAndTurn = async (req: any, res: any, next: any) => {
-    console.log("checkInGameAndTurn");
 
     var gameDao = new GameDao();
     var foundGame = await gameDao.checkUserGame(req.user.email);
@@ -164,7 +163,6 @@ function split(str, index) {
 
 //Checks if the "move" request body is correctly formatted
 export const checkReqMove = async (req: any, res: any, next: any) => {
-    console.log("checkReqMove");
 
     ((typeof req.body.pawn === "string")&&(req.body.pawn.length>=2))? {}: next(MessEnum.BadlyFormattedBody);
     //Check that specified pawn exists and it can be moved by the user
@@ -204,7 +202,6 @@ export const checkReqMove = async (req: any, res: any, next: any) => {
 
 //Makes sure that the move doesn't make the pawn fall out of the grid
 export const checkGridLimits = async (req: any, res: any, next: any) => {
-    console.log("checkGridLimits");
 
     for(var m=0; m<req.body.moves.length;m++){
         if((parseInt(req.body.moves[m].x)<1)||(parseInt(req.body.moves[m].y)<1)
@@ -221,7 +218,6 @@ export const checkGridLimits = async (req: any, res: any, next: any) => {
 //Makes sure that the destination cell is free
 //This check includes the fact that the pawn is not staying in the same place
 export const checkCellFree = async (req: any, res: any, next: any) => {
-    console.log("checkCellFree");
 
     //If the user selected a dame it could be possible for it to go back to the initial spot
     for(var m = 0; m<req.body.moves.length;m++){
@@ -245,7 +241,6 @@ export const checkCellFree = async (req: any, res: any, next: any) => {
 //Checks if the destination can be reached withoud infringing any game rules
 export const checkMoveReachability = async (req: any, res: any, next: any) => {
     //Check that the pawn is alive
-    console.log("checkMoveReachability");
     (req.pawn.role==="dead")? next(MessEnum.InvalidMove): {};
 
     req.xfrom = req.pawn.x;
@@ -255,6 +250,7 @@ export const checkMoveReachability = async (req: any, res: any, next: any) => {
     const [wb, num] = split(req.pawn.name, 1);
     var killed_pawn : any = null; //It also works as a flag to check if we already ate a pawn ( and so we cant move except for eating again)
     var moved_pawn = false;
+    var became_dame = false;
     if(req.pawn.role==="pawn"){
         //Cell is unrachable (moving diagonally)
         for(var m=0;m<req.body.moves.length;m++){
@@ -332,6 +328,7 @@ export const checkMoveReachability = async (req: any, res: any, next: any) => {
                 if(req.pawn.y==req.game.dimension){
                     req.grid.whites[parseInt(num)-1].role = "dame";
                     console.log("w"+num+" became a dame!");
+                    became_dame = true;
                     break;
                 }
             }else{ //BLACK PAWNS CONTROLLS
@@ -397,21 +394,19 @@ export const checkMoveReachability = async (req: any, res: any, next: any) => {
                                 console.log(req.pawn);
                                 console.log("----------------------");
                             }
-                            
-                            console.log("GAME GRID:")
-                            console.log(req.grid);
                         }
                     }
                 }
                 if(req.pawn.y==1){
                     req.grid.blacks[parseInt(num)-1].role = "dame";
                     console.log("b"+num+ " became a dame!");
+                    became_dame = true;
                     break;
                 } 
             }
         }
     }
-    if((req.pawn.role==="dame")&&(!moved_pawn)){
+    if((req.pawn.role==="dame")&&(!became_dame)){
 
         for(var m=0;m<req.body.moves.length;m++){
             (((req.body.moves[m].x + req.body.moves[m].y)%2)!==0)? next(MessEnum.BadlyFormattedBody): {};

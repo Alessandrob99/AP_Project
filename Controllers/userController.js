@@ -85,7 +85,6 @@ var move = function (req, res, next) { return __awaiter(void 0, void 0, void 0, 
                     "xto": req.body.moves[req.body.moves.length - 1].x,
                     "yto": req.body.moves[req.body.moves.length - 1].y
                 });
-                console.log(moves);
                 if (!all_dead) return [3 /*break*/, 3];
                 //SAVE
                 console.log("GAME IS TERMINATED");
@@ -116,7 +115,6 @@ var move = function (req, res, next) { return __awaiter(void 0, void 0, void 0, 
                     "xto": req.body.moves[req.body.moves.length - 1].x,
                     "yto": req.body.moves[req.body.moves.length - 1].y
                 });
-                console.log(moves);
                 if (!all_dead) return [3 /*break*/, 9];
                 //SAVE
                 console.log("GAME IS TERMINATED");
