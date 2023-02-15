@@ -157,6 +157,20 @@ This is the only route accessible exclusively by the administrator; it allows to
   <img src="https://user-images.githubusercontent.com/24567662/218787712-7777abde-03dc-4ac8-9c18-896cc4284efb.png" />
 </p>
 
+## How to run the software 
+1. First of all, clone the git repository in order to obtain all needed files.
+
+```
+git clone https://github.com/Alessandrob99/AP_Project
+```
+2. Once the files have been retrived, open a new terminal in the project's root folder and run the command:
+```
+npm install 
+```
+3. Now that all needed dependencies and files have been installed successfully, the SQL database must be configured. To do so, the .env file can be edited to match the local database parameters (*Name, Host, Password, Port*). During the development of this project the DB was created and managed using XAMPP/MySQL. Seeding files for the test DB can be found in the 'Seed' directory.
+ 
+4. At this point we are ready to use all the routes; an API platform for handling HTTP Requests (*like Postman*) could be really useful. The same results can be obtained using the CLI, but the whole process would result much more cumbersome.<br/>
+By default, the service can be reached via port 3000 (http://127.0.0.1:3000/), but the latter can be changed editing the .env file (*PORT*). The .env file also contains the secret key used to generate the JWT (*On the https://jwt.io/ page*).
 
 
 ## Frameworks, Libraries and Tools
