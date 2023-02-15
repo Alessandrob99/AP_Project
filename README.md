@@ -174,9 +174,11 @@ In our case, since the View component is represented only by the routes, we didn
 </p>
 
 ### Chain of Responsability
-
+This pattern chains receiving objects together, and then passes any request messages from object to object until it reaches an object capable of handling the message. The number and type of handler objects isn't known a priori, they can be configured dynamically. The chaining mechanism uses recursive composition to allow an unlimited number of handlers to be linked.<br/>
+Chain of Responsibility simplifies object interconnections. Instead of senders and receivers maintaining references to all candidate receivers, each sender keeps a single reference to the head of the chain, and each receiver keeps a single reference to its immediate successor in the chain.<br/>
+In our case, sequential objects are middleware functions that have access to the requested object (req), the response object (res), and the subsequent middleware function in the request-response application loop. The next middleware function is commonly indicated by a variable called next.
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/24567662/218787712-7777abde-03dc-4ac8-9c18-896cc4284efb.png" />
+  <img src="https://refactoring.guru/images/patterns/diagrams/chain-of-responsibility/solution1-en.png?id=dccad3e628bd2b8f1856c99369ca6e5b" />
 </p>
 
 ### Factory
