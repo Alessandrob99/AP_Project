@@ -182,9 +182,10 @@ In our case, sequential objects are middleware functions that have access to the
 </p>
 
 ### Factory
-
+The factory design pattern is used when we have a superclass with multiple sub-classes and based on input, we need to return one of the sub-class. This pattern takes out the responsibility of the instantiation of a class from the client program to the factory class.<br/>
+In our case we used the factory to instantiate the different log message objects.
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/24567662/218787712-7777abde-03dc-4ac8-9c18-896cc4284efb.png" />
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/New_WikiFactoryMethod.png/734px-New_WikiFactoryMethod.png" />
 </p>
 
 ### Singleton
