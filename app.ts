@@ -94,7 +94,7 @@ app.post('/token', [CoR.adminCheck,CoR.newTokenBalanceVal],
     }
 );
 //Returns the user's token balance
-app.get('/tokenBalance', [],
+app.get('/tokenBalance', [checkUserEmail],
     async(req,res,next) => {
         userController.getTokenBalance(req,res,next);
     }

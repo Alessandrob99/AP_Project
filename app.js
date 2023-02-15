@@ -89,7 +89,7 @@ app.get('/ranking/:order?', [CoR.userAccountAndBalanceCheck], function (req, res
     });
 }); });
 //Get stats about a player (indicated by email)
-app.get('/stats/:email', [requestValidation_1.checkUserInGame, CoR.userAccountAndBalanceCheck], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+app.get('/stats/:email', [requestValidation_1.checkUserEmailNoCreate, CoR.userAccountAndBalanceCheck], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         userController.getStats(req, res, next);
         return [2 /*return*/];
@@ -125,7 +125,7 @@ app.post('/token', [CoR.adminCheck, CoR.newTokenBalanceVal], function (req, res,
     });
 }); });
 //Returns the user's token balance
-app.get('/tokenBalance', [], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+app.get('/tokenBalance', [user_validation_1.checkUserEmail], function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         userController.getTokenBalance(req, res, next);
         return [2 /*return*/];

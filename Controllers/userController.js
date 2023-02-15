@@ -136,7 +136,7 @@ var move = function (req, res, next) { return __awaiter(void 0, void 0, void 0, 
     });
 }); };
 exports.move = move;
-//Returns general information related to a specific game (creator, opponent, statem, turn, winner, positions)
+//Returns general information related to a specific game (creator, opponent, state, turn, winner, positions)
 var getGameInfo = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var foundGame;
     return __generator(this, function (_a) {
