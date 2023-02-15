@@ -167,6 +167,7 @@ The model's job is to simply manage the data. Whether the data is from a databas
 The view's job is to decide what the user will see on their screen, and how.
 3. **Controller** :
 The controller's responsibility is to pull, modify, and provide data to the user. Essentially, the controller is the link between the view and model.
+
 In our case, since the View component is represented only by the routes, we didn't have to worry about the notorious problem related to the View-Model relation.
 
 <p align="center">
