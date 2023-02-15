@@ -211,7 +211,7 @@ In our case we used this pattern to separate the User related operations from th
 
 
 ## How to run the software 
-1. First of all, clone the git repository in order to obtain all needed files.
+1. First of all, clone the git repository in order to obtain all files needed.
 
 ```
 git clone https://github.com/Alessandrob99/AP_Project
