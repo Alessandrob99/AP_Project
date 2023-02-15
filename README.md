@@ -178,26 +178,32 @@ This pattern chains receiving objects together, and then passes any request mess
 Chain of Responsibility simplifies object interconnections. Instead of senders and receivers maintaining references to all candidate receivers, each sender keeps a single reference to the head of the chain, and each receiver keeps a single reference to its immediate successor in the chain.<br/>
 In our case, sequential objects are middleware functions that have access to the requested object (req), the response object (res), and the subsequent middleware function in the request-response application loop. The next middleware function is commonly indicated by a variable called next.
 <p align="center">
-  <img src="https://refactoring.guru/images/patterns/diagrams/chain-of-responsibility/solution1-en.png?id=dccad3e628bd2b8f1856c99369ca6e5b" />
+  <img src="https://refactoring.guru/images/patterns/diagrams/chain-of-responsibility/solution1-en.png?id=dccad3e628bd2b8f1856c99369ca6e5b" width="580" />
 </p>
 
 ### Factory
 The factory design pattern is used when we have a superclass with multiple sub-classes and based on input, we need to return one of the sub-class. This pattern takes out the responsibility of the instantiation of a class from the client program to the factory class.<br/>
 In our case we used the factory to instantiate the different log message objects.
 <p align="center">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/New_WikiFactoryMethod.png/734px-New_WikiFactoryMethod.png" />
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/New_WikiFactoryMethod.png/734px-New_WikiFactoryMethod.png" width="650"/>
 </p>
 
 ### Singleton
+Singleton is a creational design pattern that lets you ensure that a class has only one instance, while providing a global access point to this instance.
+The Singleton pattern solves two problems at the same time:
+1. Ensure that a class has just a single instance.
+2. Provide a global access point to that instance. 
 
+In our case we used the singleton pattern to handle the access to the shared database (*which otherwise could be modified by different objects at the same time*)
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/24567662/218787712-7777abde-03dc-4ac8-9c18-896cc4284efb.png" />
+  <img src="https://refactoring.guru/images/patterns/content/singleton/singleton-3x.png" width="350"/>
 </p>
 
 ### DAO
-
+DAO stands for Data Access Object. DAO Design Pattern is used to separate the data persistence logic in a separate layer. This way, the service remains completely in dark about how the low-level operations to access the database is done. <br/>
+In our case we used this pattern to separate the User related operations from the Game related operations (*both done on the same DB*).
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/24567662/218787712-7777abde-03dc-4ac8-9c18-896cc4284efb.png" />
+  <img src="https://journaldev.nyc3.digitaloceanspaces.com/2017/11/DAO-Pattern.png" />
 </p>
 
 
