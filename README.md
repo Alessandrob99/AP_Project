@@ -174,7 +174,7 @@ In our case, since the View component is represented only by the routes, we didn
   <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/MVC_Diagram_%28Model-View-Controller%29.svg/1200px-MVC_Diagram_%28Model-View-Controller%29.svg.png" width="400" />
 </p>
 
-### Chain of Responsability
+### Chain of Responsibility
 This pattern chains receiving objects together, and then passes any request messages from object to object until it reaches an object capable of handling the message. The number and type of handler objects isn't known a priori, they can be configured dynamically. The chaining mechanism uses recursive composition to allow an unlimited number of handlers to be linked.<br/>
 Chain of Responsibility simplifies object interconnections. Instead of senders and receivers maintaining references to all candidate receivers, each sender keeps a single reference to the head of the chain, and each receiver keeps a single reference to its immediate successor in the chain.<br/>
 In our case, sequential objects are middleware functions that have access to the requested object (req), the response object (res), and the subsequent middleware function in the request-response application loop. The next middleware function is commonly indicated by a variable called next.
