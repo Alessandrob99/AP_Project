@@ -129,7 +129,7 @@ This is the only route accessible exclusively by the administrator; it allows to
 
 ### Game Moves
 <p align="center">
-  <img src="[https://user-images.githubusercontent.com/24567662/219321088-848f35f9-89a6-4bc9-ba54-32a917c2dd94.png" />
+  <img src="https://user-images.githubusercontent.com/24567662/219321088-848f35f9-89a6-4bc9-ba54-32a917c2dd94.png" />
 </p>
 
 
