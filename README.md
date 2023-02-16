@@ -106,55 +106,55 @@ This is the only route accessible exclusively by the administrator; it allows to
 ### New Game 
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/24567662/218785351-28b42658-f2b8-4342-a970-ffe7f159778b.PNG" />
+  <img src="https://user-images.githubusercontent.com/24567662/219321369-8fe1d213-3ec7-4988-b8e6-b05755ee76ad.PNG" />
 </p>
 
 ### Move
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/24567662/218785514-ac64df88-ca9d-4164-9bec-fe89f5d9515f.png" />
+  <img src="https://user-images.githubusercontent.com/24567662/219321253-6b1ad5ad-343b-4765-815f-323ad0df6a45.png" />
 </p>
 
 ### Game State
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/24567662/218786078-4284c243-134f-4c6b-bfb1-1aff95c646bf.png" />
+  <img src="https://user-images.githubusercontent.com/24567662/219320895-ab6dbfdb-4290-40f5-a9d0-f4879bc80147.png" />
 </p>
 
 ### Quit Game
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/24567662/218786178-e5799379-7ae3-469a-8fca-3b714777df97.png" />
+  <img src="https://user-images.githubusercontent.com/24567662/219321579-a8bd9d5f-85b7-4228-aae2-1f858926d78e.png" />
 </p>
 
 ### Game Moves
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/24567662/218786248-a225894c-26cf-4627-ab78-8e9c6464cc13.png" />
+  <img src="[https://user-images.githubusercontent.com/24567662/219321088-848f35f9-89a6-4bc9-ba54-32a917c2dd94.png" />
 </p>
 
 
 ### Get Ranking
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/24567662/218786408-2ce2bb7b-2c1b-48c5-9cfe-5bc20b064cbf.png" />
+  <img src="https://user-images.githubusercontent.com/24567662/219321703-6e7d3863-15d3-4d7f-8267-337b4c27bad8.png" />
 </p>
 
 ### Get Stats
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/24567662/218786499-4c798ece-de8c-4f5a-ae63-e5fe910be529.png" />
+  <img src="https://user-images.githubusercontent.com/24567662/219321802-ca85967c-6c0e-4b74-b490-d5890c7b840b.png" />
 </p>
 
 ### Token Balance
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/24567662/218787630-4ce17909-47f1-42ed-a8f1-92f6ca63b9b2.png" />
+  <img src="https://user-images.githubusercontent.com/24567662/219321879-9281fe72-5185-44b3-865b-eae71f1fbcf0.png" />
 </p>
 
 ### Set Tokens
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/24567662/218787712-7777abde-03dc-4ac8-9c18-896cc4284efb.png" />
+  <img src="https://user-images.githubusercontent.com/24567662/219321473-e48effac-2362-457a-916b-80e0216bbe4e.png" />
 </p>
 
 ## Patterns
