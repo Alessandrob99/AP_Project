@@ -232,6 +232,10 @@ docker-compose up
  
  
 4. At this point we are ready to use all the routes; an API platform for handling HTTP Requests (*like Postman*) could be really useful. The same results can be obtained using the CLI, but the whole process would result much more cumbersome.<br/>
+In order to take down the service and the Docker container use:
+```
+docker-compose down
+```
 
 
 ## Frameworks, Libraries and Tools
