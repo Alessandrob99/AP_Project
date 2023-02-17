@@ -220,6 +220,7 @@ git clone https://github.com/Alessandrob99/AP_Project
 ```
 docker-compose up
 ```
+**Note** : If you are using windows' version of Docker don't forget to launch Docker Desktop first.
 3. By default the docker container is reachable via http://0.0.0.0:8080/, but this can be changed by editing the .env file containing all the different parameters.
    - DB_NAME : Name of the database containing all the app data.
    - DB_HOST : Identifier of the container related to the node app.
