@@ -221,14 +221,14 @@ git clone https://github.com/Alessandrob99/AP_Project
 docker-compose up
 ```
 3. By default the docker container is reachable via http://0.0.0.0:8080/, but this can be changed by editing the .env file containing all the different parameters.
- - DB_NAME : Name of the database containing all the app data.
- - DB_HOST : Identifier of the container related to the node app.
- - DB_USER : Name of the user account used to access the mysql service.
- - DB_PASS : Password of the db user profile.
- - DB_PORT : Port which the DB is listening through.
- - HOST : Codebase container address
- - PORT: Port which the node app container is listening through.
- - EXT_PORT : Port related to the Docker app  container, mapped to the internal port (PORT)
+   - DB_NAME : Name of the database containing all the app data.
+   - DB_HOST : Identifier of the container related to the node app.
+   - DB_USER : Name of the user account used to access the mysql service.
+   - DB_PASS : Password of the db user profile.
+   - DB_PORT : Port which the DB is listening through.
+   - HOST : Codebase container address
+   - PORT: Port which the node app container is listening through.
+   - EXT_PORT : Port related to the Docker app  container, mapped to the internal port (PORT)
  
  
 4. At this point we are ready to use all the routes; an API platform for handling HTTP Requests (*like Postman*) could be really useful. The same results can be obtained using the CLI, but the whole process would result much more cumbersome.<br/>
