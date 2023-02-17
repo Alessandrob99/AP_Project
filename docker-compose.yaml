@@ -1,0 +1,29 @@
+version: "3.7"
+services:
+    db_ap_proj:
+        image: mysql
+        restart: always
+        environment:
+          MYSQL_ROOT_PASSWORD: "rootpwd"
+          MYSQL_USER: ${DB_USER}
+          MYSQL_PASSWORD: ${DB_PASS}
+          MYSQL_DATABASE: ${DB_NAME}
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+        ports:
+          - ${DB_PORT}:${DB_PORT}
+        expose:
+          - ${DB_PORT}
+        env_file:
+          - .env
+        volumes:
+        - ./Seed/ap_project_Test.sql:/docker-entrypoint-initdb.d/ap_project_Test.sql
+    node:
+        build: .
+        restart: always
+        ports:
+          - ${EXT_PORT}:${PORT}
+        env_file:
+          - .env
+        depends_on:
+          - db_ap_proj
+

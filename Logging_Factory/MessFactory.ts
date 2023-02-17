@@ -25,16 +25,6 @@ export enum MessEnum {
 }
 
 
-//Message telling the user that something went wrong (only used if the switch case default)
-class GenericError implements MessageInt {
-    public getMess():string {
-        return "Something didn't work as supposed to...";
-    }
-    public getCode():number{
-        return 400;
-    }
-}
-
 //Message telling the user that the request has no authentication header
 class NoHeaderError implements MessageInt {
     public getMess():string {
@@ -308,9 +298,6 @@ export class MessFactory{
                 break;
             case MessEnum.InvalidMove:
                 message = new InvalidMove();
-                break;
-            default :
-                message = new GenericError();
                 break;
         }
         return message;

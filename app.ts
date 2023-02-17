@@ -15,9 +15,13 @@ var bodyParser = require('body-parser');
 
 var app = express(); 
 
+//Docker network
+const PORT = process.env.EXT_PORT || 8080;
+const HOST = process.env.HOST || '0.0.0.0';
 
 //Checks if the json passed in the request body has the correct json format
 //Note: doesn't check the type and format of the several fields in the json!
+
 app.use(bodyParser.json({
     verify : (req, res, buf, encoding) => {
         try {
@@ -37,7 +41,9 @@ app.use(bodyParser.json({
 //JWT Token authentication done for all routes, w/o a token it'll be impossible to use the app
 app.use(CoR.JWTCheck);
 
+
 //=================================ROUTES========================================//
+
 
 //Creates a new game pointing out the opponent's email and the grid dimension(>=5)
 app.post('/game', [CoR.userAccountAndBalanceCheck, CoR.newGameVal],
@@ -112,4 +118,5 @@ app.post('*', function(req, res,next){
 //Prints the messages returned by the CoR methods
 app.use(messageLogger);
 
-app.listen(process.env.PORT);
+app.listen(PORT, HOST);
+console.log(`Ready on http://${HOST}:${PORT}`);

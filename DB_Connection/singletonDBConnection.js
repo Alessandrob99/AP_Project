@@ -15,8 +15,8 @@ var DB_Singleton = /** @class */ (function () {
         var port = Number(process.env.DB_PORT);
         //Initialize the sequelize object that will be used by the DAOs
         this.connection = new sequelize_1.Sequelize(database, username, password, {
-            host: host,
             port: port,
+            host: host,
             dialect: 'mysql'
         });
     }

@@ -11,7 +11,7 @@ export class GameDao{
         this.game = seq.define(
             'Game',
             {
-                id: {   //SE LE PARTITE NON VANNO MANTENUTE NEL DB ALLORA LA EMAIL DEL CREATORE PUò ESSERE PK
+                id: {   
                     type: DataTypes.INTEGER,
                     primaryKey: true,
                     autoIncrement: true

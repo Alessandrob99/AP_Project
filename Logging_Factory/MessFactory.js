@@ -25,18 +25,6 @@ var MessEnum;
     MessEnum[MessEnum["InvalidMove"] = 20] = "InvalidMove";
     //UnauthorizedAccessToGameInfo
 })(MessEnum = exports.MessEnum || (exports.MessEnum = {}));
-//Message telling the user that something went wrong (only used if the switch case default)
-var GenericError = /** @class */ (function () {
-    function GenericError() {
-    }
-    GenericError.prototype.getMess = function () {
-        return "Something didn't work as supposed to...";
-    };
-    GenericError.prototype.getCode = function () {
-        return 400;
-    };
-    return GenericError;
-}());
 //Message telling the user that the request has no authentication header
 var NoHeaderError = /** @class */ (function () {
     function NoHeaderError() {
@@ -344,9 +332,6 @@ var MessFactory = /** @class */ (function () {
                 break;
             case MessEnum.InvalidMove:
                 message = new InvalidMove();
-                break;
-            default:
-                message = new GenericError();
                 break;
         }
         return message;

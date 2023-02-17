@@ -21,9 +21,9 @@ export class DB_Singleton {
         
         //Initialize the sequelize object that will be used by the DAOs
         this.connection = new Sequelize(database, username, password, {
-            host: host,
             port: port,
-            dialect: 'mysql'
+            host: host,
+            dialect: 'mysql',
         });
     }
 

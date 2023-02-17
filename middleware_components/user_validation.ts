@@ -49,9 +49,8 @@ export const verifyAndAuthenticate = (req: any, res: any, next: any) => {
 //Checks is all the information included in the request has the correct form
 //and if the user exists in the database, if not a new user is registered
 export const checkJwtPayload = (req: any, res: any, next: any) => {
-    var validator = require("email-validator");
-    if(
-        (req.user.role === 1 || req.user.role === 2) 
+    const validator = require("email-validator");
+    if((req.user.role === 1 || req.user.role === 2) 
         && (typeof req.user.email === "string") && (validator.validate(req.user.email))){
             next();
     }else{
@@ -70,7 +69,6 @@ Edit: I had to remove the Message sent when a user was created because fsr it ca
 CoR to be cut right after that
 */
 export const checkUserEmail = async (req: any, res: any, next: any) => {
-    
     var dao = new UserDao();
     //If the (now authenticated) user doesn't exist in the db, a new user record is created
     var user = await dao.readUser(req.user.email)

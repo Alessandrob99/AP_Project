@@ -47,6 +47,9 @@ var express = require('express');
 require('dotenv').config();
 var bodyParser = require('body-parser');
 var app = express();
+//Docker network
+var PORT = process.env.EXT_PORT || 8080;
+var HOST = process.env.HOST || '0.0.0.0';
 //Checks if the json passed in the request body has the correct json format
 //Note: doesn't check the type and format of the several fields in the json!
 app.use(bodyParser.json({
@@ -141,4 +144,5 @@ app.post('*', function (req, res, next) {
 });
 //Prints the messages returned by the CoR methods
 app.use(MessLog_1.messageLogger);
-app.listen(process.env.PORT);
+app.listen(PORT, HOST);
+console.log("Ready on http://".concat(HOST, ":").concat(PORT));
