@@ -339,7 +339,7 @@ var checkCellFree = function (req, res, next) { return __awaiter(void 0, void 0,
                 //The pawn must not be dead in order to cover the position
                 if (((req.grid.whites[i].x === req.body.moves[m].x) && (req.grid.whites[i].y === req.body.moves[m].y) && (req.grid.whites[i].role !== "dead"))
                     || ((req.grid.blacks[i].x === req.body.moves[m].x) && (req.grid.blacks[i].y === req.body.moves[m].y) && (req.grid.blacks[i].role !== "dead"))) {
-                    if (!((req.pawn.role === "dame") && (m !== 0))) { //A dame could possibily go back to the initial spot... but not with the first move (it cant stand still)
+                    if (!((req.pawn.role === "dame") && (m !== 0) && ((req.grid.blacks[i].name === req.pawn.name) || (req.grid.whites[i].name === req.pawn.name)))) { //A dame could possibily go back to the initial spot... but not with the first move (it cant stand still)
                         next(MessFactory_1.MessEnum.InvalidMove);
                     }
                 }
@@ -392,8 +392,8 @@ var checkMoveReachability = function (req, res, next) { return __awaiter(void 0,
                                     console.log(req.pawn);
                                     killed_pawn = req.grid.blacks[p];
                                     req.grid.blacks[p].role = "dead"; //GRID IS GOING TO BE USED TO UPDATE THE DB
-                                    req.grid.whites[parseInt(num) - 1].x = req.pawn.x + 2; //Update of the pawn's position in the grid
-                                    req.grid.whites[parseInt(num) - 1].y = req.pawn.y + 2;
+                                    req.grid.whites[parseInt(num) - 1].x = req.body.moves[m].x; //Update of the pawn's position in the grid
+                                    req.grid.whites[parseInt(num) - 1].y = req.body.moves[m].y;
                                     req.pawn.x = req.body.moves[m].x; //Update our variable position
                                     req.pawn.y = req.body.moves[m].y;
                                     console.log("Moved to");
@@ -467,8 +467,8 @@ var checkMoveReachability = function (req, res, next) { return __awaiter(void 0,
                                     console.log(req.pawn);
                                     killed_pawn = req.grid.whites[p];
                                     req.grid.whites[p].role = "dead"; //GRID IS GOING TO BE USED TO UPDATE THE DB
-                                    req.grid.blacks[parseInt(num) - 1].x = req.pawn.x + 2; //Update of the pawn's position in the grid
-                                    req.grid.blacks[parseInt(num) - 1].y = req.pawn.y + 2;
+                                    req.grid.blacks[parseInt(num) - 1].x = req.body.moves[m].x; //Update of the pawn's position in the grid
+                                    req.grid.blacks[parseInt(num) - 1].y = req.body.moves[m].y;
                                     req.pawn.x = req.body.moves[m].x; //Update our variable position
                                     req.pawn.y = req.body.moves[m].y;
                                     console.log("Moved to");
@@ -547,8 +547,8 @@ var checkMoveReachability = function (req, res, next) { return __awaiter(void 0,
                                 console.log(req.pawn);
                                 killed_pawn = req.grid.blacks[p];
                                 req.grid.blacks[p].role = "dead"; //GRID IS GOING TO BE USED TO UPDATE THE DB
-                                req.grid.whites[parseInt(num) - 1].x = req.pawn.x + 2; //Update of the pawn's position in the grid
-                                req.grid.whites[parseInt(num) - 1].y = req.pawn.y + 2;
+                                req.grid.whites[parseInt(num) - 1].x = req.body.moves[m].x; //Update of the pawn's position in the grid
+                                req.grid.whites[parseInt(num) - 1].y = req.body.moves[m].y;
                                 req.pawn.x = req.body.moves[m].x; //Update our variable position
                                 req.pawn.y = req.body.moves[m].y;
                                 console.log("Moved to");
@@ -558,6 +558,7 @@ var checkMoveReachability = function (req, res, next) { return __awaiter(void 0,
                                 console.log("----------------------");
                                 break; //Break bc if we dont stop all the pawns aligned diagonally are going to die :(
                             }
+                            //eating backwards
                         }
                         (killed_pawn) ? {} : next(MessFactory_1.MessEnum.InvalidMove);
                     }
@@ -631,8 +632,8 @@ var checkMoveReachability = function (req, res, next) { return __awaiter(void 0,
                                 console.log(req.pawn);
                                 killed_pawn = req.grid.whites[p];
                                 req.grid.whites[p].role = "dead"; //GRID IS GOING TO BE USED TO UPDATE THE DB
-                                req.grid.blacks[parseInt(num) - 1].x = req.pawn.x + 2; //Update of the pawn's position in the grid
-                                req.grid.blacks[parseInt(num) - 1].y = req.pawn.y + 2;
+                                req.grid.blacks[parseInt(num) - 1].x = req.body.moves[m].x; //Update of the pawn's position in the grid
+                                req.grid.blacks[parseInt(num) - 1].y = req.body.moves[m].y;
                                 req.pawn.x = req.body.moves[m].x; //Update our variable position
                                 req.pawn.y = req.body.moves[m].y;
                                 console.log("Moved to");
